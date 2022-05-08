@@ -43,9 +43,5 @@ data class CustomerServiceModel(
         inverseJoinColumns = [JoinColumn(name = "service_id")])
     val services: List<ServiceModel>,
 
-//    @OneToMany
-//    @JoinColumn(name = "id_payment")
-//    val payments: List<PaymentModel>?,
-
     val observation: String?
 )

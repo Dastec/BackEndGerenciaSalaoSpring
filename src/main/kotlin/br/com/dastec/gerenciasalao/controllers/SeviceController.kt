@@ -46,4 +46,11 @@ class SeviceController(val serviceModelService: ServiceModelService, val categor
         return serviceModelService.findAll()
     }
 
+
+    @GetMapping("/category/{id}")
+    fun findByCategory(@PathVariable id: Long): List<ServiceModel> {
+        val category = categoryService.findById(id)
+        return serviceModelService.findByCategory(category)
+    }
+
 }

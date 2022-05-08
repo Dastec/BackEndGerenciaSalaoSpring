@@ -11,4 +11,6 @@ interface ServiceRepository: JpaRepository<ServiceModel, Long> {
 
     @Query(value = "select u from ServiceModel u where u.nameService like %?1%")
     fun findByNameServiceContainingIgnoreCase(name: String): List<ServiceModel>
+
+    fun findByCategory(categoryModel: CategoryModel): List<ServiceModel>
 }

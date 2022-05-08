@@ -2,6 +2,7 @@ package br.com.dastec.gerenciasalao.services
 
 import br.com.dastec.gerenciasalao.exceptions.NotFoundException
 import br.com.dastec.gerenciasalao.exceptions.enums.Errors
+import br.com.dastec.gerenciasalao.models.CategoryModel
 import br.com.dastec.gerenciasalao.models.ServiceModel
 import br.com.dastec.gerenciasalao.repositories.ServiceRepository
 import org.springframework.stereotype.Service
@@ -37,6 +38,11 @@ class ServiceModelService(private val serviceRepository: ServiceRepository) {
     fun findAll(): List<ServiceModel>{
         return serviceRepository.findAll()
     }
+
+    fun findByCategory(category: CategoryModel): List<ServiceModel>{
+        return serviceRepository.findByCategory(category)
+    }
+
 
 
 
