@@ -21,7 +21,10 @@ data class PaymentModel(
     @JoinColumn(name = "customer_service_id")
     var customerService: CustomerServiceModel,
 
-    var valuePayment: BigDecimal,
+    @Column(name = "value_payment")
+    var valuePayment: Double,
 
+
+    @Column(name = "date_payment")
     var datePayment: LocalDate
 )

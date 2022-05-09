@@ -18,9 +18,9 @@ data class PendencyModel(
     var customerService: CustomerServiceModel,
 
     @Column(name = "value_pendency", nullable = false)
-    var valuePendency: BigDecimal,
+    var valuePendency: Double,
 
     @Enumerated(EnumType.STRING)
-    var status: PendencyStatus,
+    var status: PendencyStatus = PendencyStatus.ABERTO,
 
     )

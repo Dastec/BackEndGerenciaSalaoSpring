@@ -7,7 +7,7 @@ import br.com.dastec.gerenciasalao.repositories.CategoryRepository
 import org.springframework.stereotype.Service
 
 @Service
-class CategoryService(val categoryRepository: CategoryRepository) {
+class CategoryService(private val categoryRepository: CategoryRepository) {
 
     fun create(category: CategoryModel){
         categoryRepository.save(category)

@@ -11,5 +11,5 @@ data class PutServiceRequest(
     @JsonAlias("id_category")
     val idCategory: Long,
 
-    val price: BigDecimal?
+    val price: Double?
 )

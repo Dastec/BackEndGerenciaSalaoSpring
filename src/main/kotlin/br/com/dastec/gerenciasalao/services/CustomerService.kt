@@ -11,7 +11,7 @@ import br.com.dastec.gerenciasalao.repositories.CustomerRepository
 import org.springframework.stereotype.Service
 
 @Service
-class CustomerService(val customerRepository: CustomerRepository, val phoneNumberService: PhoneNumberService) {
+class CustomerService(private val customerRepository: CustomerRepository, private val phoneNumberService: PhoneNumberService) {
 
     fun create(customerModel: CustomerModel, phones: List<PostPhoneRequest>){
         val customer = customerRepository.save(customerModel)

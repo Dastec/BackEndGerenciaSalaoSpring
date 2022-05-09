@@ -7,7 +7,7 @@ import br.com.dastec.gerenciasalao.repositories.PhoneNumberRepository
 import org.springframework.stereotype.Service
 
 @Service
-class PhoneNumberService(val phoneNumberRepository: PhoneNumberRepository) {
+class PhoneNumberService(private val phoneNumberRepository: PhoneNumberRepository) {
 
     fun create(phoneNumber: PhoneNumberModel) {
         phoneNumberRepository.save(phoneNumber)

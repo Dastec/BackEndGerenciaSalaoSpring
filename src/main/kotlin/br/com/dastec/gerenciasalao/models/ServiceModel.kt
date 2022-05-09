@@ -19,5 +19,5 @@ data class ServiceModel(
     @JoinColumn(name = "id_category", nullable = false)
     val category: CategoryModel,
 
-    val price: BigDecimal?
+    val price: Double?
 )
