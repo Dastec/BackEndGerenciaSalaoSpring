@@ -7,7 +7,7 @@ data class PostStartCustomerServiceRequest(
 
     var customer: Long,
 
-    val services: List<Long>,
+    val services: MutableList<Long>,
 
     val observation: String?
 )

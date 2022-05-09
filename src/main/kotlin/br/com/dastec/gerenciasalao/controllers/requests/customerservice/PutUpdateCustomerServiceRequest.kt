@@ -4,7 +4,7 @@ data class PutUpdateCustomerServiceRequest(
 
     var customer: Long,
 
-    var services: List<Long>,
+    var services: MutableList<Long>,
 
     var observation: String?
 )

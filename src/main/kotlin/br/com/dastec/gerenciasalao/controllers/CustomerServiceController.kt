@@ -55,7 +55,7 @@ class CustomerServiceController(
         customerServiceModelService.update(putStartCustomerServiceRequest.toCustomerService(previuoCustomerService, services, customer))
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("finalize/{id}")
     fun finalizeCustomerService(@PathVariable id: Long, @RequestBody putFinalizeCustomerServiceRequest: PutFinalizeCustomerServiceRequest){
         val previuoCustomerService = customerServiceModelService.findById(id)
         val payments = paymentService.findByCustomerService(previuoCustomerService)

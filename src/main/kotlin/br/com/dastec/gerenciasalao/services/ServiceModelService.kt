@@ -43,7 +43,7 @@ class ServiceModelService(private val serviceRepository: ServiceRepository) {
         return serviceRepository.findByCategory(category)
     }
 
-    fun findByIds(serviceIds: List<Long>): List<ServiceModel>{
-        return serviceRepository.findAllById(serviceIds).toList()
+    fun findByIds(serviceIds: MutableList<Long>): MutableList<ServiceModel>{
+        return serviceRepository.findAllById(serviceIds).toMutableList()
     }
 }

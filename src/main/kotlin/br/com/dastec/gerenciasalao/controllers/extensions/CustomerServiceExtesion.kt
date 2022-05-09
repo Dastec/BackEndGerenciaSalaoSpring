@@ -10,7 +10,7 @@ import br.com.dastec.gerenciasalao.models.enums.CustomerServiceStatus
 import java.time.LocalDate
 import java.time.LocalTime
 
-fun PostStartCustomerServiceRequest.toCustomerService(services: List<ServiceModel>, customer: CustomerModel): CustomerServiceModel{
+fun PostStartCustomerServiceRequest.toCustomerService(services: MutableList<ServiceModel>, customer: CustomerModel): CustomerServiceModel{
     var totalValue = 0.0
     for (service in services){
         totalValue+=service.price!!
@@ -26,7 +26,7 @@ fun PostStartCustomerServiceRequest.toCustomerService(services: List<ServiceMode
     )
 }
 
-fun PutUpdateCustomerServiceRequest.toCustomerService(previuoCustomerService: CustomerServiceModel, services: List<ServiceModel>, customer: CustomerModel): CustomerServiceModel{
+fun PutUpdateCustomerServiceRequest.toCustomerService(previuoCustomerService: CustomerServiceModel, services: MutableList<ServiceModel>, customer: CustomerModel): CustomerServiceModel{
     var totalValue = 0.0
     for (service in services){
         totalValue+=service.price!!

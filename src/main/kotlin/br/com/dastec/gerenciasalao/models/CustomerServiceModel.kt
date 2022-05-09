@@ -37,7 +37,7 @@ data class CustomerServiceModel(
     @JoinTable(name = "customer_service_service",
         joinColumns = [JoinColumn(name = "customer_service_id")],
         inverseJoinColumns = [JoinColumn(name = "service_id")])
-    val services: List<ServiceModel>,
+    val services: MutableList<ServiceModel>,
 
     val observation: String?,
 
