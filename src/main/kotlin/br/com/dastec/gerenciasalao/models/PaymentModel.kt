@@ -26,5 +26,5 @@ data class PaymentModel(
 
 
     @Column(name = "date_payment")
-    var datePayment: LocalDate
+    var datePayment: LocalDate = LocalDate.now()
 )

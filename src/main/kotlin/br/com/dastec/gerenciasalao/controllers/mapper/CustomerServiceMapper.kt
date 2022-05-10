@@ -1,9 +1,13 @@
 package br.com.dastec.gerenciasalao.controllers.mapper
 
 import br.com.dastec.gerenciasalao.controllers.requests.customerservice.PostStartCustomerServiceRequest
+import br.com.dastec.gerenciasalao.controllers.requests.customerservice.PutUpdateCustomerServiceRequest
 import br.com.dastec.gerenciasalao.models.CustomerServiceModel
+import br.com.dastec.gerenciasalao.models.PendencyModel
+import br.com.dastec.gerenciasalao.models.enums.CustomerServiceStatus
 import br.com.dastec.gerenciasalao.services.*
 import org.springframework.stereotype.Component
+import java.time.LocalTime
 
 @Component
 class CustomerServiceMapper(
@@ -14,7 +18,7 @@ class CustomerServiceMapper(
     private val pendencyService: PendencyService
 ) {
 
-    fun toModel(postStartCustomerServiceRequest: PostStartCustomerServiceRequest): CustomerServiceModel{
+    fun postStartRequestToModel(postStartCustomerServiceRequest: PostStartCustomerServiceRequest): CustomerServiceModel{
         val customer = customerService.findById(postStartCustomerServiceRequest.customer)
         var services = serviceModelService.findByIds(postStartCustomerServiceRequest.services)
 
@@ -24,7 +28,56 @@ class CustomerServiceMapper(
             paidValue = null,
             customer = customer,
             services = services,
-            observation = postStartCustomerServiceRequest.observation,
+            observation = postStartCustomerServiceRequest.observation
+        )
+    }
+
+    fun putUpdateRequestToModel(putUpdateCustomerServiceRequest: PutUpdateCustomerServiceRequest, previuoCustomerService: CustomerServiceModel): CustomerServiceModel{
+        val customer = customerService.findById(putUpdateCustomerServiceRequest.customer)
+        var services = serviceModelService.findByIds(putUpdateCustomerServiceRequest.services)
+
+        return CustomerServiceModel(
+            idCustomerService = previuoCustomerService.idCustomerService,
+            dateCustomerService = previuoCustomerService.dateCustomerService,
+            startTime = previuoCustomerService.startTime,
+            endTime = null,
+            totalValue = services.sumOf { it.price!! },
+            paidValue = null,
+            customer = customer,
+            services = services,
+            observation = putUpdateCustomerServiceRequest.observation,
+            statusCustomerService = previuoCustomerService.statusCustomerService
+        )
+    }
+
+    fun putFinalizeRequestToModel(previuoCustomerService: CustomerServiceModel): CustomerServiceModel{
+        val payments = paymentService.findByCustomerService(previuoCustomerService)
+        val paidValue = payments.sumOf { it.valuePayment}
+
+        if (previuoCustomerService.totalValue!! > paidValue){
+            pendencyService.create(
+                PendencyModel(
+                customerService = previuoCustomerService,
+                valuePendency = previuoCustomerService.totalValue!! - paidValue
+                )
+            )
+            previuoCustomerService.statusCustomerService = CustomerServiceStatus.FINALIZADOCOMPENDENCIA
+        }else{
+            previuoCustomerService.statusCustomerService = CustomerServiceStatus.FINALIZADO
+        }
+
+        return CustomerServiceModel(
+            idCustomerService = previuoCustomerService.idCustomerService,
+            dateCustomerService = previuoCustomerService.dateCustomerService,
+            startTime = previuoCustomerService.startTime,
+            endTime = LocalTime.now(),
+            totalValue = previuoCustomerService.totalValue,
+            paidValue = null,
+            customer = previuoCustomerService.customer,
+            services = previuoCustomerService.services,
+            observation = previuoCustomerService.observation,
+            statusCustomerService = previuoCustomerService.statusCustomerService
         )
     }
 }
+

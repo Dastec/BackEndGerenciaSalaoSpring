@@ -11,8 +11,7 @@ fun PostPaymentServiceRequest.toPaymentModel(formOfPayment: FormOfPaymentModel, 
     return PaymentModel(
         formOfPayment = formOfPayment,
         customerService = customerService,
-        valuePayment = this.valuePayment,
-        datePayment =  LocalDate.now()
+        valuePayment = 30.0
     )
 }
 

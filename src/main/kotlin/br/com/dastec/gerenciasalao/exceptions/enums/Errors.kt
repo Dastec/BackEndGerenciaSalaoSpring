@@ -7,5 +7,6 @@ enum class Errors(val message: String, val internalCode: String) {
     GS201("Categoria [%s] não foi encontrada!", "GS-201"),
     GS301("Serviço [%s] não foi encontrado!", "GS-301"),
     GS401("Forma de pagamento [%s] não foi encontrada!", "GS-401"),
-    GS501("Atendimento [%s] não foi encontrado!", "GS-501")
+    GS501("Atendimento [%s] não foi encontrado!", "GS-501"),
+    GS601("Pedência [%s] não foi encontrada!", "GS-601")
 }

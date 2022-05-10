@@ -12,19 +12,19 @@ data class CustomerServiceModel(
     @Column(name = "id_customer_service")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val idCustomerService: Long? = null,
+    var idCustomerService: Long? = null,
 
     @Column(name = "date_customer_service", nullable = false)
-    val dateCustomerService: LocalDate = LocalDate.now(),
+    var dateCustomerService: LocalDate = LocalDate.now(),
 
     @Column(name = "start_time", nullable = false)
-    val startTime: LocalTime = LocalTime.now(),
+    var startTime: LocalTime = LocalTime.now(),
 
     @Column(name = "end_time", nullable = false)
-    val endTime: LocalTime?,
+    var endTime: LocalTime?,
 
     @Column(name = "total_value")
-    val totalValue: Double?,
+    var totalValue: Double?,
 
     @Column(name = "paid_value")
     val paidValue: Double?,
@@ -37,11 +37,11 @@ data class CustomerServiceModel(
     @JoinTable(name = "customer_service_service",
         joinColumns = [JoinColumn(name = "customer_service_id")],
         inverseJoinColumns = [JoinColumn(name = "service_id")])
-    val services: MutableList<ServiceModel>,
+    var services: MutableList<ServiceModel>,
 
-    val observation: String?,
+    var observation: String?,
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status_customer_service")
-    val statusCustomerService: CustomerServiceStatus = CustomerServiceStatus.ABERTO
+    var statusCustomerService: CustomerServiceStatus = CustomerServiceStatus.ABERTO
 )

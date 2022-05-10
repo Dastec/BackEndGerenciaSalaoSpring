@@ -43,32 +43,38 @@ class CustomerServiceController(
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun startCustomerService(@RequestBody postStartCustomerServiceRequest: PostStartCustomerServiceRequest){
-        customerServiceModelService.startCustomerService(customerServiceMapper.toModel(postStartCustomerServiceRequest))
+        customerServiceModelService.startCustomerService(customerServiceMapper.postStartRequestToModel(postStartCustomerServiceRequest))
     }
+
+//    @PutMapping("/{id}")
+//    fun update(@PathVariable id: Long, @RequestBody putStartCustomerServiceRequest: PutUpdateCustomerServiceRequest){
+//        val previuoCustomerService = customerServiceModelService.findById(id)
+//        val customer = customerService.findById(putStartCustomerServiceRequest.customer)
+//        var services = serviceModelService.findByIds(putStartCustomerServiceRequest.services)
+//
+//        customerServiceModelService.update(putStartCustomerServiceRequest.toCustomerService(previuoCustomerService, services, customer))
+//    }
 
     @PutMapping("/{id}")
     fun update(@PathVariable id: Long, @RequestBody putStartCustomerServiceRequest: PutUpdateCustomerServiceRequest){
         val previuoCustomerService = customerServiceModelService.findById(id)
-        val customer = customerService.findById(putStartCustomerServiceRequest.customer)
-        var services = serviceModelService.findByIds(putStartCustomerServiceRequest.services)
 
-        customerServiceModelService.update(putStartCustomerServiceRequest.toCustomerService(previuoCustomerService, services, customer))
+        customerServiceModelService.update(customerServiceMapper.putUpdateRequestToModel(putStartCustomerServiceRequest, previuoCustomerService))
     }
 
+
+//    @PutMapping("finalize/{id}")
+//    fun finalizeCustomerService(@PathVariable id: Long, @RequestBody putFinalizeCustomerServiceRequest: PutFinalizeCustomerServiceRequest){
+//        val previuoCustomerService = customerServiceModelService.findById(id)
+//
+//        customerServiceModelService.update(customerServiceMapper.putFinalizeRequestToModel(previuoCustomerService))
+//    }
+
     @PutMapping("finalize/{id}")
-    fun finalizeCustomerService(@PathVariable id: Long, @RequestBody putFinalizeCustomerServiceRequest: PutFinalizeCustomerServiceRequest){
-        val previuoCustomerService = customerServiceModelService.findById(id)
-        val payments = paymentService.findByCustomerService(previuoCustomerService)
-        val paidValue = paymentService.getTotalValue(payments)
+    fun finalizeCustomerService(@PathVariable id: Long){
+        var previuoCustomerService = customerServiceModelService.findById(id)
 
-        if (previuoCustomerService.totalValue!! > paidValue){
-            pendencyService.create(PendencyModel(
-                customerService = previuoCustomerService,
-                valuePendency = previuoCustomerService.totalValue!! - paidValue
-            ))
-        }
-
-        customerServiceModelService.update(putFinalizeCustomerServiceRequest.toCustomerService(previuoCustomerService, paidValue))
+        customerServiceModelService.update(customerServiceMapper.putFinalizeRequestToModel(previuoCustomerService))
     }
 
     @GetMapping

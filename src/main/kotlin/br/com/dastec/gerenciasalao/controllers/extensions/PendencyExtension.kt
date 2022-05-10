@@ -2,20 +2,21 @@ package br.com.dastec.gerenciasalao.controllers.extensions
 
 import br.com.dastec.gerenciasalao.controllers.requests.payments.PostPaymentServiceRequest
 import br.com.dastec.gerenciasalao.controllers.requests.payments.PutPaymentServiceRequest
+import br.com.dastec.gerenciasalao.controllers.requests.pendency.PostAddPendencyRequest
 import br.com.dastec.gerenciasalao.controllers.requests.pendency.PutFinishPendencyRequest
 import br.com.dastec.gerenciasalao.models.CustomerServiceModel
 import br.com.dastec.gerenciasalao.models.PendencyModel
 import br.com.dastec.gerenciasalao.models.enums.PendencyStatus
 
-fun PostPaymentServiceRequest.toPaymentModel(customerService: CustomerServiceModel): PendencyModel{
+fun PostAddPendencyRequest.toPendencyModel(customerService: CustomerServiceModel): PendencyModel{
     return PendencyModel(
         customerService = customerService,
-        valuePendency = this.valuePayment,
+        valuePendency = this.valuePendency,
         status = PendencyStatus.ABERTO
     )
 }
 
-fun PutPaymentServiceRequest.toPaymentModel(previouPendecy: PendencyModel): PendencyModel{
+fun PutPaymentServiceRequest.toPendencyModel(previouPendecy: PendencyModel): PendencyModel{
     return PendencyModel(
         idPendencyModel = previouPendecy.idPendencyModel,
         customerService = previouPendecy.customerService,
@@ -24,7 +25,7 @@ fun PutPaymentServiceRequest.toPaymentModel(previouPendecy: PendencyModel): Pend
     )
 }
 
-fun PutFinishPendencyRequest.toPaymentModel(previouPendecy: PendencyModel): PendencyModel{
+fun PutFinishPendencyRequest.toPendencyModel(previouPendecy: PendencyModel): PendencyModel{
     return PendencyModel(
         idPendencyModel = previouPendecy.idPendencyModel,
         customerService = previouPendecy.customerService,
