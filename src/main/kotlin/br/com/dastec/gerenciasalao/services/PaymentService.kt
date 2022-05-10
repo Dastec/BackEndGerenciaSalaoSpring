@@ -1,5 +1,7 @@
 package br.com.dastec.gerenciasalao.services
 
+import br.com.dastec.gerenciasalao.exceptions.NotFoundException
+import br.com.dastec.gerenciasalao.exceptions.enums.Errors
 import br.com.dastec.gerenciasalao.models.CustomerServiceModel
 import br.com.dastec.gerenciasalao.models.PaymentModel
 import br.com.dastec.gerenciasalao.repositories.PaymentRepository
@@ -26,8 +28,13 @@ class PaymentService(private val paymentRepository: PaymentRepository) {
         for (payment in payments){
             totalValue+= payment.valuePayment
         }
-
         return totalValue
+    }
+
+    fun findById(id: Long): PaymentModel{
+        return paymentRepository.findById(id).orElseThrow {
+            NotFoundException(Errors.GS701.message.format(id), Errors.GS701.internalCode)
+        }
     }
 
 }

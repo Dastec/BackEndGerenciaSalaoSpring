@@ -72,7 +72,7 @@ class CustomerServiceMapper(
             startTime = previuoCustomerService.startTime,
             endTime = LocalTime.now(),
             totalValue = previuoCustomerService.totalValue,
-            paidValue = null,
+            paidValue = paidValue,
             customer = previuoCustomerService.customer,
             services = previuoCustomerService.services,
             observation = previuoCustomerService.observation,

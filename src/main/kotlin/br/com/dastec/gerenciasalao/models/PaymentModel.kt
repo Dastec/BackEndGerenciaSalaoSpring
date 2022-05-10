@@ -22,7 +22,7 @@ data class PaymentModel(
     var customerService: CustomerServiceModel,
 
     @Column(name = "value_payment")
-    var valuePayment: Double,
+    var valuePayment: Double = 0.0,
 
 
     @Column(name = "date_payment")

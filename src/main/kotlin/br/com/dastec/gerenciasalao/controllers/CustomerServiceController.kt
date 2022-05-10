@@ -22,23 +22,8 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("api/v1/customerservices")
 class CustomerServiceController(
     private val customerServiceModelService: CustomerServiceModelService,
-    private val serviceModelService: ServiceModelService,
-    private val customerService: CustomerService,
-    private val paymentService: PaymentService,
-    private val pendencyService: PendencyService,
-
     private val customerServiceMapper: CustomerServiceMapper
     ) {
-
-//    @PostMapping
-//    @ResponseStatus(HttpStatus.CREATED)
-//    fun startCustomerService(@RequestBody postStartCustomerServiceRequest: PostStartCustomerServiceRequest){
-//        val customer = customerService.findById(postStartCustomerServiceRequest.customer)
-//
-//        var services = serviceModelService.findByIds(postStartCustomerServiceRequest.services)
-//
-//        customerServiceModelService.startCustomerService(postStartCustomerServiceRequest.toCustomerService(services, customer))
-//    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -46,29 +31,12 @@ class CustomerServiceController(
         customerServiceModelService.startCustomerService(customerServiceMapper.postStartRequestToModel(postStartCustomerServiceRequest))
     }
 
-//    @PutMapping("/{id}")
-//    fun update(@PathVariable id: Long, @RequestBody putStartCustomerServiceRequest: PutUpdateCustomerServiceRequest){
-//        val previuoCustomerService = customerServiceModelService.findById(id)
-//        val customer = customerService.findById(putStartCustomerServiceRequest.customer)
-//        var services = serviceModelService.findByIds(putStartCustomerServiceRequest.services)
-//
-//        customerServiceModelService.update(putStartCustomerServiceRequest.toCustomerService(previuoCustomerService, services, customer))
-//    }
-
     @PutMapping("/{id}")
     fun update(@PathVariable id: Long, @RequestBody putStartCustomerServiceRequest: PutUpdateCustomerServiceRequest){
         val previuoCustomerService = customerServiceModelService.findById(id)
 
         customerServiceModelService.update(customerServiceMapper.putUpdateRequestToModel(putStartCustomerServiceRequest, previuoCustomerService))
     }
-
-
-//    @PutMapping("finalize/{id}")
-//    fun finalizeCustomerService(@PathVariable id: Long, @RequestBody putFinalizeCustomerServiceRequest: PutFinalizeCustomerServiceRequest){
-//        val previuoCustomerService = customerServiceModelService.findById(id)
-//
-//        customerServiceModelService.update(customerServiceMapper.putFinalizeRequestToModel(previuoCustomerService))
-//    }
 
     @PutMapping("finalize/{id}")
     fun finalizeCustomerService(@PathVariable id: Long){
