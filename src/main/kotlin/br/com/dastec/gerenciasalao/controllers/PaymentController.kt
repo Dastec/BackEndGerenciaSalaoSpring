@@ -32,10 +32,10 @@ class PaymentController(
         paymentService.payService(paymentMapper.postPaymentServiceRequestToPaymentModel(postPaymentServiceRequest))
     }
 
-    @PostMapping
+    @PostMapping("/paypendency")
     @ResponseStatus(HttpStatus.CREATED)
     fun payServicePendency(@RequestBody postPaymentServiceRequest: PostPaymentServiceRequest){
-        paymentService.payService(paymentMapper.postPaymentPendencyServiceRequestToPaymentModel(postPaymentServiceRequest))
+        paymentService.payServiceWithPendeny(paymentMapper.postPaymentPendencyServiceRequestToPaymentModel(postPaymentServiceRequest))
     }
 
     @PutMapping
@@ -50,8 +50,14 @@ class PaymentController(
     }
 
     @GetMapping("/customerservice/{id}")
-    fun findByCustomerService(@PathVariable id : Long): List<PaymentModel>{
+    fun findPaymentByCustomerService(@PathVariable id : Long): List<PaymentModel>{
         val customerService = customerServiceModelService.findById(id)
-        return paymentService.findByCustomerService(customerService)
+        return paymentService.findPaymentByCustomerService(customerService)
+    }
+
+    @GetMapping("/customerservicewithstatusaaberto/{id}")
+    fun findPaymentWithCustomerServiceWithStatus(@PathVariable id : Long): List<PaymentModel>{
+        val customerService = customerServiceModelService.findById(id)
+        return paymentService.findPaymentsWithCustomerServiceWithStatusAberto(customerService.idCustomerService!!)
     }
 }

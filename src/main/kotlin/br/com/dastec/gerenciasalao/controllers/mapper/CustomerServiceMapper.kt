@@ -51,7 +51,7 @@ class CustomerServiceMapper(
     }
 
     fun putFinalizeRequestToModel(previuoCustomerService: CustomerServiceModel): CustomerServiceModel{
-        val payments = paymentService.findByCustomerService(previuoCustomerService)
+        val payments = paymentService.findPaymentsWithCustomerServiceWithStatusAberto(previuoCustomerService.idCustomerService!!)
         val paidValue = payments.sumOf { it.valuePayment}
 
         if (previuoCustomerService.totalValue!! > paidValue){
@@ -64,6 +64,10 @@ class CustomerServiceMapper(
             previuoCustomerService.statusCustomerService = CustomerServiceStatus.FINALIZADOCOMPENDENCIA
         }else{
             previuoCustomerService.statusCustomerService = CustomerServiceStatus.FINALIZADO
+        }
+
+        for (payment in payments){
+            paymentService.updateStatusLancado(payment)
         }
 
         return CustomerServiceModel(

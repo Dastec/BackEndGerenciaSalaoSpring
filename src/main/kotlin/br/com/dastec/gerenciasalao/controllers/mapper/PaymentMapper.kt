@@ -2,13 +2,17 @@ package br.com.dastec.gerenciasalao.controllers.mapper
 
 import br.com.dastec.gerenciasalao.controllers.requests.payments.PostPaymentServiceRequest
 import br.com.dastec.gerenciasalao.controllers.requests.payments.PutPaymentServiceRequest
+import br.com.dastec.gerenciasalao.exceptions.CustomerServiceHasNoPendingException
 import br.com.dastec.gerenciasalao.models.CustomerServiceModel
 import br.com.dastec.gerenciasalao.models.FormOfPaymentModel
 import br.com.dastec.gerenciasalao.models.PaymentModel
+import br.com.dastec.gerenciasalao.models.enums.CustomerServiceStatus
 import br.com.dastec.gerenciasalao.services.CustomerServiceModelService
 import br.com.dastec.gerenciasalao.services.FormOfPaymentService
 import br.com.dastec.gerenciasalao.services.PaymentService
+import org.springframework.stereotype.Component
 
+@Component
 class PaymentMapper(
     private val paymentService: PaymentService,
     private val customerServiceModelService: CustomerServiceModelService,
@@ -27,6 +31,7 @@ class PaymentMapper(
 
     fun postPaymentPendencyServiceRequestToPaymentModel(postPaymentServiceRequest: PostPaymentServiceRequest): PaymentModel {
         val customerService = customerServiceModelService.findById(postPaymentServiceRequest.customerService)
+
         val formOfPayment = formOfPaymentService.findById(postPaymentServiceRequest.formOfPayment)
         return PaymentModel(
             formOfPayment = formOfPayment,

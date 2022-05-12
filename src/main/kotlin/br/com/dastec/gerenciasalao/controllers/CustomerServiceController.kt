@@ -1,12 +1,9 @@
 package br.com.dastec.gerenciasalao.controllers
 
-import br.com.dastec.gerenciasalao.controllers.extensions.toCustomerService
 import br.com.dastec.gerenciasalao.controllers.mapper.CustomerServiceMapper
 import br.com.dastec.gerenciasalao.controllers.requests.customerservice.PostStartCustomerServiceRequest
-import br.com.dastec.gerenciasalao.controllers.requests.customerservice.PutFinalizeCustomerServiceRequest
 import br.com.dastec.gerenciasalao.controllers.requests.customerservice.PutUpdateCustomerServiceRequest
 import br.com.dastec.gerenciasalao.models.CustomerServiceModel
-import br.com.dastec.gerenciasalao.models.PendencyModel
 import br.com.dastec.gerenciasalao.services.*
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.GetMapping
@@ -22,7 +19,8 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("api/v1/customerservices")
 class CustomerServiceController(
     private val customerServiceModelService: CustomerServiceModelService,
-    private val customerServiceMapper: CustomerServiceMapper
+    private val customerServiceMapper: CustomerServiceMapper,
+    private val customerService: CustomerService
     ) {
 
     @PostMapping
@@ -33,21 +31,33 @@ class CustomerServiceController(
 
     @PutMapping("/{id}")
     fun update(@PathVariable id: Long, @RequestBody putStartCustomerServiceRequest: PutUpdateCustomerServiceRequest){
-        val previuoCustomerService = customerServiceModelService.findById(id)
+        val previousCustomerService = customerServiceModelService.findById(id)
 
-        customerServiceModelService.update(customerServiceMapper.putUpdateRequestToModel(putStartCustomerServiceRequest, previuoCustomerService))
+        customerServiceModelService.finalizeCustomerService(customerServiceMapper.putUpdateRequestToModel(putStartCustomerServiceRequest, previousCustomerService))
     }
 
     @PutMapping("finalize/{id}")
     fun finalizeCustomerService(@PathVariable id: Long){
-        var previuoCustomerService = customerServiceModelService.findById(id)
+        var previousCustomerService = customerServiceModelService.findById(id)
 
-        customerServiceModelService.update(customerServiceMapper.putFinalizeRequestToModel(previuoCustomerService))
+        customerServiceModelService.finalizeCustomerService(customerServiceMapper.putFinalizeRequestToModel(previousCustomerService))
     }
 
     @GetMapping
     fun findAll(): List<CustomerServiceModel>{
         return customerServiceModelService.findAll()
+    }
+
+    @GetMapping("/customer/{id}")
+    fun findAllById(@PathVariable id: Long): List<CustomerServiceModel>{
+        val customer = customerService.findById(id)
+        return customerServiceModelService.findAllById(customer)
+    }
+
+    @GetMapping("/statusaberto/{id}")
+    fun findByCustomerServiceWithStatusAberto(@PathVariable id: Long): List<CustomerServiceModel>{
+        val customer = customerService.findById(id)
+        return customerServiceModelService.findByCustomerServiceWithStatusAberto(customer.idCustomer!!)
     }
 
 }
