@@ -3,7 +3,11 @@ package br.com.dastec.gerenciasalao.controllers
 import br.com.dastec.gerenciasalao.controllers.mapper.CustomerServiceMapper
 import br.com.dastec.gerenciasalao.controllers.requests.customerservice.PostStartCustomerServiceRequest
 import br.com.dastec.gerenciasalao.controllers.requests.customerservice.PutUpdateCustomerServiceRequest
+import br.com.dastec.gerenciasalao.controllers.requests.payments.PostPaymentServiceWithPendencyRequest
+import br.com.dastec.gerenciasalao.exceptions.IllegalStateException
+import br.com.dastec.gerenciasalao.exceptions.enums.Errors
 import br.com.dastec.gerenciasalao.models.CustomerServiceModel
+import br.com.dastec.gerenciasalao.models.enums.CustomerServiceStatus
 import br.com.dastec.gerenciasalao.services.*
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.GetMapping
@@ -32,14 +36,15 @@ class CustomerServiceController(
     @PutMapping("/{id}")
     fun update(@PathVariable id: Long, @RequestBody putStartCustomerServiceRequest: PutUpdateCustomerServiceRequest){
         val previousCustomerService = customerServiceModelService.findById(id)
-
-        customerServiceModelService.finalizeCustomerService(customerServiceMapper.putUpdateRequestToModel(putStartCustomerServiceRequest, previousCustomerService))
+        customerServiceModelService.updateCustomerService(customerServiceMapper.putUpdateRequestToModel(putStartCustomerServiceRequest, previousCustomerService))
     }
 
     @PutMapping("finalize/{id}")
     fun finalizeCustomerService(@PathVariable id: Long){
         var previousCustomerService = customerServiceModelService.findById(id)
-
+        if (previousCustomerService.statusCustomerService == CustomerServiceStatus.FINALIZADOCOMPENDENCIA  || previousCustomerService.statusCustomerService == CustomerServiceStatus.FINALIZADO){
+            throw IllegalStateException(Errors.GS503.message.format(previousCustomerService.idCustomerService), Errors.GS503.internalCode)
+        }
         customerServiceModelService.finalizeCustomerService(customerServiceMapper.putFinalizeRequestToModel(previousCustomerService))
     }
 

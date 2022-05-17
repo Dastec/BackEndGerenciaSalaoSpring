@@ -1,26 +1,58 @@
 package br.com.dastec.gerenciasalao.services
 
-import br.com.dastec.gerenciasalao.exceptions.CustomerServiceHasNoPendingException
+import br.com.dastec.gerenciasalao.events.PaymentEventFinalizePendency
+import br.com.dastec.gerenciasalao.events.PaymentEventUpdatePendency
+import br.com.dastec.gerenciasalao.exceptions.BadRequestException
 import br.com.dastec.gerenciasalao.exceptions.NotFoundException
 import br.com.dastec.gerenciasalao.exceptions.enums.Errors
 import br.com.dastec.gerenciasalao.models.CustomerServiceModel
 import br.com.dastec.gerenciasalao.models.PaymentModel
 import br.com.dastec.gerenciasalao.models.enums.CustomerServiceStatus
 import br.com.dastec.gerenciasalao.models.enums.PaymentStatus
+import br.com.dastec.gerenciasalao.realCurrency
 import br.com.dastec.gerenciasalao.repositories.PaymentRepository
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 
 @Service
-class PaymentService(private val paymentRepository: PaymentRepository, private val customerServiceModelService: CustomerServiceModelService) {
+class PaymentService(private val paymentRepository: PaymentRepository,
+                     private val customerServiceModelService: CustomerServiceModelService,
+                     private val applicationEventPublisher: ApplicationEventPublisher) {
 
     fun payService(payment: PaymentModel){
+        val customerService = customerServiceModelService.findById(payment.customerService.idCustomerService!!)
+        if (customerService.statusCustomerService == CustomerServiceStatus.FINALIZADO){
+            throw BadRequestException(Errors.GS503.message.format(customerService.idCustomerService), Errors.GS503.internalCode)
+        }
+
+        val payments = findPaymentsByCustomerWithCustomerServiceWithStatusAberto(payment.customerService.idCustomerService!!)
+        val paidValue = payments.sumOf { it.valuePayment}
+
+        if((paidValue + payment.valuePayment) > customerService.totalValue!!){
+            throw br.com.dastec.gerenciasalao.exceptions.IllegalStateException(Errors.GS702.message.format(realCurrency(customerService.totalValue!!)), Errors.GS702.internalCode)
+        }
+
         paymentRepository.save(payment)
     }
 
-    fun payServiceWithPendeny(payment: PaymentModel){
+    fun payServiceWithPendency(payment: PaymentModel){
         val customerService = customerServiceModelService.findById(payment.customerService.idCustomerService!!)
-        if(customerService.statusCustomerService != CustomerServiceStatus.FINALIZADOCOMPENDENCIA){
-            throw CustomerServiceHasNoPendingException(Errors.GS502.message.format(customerService.customer.idCustomer), Errors.GS502.internalCode)
+        if (customerService.statusCustomerService == CustomerServiceStatus.FINALIZADO){
+            throw BadRequestException(Errors.GS504.message.format(customerService.idCustomerService), Errors.GS504.internalCode)
+        }
+
+        if((payment.valuePayment + customerService.paidValue!!) > customerService.totalValue!!){
+            throw br.com.dastec.gerenciasalao.exceptions.IllegalStateException(Errors.GS702.message.format(realCurrency(customerService.totalValue!!)), Errors.GS702.internalCode)
+        }
+
+        if (customerService.statusCustomerService == CustomerServiceStatus.FINALIZADOCOMPENDENCIA &&
+            (payment.valuePayment + customerService.paidValue!!) == customerService.totalValue!!){
+            applicationEventPublisher.publishEvent(PaymentEventFinalizePendency(this, payment))
+            payment.status = PaymentStatus.LANCADO
+        }else if (customerService.statusCustomerService == CustomerServiceStatus.FINALIZADOCOMPENDENCIA &&
+            (payment.valuePayment + customerService.paidValue!!) < customerService.totalValue!!){
+            applicationEventPublisher.publishEvent(PaymentEventUpdatePendency(this, payment))
+            payment.status = PaymentStatus.LANCADO
         }
         paymentRepository.save(payment)
     }
@@ -29,9 +61,11 @@ class PaymentService(private val paymentRepository: PaymentRepository, private v
         payment.status = PaymentStatus.LANCADO
         paymentRepository.save(payment)
     }
-    fun updateStatusAberto(payment: PaymentModel){
-        payment.status = PaymentStatus.LANCADO
-        paymentRepository.save(payment)
+
+    fun findById(id: Long): PaymentModel{
+        return paymentRepository.findById(id).orElseThrow {
+            NotFoundException(Errors.GS701.message.format(id), Errors.GS701.internalCode)
+        }
     }
 
     fun findAll():List<PaymentModel>{
@@ -42,23 +76,30 @@ class PaymentService(private val paymentRepository: PaymentRepository, private v
         return paymentRepository.findByCustomerService(customerService)
     }
 
-    fun findPaymentsWithCustomerServiceWithStatusAberto(id: Long): List<PaymentModel>{
+    fun findPaymentsByCustomerWithCustomerServiceWithStatusAberto(id: Long): List<PaymentModel>{
         return paymentRepository.findPaymentsWithCustomerServiceWithStatusAberto(id)
     }
 
-    fun getTotalValue(payments: List<PaymentModel>):Double{
-        var totalValue = 0.0
-
-        for (payment in payments){
-            totalValue+= payment.valuePayment
-        }
-        return totalValue
-    }
-
-    fun findById(id: Long): PaymentModel{
-        return paymentRepository.findById(id).orElseThrow {
-            NotFoundException(Errors.GS701.message.format(id), Errors.GS701.internalCode)
-        }
-    }
-
 }
+
+
+
+//    fun payServiceWithPendeny(payment: PaymentModel){
+//        val payments = findPaymentsByCustomerWithCustomerServiceWithStatusAberto(payment.customerService.idCustomerService!!)
+//        val paidValue = payments.sumOf { it.valuePayment}
+//        val customerService = customerServiceModelService.findById(payment.customerService.idCustomerService!!)
+//        if(((paidValue + payment.valuePayment) > customerService.totalValue!!) || customerService.statusCustomerService != CustomerServiceStatus.FINALIZADOCOMPENDENCIA){
+//            throw CustomerServiceHasNoPendingException(Errors.GS502.message.format(customerService.customer.idCustomer), Errors.GS502.internalCode)
+//        }
+//        paymentRepository.save(payment)
+//    }
+
+//    fun payServiceWithPendeny(putPayment: PutPaymentServiceRequest){
+//        val payments = findPaymentsByCustomerWithCustomerServiceWithStatusAberto(payment.customerService.idCustomerService!!)
+//        val paidValue = payments.sumOf { it.valuePayment}
+//        val customerService = customerServiceModelService.findById(payment.customerService.idCustomerService!!)
+//        if(((paidValue + payment.valuePayment) > customerService.totalValue!!) || customerService.statusCustomerService != CustomerServiceStatus.FINALIZADOCOMPENDENCIA){
+//            throw CustomerServiceHasNoPendingException(Errors.GS502.message.format(customerService.customer.idCustomer), Errors.GS502.internalCode)
+//        }
+//        paymentRepository.save(payment)
+//    }

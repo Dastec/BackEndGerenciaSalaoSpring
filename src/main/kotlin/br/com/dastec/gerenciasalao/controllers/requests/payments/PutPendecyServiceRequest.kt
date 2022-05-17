@@ -1,10 +1,9 @@
 package br.com.dastec.gerenciasalao.controllers.requests.payments
 
 import com.fasterxml.jackson.annotation.JsonAlias
-import java.math.BigDecimal
 
 
-data class PutPaymentServiceRequest(
+data class PutPendecyServiceRequest(
 
     @JsonAlias("form_payment")
     var formOfPayment: Long,

@@ -5,16 +5,25 @@ import br.com.dastec.gerenciasalao.exceptions.enums.Errors
 import br.com.dastec.gerenciasalao.models.CustomerServiceModel
 import br.com.dastec.gerenciasalao.models.PendencyModel
 import br.com.dastec.gerenciasalao.repositories.PendencyRepository
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 
 @Service
-class PendencyService(private val pendencyRepository: PendencyRepository) {
+class PendencyService(
+    private val pendencyRepository: PendencyRepository,
+    private val customerServiceModelService: CustomerServiceModelService,
+    private val applicationEventPublisher: ApplicationEventPublisher
+) {
 
-    fun create(pendency: PendencyModel){
+    fun createPendency(pendency: PendencyModel){
         pendencyRepository.save(pendency)
     }
 
-    fun update(pendency: PendencyModel){
+    fun updatePendency(pendency: PendencyModel){
+        pendencyRepository.save(pendency)
+    }
+
+    fun finalizePendency(pendency: PendencyModel){
         pendencyRepository.save(pendency)
     }
 
@@ -22,7 +31,7 @@ class PendencyService(private val pendencyRepository: PendencyRepository) {
         return pendencyRepository.findAll()
     }
 
-    fun findByCustomerService(customerService: CustomerServiceModel): List<PendencyModel>{
+    fun findByCustomerService(customerService: CustomerServiceModel): PendencyModel{
         return pendencyRepository.findByCustomerService(customerService)
     }
 

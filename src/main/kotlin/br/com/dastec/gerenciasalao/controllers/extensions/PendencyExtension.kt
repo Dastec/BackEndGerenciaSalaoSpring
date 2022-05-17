@@ -1,7 +1,6 @@
 package br.com.dastec.gerenciasalao.controllers.extensions
 
-import br.com.dastec.gerenciasalao.controllers.requests.payments.PostPaymentServiceRequest
-import br.com.dastec.gerenciasalao.controllers.requests.payments.PutPaymentServiceRequest
+import br.com.dastec.gerenciasalao.controllers.requests.payments.PutPendecyServiceRequest
 import br.com.dastec.gerenciasalao.controllers.requests.pendency.PostAddPendencyRequest
 import br.com.dastec.gerenciasalao.controllers.requests.pendency.PutFinishPendencyRequest
 import br.com.dastec.gerenciasalao.models.CustomerServiceModel
@@ -16,7 +15,7 @@ fun PostAddPendencyRequest.toPendencyModel(customerService: CustomerServiceModel
     )
 }
 
-fun PutPaymentServiceRequest.toPendencyModel(previouPendecy: PendencyModel): PendencyModel{
+fun PutPendecyServiceRequest.toPendencyModel(previouPendecy: PendencyModel): PendencyModel{
     return PendencyModel(
         idPendencyModel = previouPendecy.idPendencyModel,
         customerService = previouPendecy.customerService,

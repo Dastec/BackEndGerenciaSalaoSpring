@@ -1,5 +1,6 @@
 package br.com.dastec.gerenciasalao.services
 
+import br.com.dastec.gerenciasalao.exceptions.BadRequestException
 import br.com.dastec.gerenciasalao.exceptions.NotFoundException
 import br.com.dastec.gerenciasalao.exceptions.enums.Errors
 import br.com.dastec.gerenciasalao.models.CategoryModel
@@ -44,6 +45,9 @@ class ServiceModelService(private val serviceRepository: ServiceRepository) {
     }
 
     fun findByIds(serviceIds: MutableList<Long>): MutableList<ServiceModel>{
+        if (serviceIds.isEmpty()){
+            throw NotFoundException(Errors.GS302.message, Errors.GS302.internalCode)
+        }
         return serviceRepository.findAllById(serviceIds).toMutableList()
     }
 }

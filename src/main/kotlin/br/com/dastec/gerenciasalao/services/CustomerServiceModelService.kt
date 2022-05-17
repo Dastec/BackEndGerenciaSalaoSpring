@@ -24,17 +24,18 @@ class CustomerServiceModelService(private val customerServiceRepository: Custome
         return customerServiceRepository.findByCustomerServiceWithStatusAberto(idCustomer)
     }
 
-    fun finalizeCustomerService(customerServiceModel: CustomerServiceModel){
-        if (customerServiceModel.statusCustomerService == CustomerServiceStatus.FINALIZADOCOMPENDENCIA  || customerServiceModel.statusCustomerService == CustomerServiceStatus.FINALIZADO){
-            throw IllegalStateException(Errors.GS503.message.format(customerServiceModel.idCustomerService), Errors.GS503.internalCode)
-        }
+    fun updateCustomerService(customerServiceModel: CustomerServiceModel){
         customerServiceRepository.save(customerServiceModel)
     }
 
-    fun finalizeCustomerServiceWithPendency(customerServiceModel: CustomerServiceModel){
-        if (customerServiceModel.statusCustomerService == CustomerServiceStatus.FINALIZADOCOMPENDENCIA  || customerServiceModel.statusCustomerService == CustomerServiceStatus.FINALIZADO){
-            throw IllegalStateException(Errors.GS504.message.format(customerServiceModel.idCustomerService), Errors.GS504.internalCode)
-        }
+    fun finalizeCustomerService(customerServiceModel: CustomerServiceModel){
+        customerServiceRepository.save(customerServiceModel)
+    }
+
+    fun finalizeCustomerServicePendencyStatus(customerServiceModel: CustomerServiceModel){
+//        if (customerServiceModel.statusCustomerService == CustomerServiceStatus.ABERTO  || customerServiceModel.statusCustomerService == CustomerServiceStatus.FINALIZADO){
+//            throw IllegalStateException(Errors.GS504.message.format(customerServiceModel.idCustomerService), Errors.GS504.internalCode)
+//        }
         customerServiceRepository.save(customerServiceModel)
     }
 
@@ -50,5 +51,9 @@ class CustomerServiceModelService(private val customerServiceRepository: Custome
 
     fun findAllById(customer: CustomerModel):List<CustomerServiceModel>{
         return customerServiceRepository.findByCustomer(customer)
+    }
+
+    fun findAllByIds(ids: Set<Long>):Set<CustomerServiceModel>{
+        return customerServiceRepository.findAllById(ids).toSet()
     }
 }

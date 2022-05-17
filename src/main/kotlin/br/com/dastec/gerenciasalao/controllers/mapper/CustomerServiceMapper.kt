@@ -2,6 +2,7 @@ package br.com.dastec.gerenciasalao.controllers.mapper
 
 import br.com.dastec.gerenciasalao.controllers.requests.customerservice.PostStartCustomerServiceRequest
 import br.com.dastec.gerenciasalao.controllers.requests.customerservice.PutUpdateCustomerServiceRequest
+import br.com.dastec.gerenciasalao.controllers.requests.payments.PostPaymentServiceWithPendencyRequest
 import br.com.dastec.gerenciasalao.models.CustomerServiceModel
 import br.com.dastec.gerenciasalao.models.PendencyModel
 import br.com.dastec.gerenciasalao.models.enums.CustomerServiceStatus
@@ -15,73 +16,111 @@ class CustomerServiceMapper(
     private val serviceModelService: ServiceModelService,
     private val customerService: CustomerService,
     private val paymentService: PaymentService,
-    private val pendencyService: PendencyService
+    private val pendencyService: PendencyService,
+    private val formOfPaymentService: FormOfPaymentService
 ) {
 
-    fun postStartRequestToModel(postStartCustomerServiceRequest: PostStartCustomerServiceRequest): CustomerServiceModel{
+    fun postStartRequestToModel(postStartCustomerServiceRequest: PostStartCustomerServiceRequest): CustomerServiceModel {
         val customer = customerService.findById(postStartCustomerServiceRequest.customer)
         var services = serviceModelService.findByIds(postStartCustomerServiceRequest.services)
 
         return CustomerServiceModel(
             endTime = null,
             totalValue = services.sumOf { it.price!! },
-            paidValue = null,
             customer = customer,
             services = services,
             observation = postStartCustomerServiceRequest.observation
         )
     }
 
-    fun putUpdateRequestToModel(putUpdateCustomerServiceRequest: PutUpdateCustomerServiceRequest, previuoCustomerService: CustomerServiceModel): CustomerServiceModel{
+    fun putUpdateRequestToModel(
+        putUpdateCustomerServiceRequest: PutUpdateCustomerServiceRequest,
+        previouCustomerService: CustomerServiceModel
+    ): CustomerServiceModel {
         val customer = customerService.findById(putUpdateCustomerServiceRequest.customer)
         var services = serviceModelService.findByIds(putUpdateCustomerServiceRequest.services)
 
         return CustomerServiceModel(
-            idCustomerService = previuoCustomerService.idCustomerService,
-            dateCustomerService = previuoCustomerService.dateCustomerService,
-            startTime = previuoCustomerService.startTime,
-            endTime = null,
+            idCustomerService = previouCustomerService.idCustomerService,
+            dateCustomerService = previouCustomerService.dateCustomerService,
+            startTime = previouCustomerService.startTime,
+            endTime = previouCustomerService.endTime,
             totalValue = services.sumOf { it.price!! },
-            paidValue = null,
+            paidValue = previouCustomerService.paidValue,
             customer = customer,
             services = services,
             observation = putUpdateCustomerServiceRequest.observation,
-            statusCustomerService = previuoCustomerService.statusCustomerService
+            statusCustomerService = previouCustomerService.statusCustomerService
         )
     }
 
-    fun putFinalizeRequestToModel(previuoCustomerService: CustomerServiceModel): CustomerServiceModel{
-        val payments = paymentService.findPaymentsWithCustomerServiceWithStatusAberto(previuoCustomerService.idCustomerService!!)
-        val paidValue = payments.sumOf { it.valuePayment}
+    fun putFinalizeRequestToModel(previousCustomerService: CustomerServiceModel): CustomerServiceModel {
+        val payments = paymentService.findPaymentsByCustomerWithCustomerServiceWithStatusAberto(previousCustomerService.idCustomerService!!)
+        val paidValue = payments.sumOf { it.valuePayment }
 
-        if (previuoCustomerService.totalValue!! > paidValue){
-            pendencyService.create(
+        if (paidValue < previousCustomerService.totalValue!!) {
+            pendencyService.createPendency(
                 PendencyModel(
-                customerService = previuoCustomerService,
-                valuePendency = previuoCustomerService.totalValue!! - paidValue
+                    customerService = previousCustomerService,
+                    valuePendency = previousCustomerService.totalValue!! - paidValue
                 )
             )
-            previuoCustomerService.statusCustomerService = CustomerServiceStatus.FINALIZADOCOMPENDENCIA
-        }else{
-            previuoCustomerService.statusCustomerService = CustomerServiceStatus.FINALIZADO
+            previousCustomerService.statusCustomerService = CustomerServiceStatus.FINALIZADOCOMPENDENCIA
+        } else {
+            previousCustomerService.statusCustomerService = CustomerServiceStatus.FINALIZADO
         }
 
-        for (payment in payments){
+        for (payment in payments) {
             paymentService.updateStatusLancado(payment)
         }
 
         return CustomerServiceModel(
-            idCustomerService = previuoCustomerService.idCustomerService,
-            dateCustomerService = previuoCustomerService.dateCustomerService,
-            startTime = previuoCustomerService.startTime,
+            idCustomerService = previousCustomerService.idCustomerService,
+            dateCustomerService = previousCustomerService.dateCustomerService,
+            startTime = previousCustomerService.startTime,
             endTime = LocalTime.now(),
-            totalValue = previuoCustomerService.totalValue,
+            totalValue = previousCustomerService.totalValue,
             paidValue = paidValue,
-            customer = previuoCustomerService.customer,
-            services = previuoCustomerService.services,
-            observation = previuoCustomerService.observation,
-            statusCustomerService = previuoCustomerService.statusCustomerService
+            customer = previousCustomerService.customer,
+            services = previousCustomerService.services,
+            observation = previousCustomerService.observation,
+            statusCustomerService = previousCustomerService.statusCustomerService
         )
     }
 }
+
+
+//fun putFinalizeRequestWithPendencyToModel(previousCustomerService: CustomerServiceModel): CustomerServiceModel{
+//        val payments = paymentService.findPaymentsByCustomerWithCustomerServiceWithStatusAberto(previousCustomerService.idCustomerService!!)
+//        val paidValue = payments.sumOf { it.valuePayment}
+//
+//        if (previousCustomerService.totalValue!! > paidValue){
+//            pendencyService.create(
+//                PendencyModel(
+//                    customerService = previousCustomerService,
+//                    valuePendency = previousCustomerService.totalValue!! - paidValue
+//                )
+//            )
+//            previousCustomerService.statusCustomerService = CustomerServiceStatus.FINALIZADOCOMPENDENCIA
+//        }else{
+//            previousCustomerService.statusCustomerService = CustomerServiceStatus.FINALIZADO
+//        }
+//
+//        for (payment in payments){
+//            paymentService.updateStatusLancado(payment)
+//        }
+//
+//        return CustomerServiceModel(
+//            idCustomerService = previousCustomerService.idCustomerService,
+//            dateCustomerService = previousCustomerService.dateCustomerService,
+//            startTime = previousCustomerService.startTime,
+//            endTime = previousCustomerService.endTime,
+//            totalValue = previousCustomerService.totalValue,
+//            paidValue = paidValue,
+//            customer = previousCustomerService.customer,
+//            services = previousCustomerService.services,
+//            observation = previousCustomerService.observation,
+//            statusCustomerService = previousCustomerService.statusCustomerService
+//        )
+//    }
 

@@ -2,7 +2,8 @@ package br.com.dastec.gerenciasalao.controllers
 
 import br.com.dastec.gerenciasalao.controllers.mapper.PaymentMapper
 import br.com.dastec.gerenciasalao.controllers.requests.payments.PostPaymentServiceRequest
-import br.com.dastec.gerenciasalao.controllers.requests.payments.PutPaymentServiceRequest
+import br.com.dastec.gerenciasalao.controllers.requests.payments.PostPaymentServiceWithPendencyRequest
+import br.com.dastec.gerenciasalao.controllers.requests.payments.PutPendecyServiceRequest
 import br.com.dastec.gerenciasalao.models.PaymentModel
 import br.com.dastec.gerenciasalao.services.CustomerServiceModelService
 import br.com.dastec.gerenciasalao.services.FormOfPaymentService
@@ -32,16 +33,28 @@ class PaymentController(
         paymentService.payService(paymentMapper.postPaymentServiceRequestToPaymentModel(postPaymentServiceRequest))
     }
 
-    @PostMapping("/paypendency")
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //Esse endpoint é para teste
+    @PostMapping("/paypendency/test")
     @ResponseStatus(HttpStatus.CREATED)
     fun payServicePendency(@RequestBody postPaymentServiceRequest: PostPaymentServiceRequest){
-        paymentService.payServiceWithPendeny(paymentMapper.postPaymentPendencyServiceRequestToPaymentModel(postPaymentServiceRequest))
+        paymentService.payServiceWithPendency(paymentMapper.postPaymentPendencyServiceRequestToPaymentModel(postPaymentServiceRequest))
+    }
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    @PostMapping("/paypendencies")
+    @ResponseStatus(HttpStatus.CREATED)
+    fun payServicePendencyFinal(@RequestBody postPaymentServiceWithPendencyRequest: PostPaymentServiceWithPendencyRequest){
+        paymentMapper.postPayPendencyRequestToPaymentModel(postPaymentServiceWithPendencyRequest)
     }
 
+
     @PutMapping
-    fun updatePayServicePendency(@PathVariable id: Long, @RequestBody putPaymentServiceRequest: PutPaymentServiceRequest){
+    fun updatePayServicePendency(@PathVariable id: Long, @RequestBody putPaymentServiceRequest: PutPendecyServiceRequest){
+        TODO("Criar validação que só seja possivel editar pagamento que esteja em aberto")
         val previouPayment = paymentService.findById(id)
-        paymentService.payService(paymentMapper.putPaymentServiceRequestToPaymentModel(putPaymentServiceRequest, previouPayment))
+        paymentService.payServiceWithPendency(paymentMapper.putPaymentServiceRequestToPaymentModel(putPaymentServiceRequest, previouPayment))
     }
 
     @GetMapping
@@ -58,6 +71,6 @@ class PaymentController(
     @GetMapping("/customerservicewithstatusaaberto/{id}")
     fun findPaymentWithCustomerServiceWithStatus(@PathVariable id : Long): List<PaymentModel>{
         val customerService = customerServiceModelService.findById(id)
-        return paymentService.findPaymentsWithCustomerServiceWithStatusAberto(customerService.idCustomerService!!)
+        return paymentService.findPaymentsByCustomerWithCustomerServiceWithStatusAberto(customerService.idCustomerService!!)
     }
 }

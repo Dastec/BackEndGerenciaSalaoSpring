@@ -14,7 +14,7 @@ data class PendencyModel(
     var idPendencyModel: Long? = null,
 
     @ManyToOne
-    @JoinColumn(name = "customer_service_id")
+    @JoinColumn(name = "customer_service_id", unique = true)
     var customerService: CustomerServiceModel,
 
     @Column(name = "value_pendency", nullable = false)

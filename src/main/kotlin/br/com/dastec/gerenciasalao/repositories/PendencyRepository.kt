@@ -9,6 +9,6 @@ import org.springframework.stereotype.Repository
 @Repository
 interface PendencyRepository: JpaRepository<PendencyModel, Long> {
 
-    fun findByCustomerService(customerServiceModel: CustomerServiceModel):List<PendencyModel>
+    fun findByCustomerService(customerServiceModel: CustomerServiceModel):PendencyModel
 
 }

@@ -2,6 +2,7 @@ package br.com.dastec.gerenciasalao.controllers
 
 import br.com.dastec.gerenciasalao.controllers.extensions.toPendencyModel
 import br.com.dastec.gerenciasalao.controllers.requests.pendency.PostAddPendencyRequest
+import br.com.dastec.gerenciasalao.controllers.requests.pendency.PutFinishPendencyRequest
 import br.com.dastec.gerenciasalao.models.PendencyModel
 import br.com.dastec.gerenciasalao.services.CustomerServiceModelService
 import br.com.dastec.gerenciasalao.services.PendencyService
@@ -27,13 +28,20 @@ class PendencyController(
     fun addPendency(@RequestBody postAddPendencyRequest: PostAddPendencyRequest){
         val customerService = customerServiceModelService.findById(postAddPendencyRequest.customerService)
 
-        pendencyService.create(postAddPendencyRequest.toPendencyModel(customerService))
+        pendencyService.createPendency(postAddPendencyRequest.toPendencyModel(customerService))
     }
 
     @PutMapping("/{id}")
-    fun update(@PathVariable id: Long){
+    fun updatePendency(@PathVariable id: Long){
         val pendency = pendencyService.findById(id)
-        pendencyService.update(pendency)
+        pendencyService.updatePendency(pendency)
+    }
+
+    @PutMapping("finalize/{id}")
+    fun finaizePendency(@PathVariable id: Long){
+        val pendency = pendencyService.findById(id)
+        val putFinishPendencyRequest:  PutFinishPendencyRequest = PutFinishPendencyRequest()
+        pendencyService.finalizePendency(putFinishPendencyRequest.toPendencyModel(pendency))
     }
 
     @GetMapping
@@ -42,7 +50,7 @@ class PendencyController(
     }
 
     @GetMapping("/customerservice/{id}")
-    fun findAllById(@PathVariable id: Long): List<PendencyModel>{
+    fun findByIdCustomomer(@PathVariable id: Long): PendencyModel{
         val customerService = customerServiceModelService.findById(id)
         return pendencyService.findByCustomerService(customerService)
     }

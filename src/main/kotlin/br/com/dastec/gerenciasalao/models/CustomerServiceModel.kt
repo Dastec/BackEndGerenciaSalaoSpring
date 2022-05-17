@@ -27,7 +27,7 @@ data class CustomerServiceModel(
     var totalValue: Double?,
 
     @Column(name = "paid_value")
-    val paidValue: Double?,
+    var paidValue: Double? = 0.0,
 
     @ManyToOne
     @JoinColumn(name = "customer_id", nullable = false)

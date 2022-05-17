@@ -16,7 +16,7 @@ data class PostCustomerModelRequest(
     @JsonAlias("full_name")
     var fullName: String,
 
-    //@IsCpf
+    @IsCpf
     @CpfAvailable
     var cpf: String,
 
