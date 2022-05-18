@@ -13,8 +13,8 @@ enum class Errors(val message: String, val internalCode: String) {
     GS302("Nenhum serviço foi encontrado!", "GS-302"),
 
     GS401("Forma de pagamento nº%s não foi encontrada!", "GS-401"),
-    GS402("Valor total dos pagamentos não podem ultrapassar o valor total das pendências selecionadas!", "GS-402"),
-    GS403("Valor total dos pagamentos não comporta o mínimo para as pendêcias selecionadas!", "GS-403"),
+    GS402("Valor do pagamento não deve ultrapassar o valor das pendências selecionadas!", "GS-402"),
+    GS403("Valor do pagamento não é suficiente para pagar as pendêcias selecionadas!", "GS-403"),
 
     GS501("Atendimento nº%s não foi encontrado!", "GS-501"),
     GS502("Atendimento nº%s sem pendência!", "GS-502"),
@@ -24,6 +24,6 @@ enum class Errors(val message: String, val internalCode: String) {
     GS601("Pedência nº%s não foi encontrada!", "GS-601"),
 
     GS701("Pagamento nº%s não foi encontrado!", "GS-701"),
-    GS702("Pagamento ultrapassa o valor total do atendimento %s!", "GS-702"),
-    GS703("Pagamento ultrapassa o valor total dos atendimentos selecionados com pendências!", "GS-703")
+    GS702("Pagamento ultrapassa o valor do atendimento %s!", "GS-702"),
+    GS703("Pagamento ultrapassa o valor dos atendimentos selecionados!", "GS-703")
 }

@@ -5,6 +5,7 @@ import br.com.dastec.gerenciasalao.models.CustomerModel
 import br.com.dastec.gerenciasalao.controllers.extensions.toCustomerModel
 import br.com.dastec.gerenciasalao.controllers.requests.customers.PostCustomerModelRequest
 import br.com.dastec.gerenciasalao.controllers.requests.customers.PutCustomerModelRequest
+import br.com.dastec.gerenciasalao.controllers.responses.CreateResponse
 import br.com.dastec.gerenciasalao.services.CustomerService
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -24,8 +25,9 @@ class CustomerController(val customerService: CustomerService) {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun create(@RequestBody @Valid postCustomerRequest: PostCustomerModelRequest) {
+    fun create(@RequestBody @Valid postCustomerRequest: PostCustomerModelRequest): CreateResponse {
         customerService.create(postCustomerRequest.toCustomerModel(), postCustomerRequest.phoneNumber)
+        return CreateResponse()
     }
 
     @PutMapping("/{id}")
