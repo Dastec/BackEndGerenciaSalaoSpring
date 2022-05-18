@@ -8,10 +8,10 @@ import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
 
 @Repository
-interface CustomerServiceRepository: JpaRepository<CustomerServiceModel, Long> {
+interface CustomerServiceRepository : JpaRepository<CustomerServiceModel, Long> {
 
-    fun findByCustomer(customer: CustomerModel):List<CustomerServiceModel>
+    fun findByCustomer(customer: CustomerModel): List<CustomerServiceModel>
 
     @Query(value = "select u from CustomerServiceModel u where u.customer.idCustomer = ?1 and u.statusCustomerService = 'ABERTO'")
-    fun findByCustomerServiceWithStatusAberto(idCustomerService: Long):List<CustomerServiceModel>
+    fun findByCustomerServiceWithStatusAberto(idCustomerService: Long): List<CustomerServiceModel>
 }

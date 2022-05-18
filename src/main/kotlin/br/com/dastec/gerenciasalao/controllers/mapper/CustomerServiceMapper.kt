@@ -55,7 +55,8 @@ class CustomerServiceMapper(
     }
 
     fun putFinalizeRequestToModel(previousCustomerService: CustomerServiceModel): CustomerServiceModel {
-        val payments = paymentService.findPaymentsByCustomerWithCustomerServiceWithStatusAberto(previousCustomerService.idCustomerService!!)
+        val payments =
+            paymentService.findPaymentsByCustomerWithCustomerServiceWithStatusAberto(previousCustomerService.idCustomerService!!)
         val paidValue = payments.sumOf { it.valuePayment }
 
         if (paidValue < previousCustomerService.totalValue!!) {
@@ -88,39 +89,3 @@ class CustomerServiceMapper(
         )
     }
 }
-
-
-//fun putFinalizeRequestWithPendencyToModel(previousCustomerService: CustomerServiceModel): CustomerServiceModel{
-//        val payments = paymentService.findPaymentsByCustomerWithCustomerServiceWithStatusAberto(previousCustomerService.idCustomerService!!)
-//        val paidValue = payments.sumOf { it.valuePayment}
-//
-//        if (previousCustomerService.totalValue!! > paidValue){
-//            pendencyService.create(
-//                PendencyModel(
-//                    customerService = previousCustomerService,
-//                    valuePendency = previousCustomerService.totalValue!! - paidValue
-//                )
-//            )
-//            previousCustomerService.statusCustomerService = CustomerServiceStatus.FINALIZADOCOMPENDENCIA
-//        }else{
-//            previousCustomerService.statusCustomerService = CustomerServiceStatus.FINALIZADO
-//        }
-//
-//        for (payment in payments){
-//            paymentService.updateStatusLancado(payment)
-//        }
-//
-//        return CustomerServiceModel(
-//            idCustomerService = previousCustomerService.idCustomerService,
-//            dateCustomerService = previousCustomerService.dateCustomerService,
-//            startTime = previousCustomerService.startTime,
-//            endTime = previousCustomerService.endTime,
-//            totalValue = previousCustomerService.totalValue,
-//            paidValue = paidValue,
-//            customer = previousCustomerService.customer,
-//            services = previousCustomerService.services,
-//            observation = previousCustomerService.observation,
-//            statusCustomerService = previousCustomerService.statusCustomerService
-//        )
-//    }
-

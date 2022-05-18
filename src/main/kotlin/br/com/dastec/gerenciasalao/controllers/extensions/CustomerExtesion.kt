@@ -10,7 +10,6 @@ import br.com.dastec.gerenciasalao.models.PhoneNumberModel
 import java.time.LocalDate
 import java.util.*
 
-
 fun PostCustomerModelRequest.toCustomerModel(): CustomerModel {
     return CustomerModel(
         alias = this.alias,
@@ -24,7 +23,7 @@ fun PostCustomerModelRequest.toCustomerModel(): CustomerModel {
     )
 }
 
-fun PutCustomerModelRequest.toCustomerModel(customerModel: CustomerModel): CustomerModel{
+fun PutCustomerModelRequest.toCustomerModel(customerModel: CustomerModel): CustomerModel {
     return CustomerModel(
         idCustomer = customerModel.idCustomer,
         alias = this.alias,
@@ -38,7 +37,7 @@ fun PutCustomerModelRequest.toCustomerModel(customerModel: CustomerModel): Custo
     )
 }
 
-fun deleteCustomer(customerModel: CustomerModel): CustomerModel{
+fun deleteCustomer(customerModel: CustomerModel): CustomerModel {
     return CustomerModel(
         idCustomer = customerModel.idCustomer,
         alias = customerModel.alias,
@@ -52,7 +51,7 @@ fun deleteCustomer(customerModel: CustomerModel): CustomerModel{
     )
 }
 
-fun PostPhoneRequest.toPhoneNumberModel(customerModel: CustomerModel): PhoneNumberModel{
+fun PostPhoneRequest.toPhoneNumberModel(customerModel: CustomerModel): PhoneNumberModel {
     return PhoneNumberModel(
         type = this.type,
         ddd = this.ddd,
@@ -61,10 +60,10 @@ fun PostPhoneRequest.toPhoneNumberModel(customerModel: CustomerModel): PhoneNumb
     )
 }
 
-fun PutPhoneRequest.toPhoneNumberModel(previusPhone: PhoneNumberModel): PhoneNumberModel{
+fun PutPhoneRequest.toPhoneNumberModel(previusPhone: PhoneNumberModel): PhoneNumberModel {
     return PhoneNumberModel(
         idPhone = previusPhone.idPhone,
-        type = this.type  ?: previusPhone.type,
+        type = this.type ?: previusPhone.type,
         ddd = this.ddd ?: previusPhone.ddd,
         number = this.number ?: previusPhone.number,
         customerModel = previusPhone.customerModel

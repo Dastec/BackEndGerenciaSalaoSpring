@@ -13,6 +13,8 @@ enum class Errors(val message: String, val internalCode: String) {
     GS302("Nenhum serviço foi encontrado!", "GS-302"),
 
     GS401("Forma de pagamento nº%s não foi encontrada!", "GS-401"),
+    GS402("Valor total dos pagamentos não podem ultrapassar o valor total das pendências selecionadas!", "GS-402"),
+    GS403("Valor total dos pagamentos não comporta o mínimo para as pendêcias selecionadas!", "GS-403"),
 
     GS501("Atendimento nº%s não foi encontrado!", "GS-501"),
     GS502("Atendimento nº%s sem pendência!", "GS-502"),

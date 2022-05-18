@@ -7,7 +7,7 @@ import br.com.dastec.gerenciasalao.models.CustomerServiceModel
 import br.com.dastec.gerenciasalao.models.PendencyModel
 import br.com.dastec.gerenciasalao.models.enums.PendencyStatus
 
-fun PostAddPendencyRequest.toPendencyModel(customerService: CustomerServiceModel): PendencyModel{
+fun PostAddPendencyRequest.toPendencyModel(customerService: CustomerServiceModel): PendencyModel {
     return PendencyModel(
         customerService = customerService,
         valuePendency = this.valuePendency,
@@ -15,7 +15,7 @@ fun PostAddPendencyRequest.toPendencyModel(customerService: CustomerServiceModel
     )
 }
 
-fun PutPendecyServiceRequest.toPendencyModel(previouPendecy: PendencyModel): PendencyModel{
+fun PutPendecyServiceRequest.toPendencyModel(previouPendecy: PendencyModel): PendencyModel {
     return PendencyModel(
         idPendencyModel = previouPendecy.idPendencyModel,
         customerService = previouPendecy.customerService,
@@ -24,7 +24,7 @@ fun PutPendecyServiceRequest.toPendencyModel(previouPendecy: PendencyModel): Pen
     )
 }
 
-fun PutFinishPendencyRequest.toPendencyModel(previouPendecy: PendencyModel): PendencyModel{
+fun PutFinishPendencyRequest.toPendencyModel(previouPendecy: PendencyModel): PendencyModel {
     return PendencyModel(
         idPendencyModel = previouPendecy.idPendencyModel,
         customerService = previouPendecy.customerService,

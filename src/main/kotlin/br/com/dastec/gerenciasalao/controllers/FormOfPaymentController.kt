@@ -22,24 +22,24 @@ class FormOfPaymentController(private val formOfPaymentService: FormOfPaymentSer
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun create(@RequestBody postFormPaymentRequest: PostFormPaymentRequest){
+    fun create(@RequestBody postFormPaymentRequest: PostFormPaymentRequest) {
         formOfPaymentService.create(postFormPaymentRequest.toFormOfPayment())
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.CREATED)
-    fun update(@PathVariable id: Long, @RequestBody putFormPaymentRequest: PutFormPaymentRequest){
+    fun update(@PathVariable id: Long, @RequestBody putFormPaymentRequest: PutFormPaymentRequest) {
         val previouFormPayment = formOfPaymentService.findById(id)
         formOfPaymentService.create(putFormPaymentRequest.toFormOfPayment(previouFormPayment))
     }
 
     @GetMapping
-    fun findAll():List<FormOfPaymentModel>{
+    fun findAll(): List<FormOfPaymentModel> {
         return formOfPaymentService.findAll()
     }
 
     @DeleteMapping("/{id}")
-    fun delete(@PathVariable id: Long){
+    fun delete(@PathVariable id: Long) {
         formOfPaymentService.delete(id)
     }
 }

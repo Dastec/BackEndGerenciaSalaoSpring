@@ -44,10 +44,10 @@ class ServiceModelService(private val serviceRepository: ServiceRepository) {
         return serviceRepository.findByCategory(category)
     }
 
-    fun findByIds(serviceIds: MutableList<Long>): MutableList<ServiceModel>{
+    fun findByIds(serviceIds: Set<Long>): MutableList<ServiceModel>{
         if (serviceIds.isEmpty()){
             throw NotFoundException(Errors.GS302.message, Errors.GS302.internalCode)
         }
-        return serviceRepository.findAllById(serviceIds).toMutableList()
+        return serviceRepository.findAllById(serviceIds).toMutableList().ifEmpty { throw BadRequestException(Errors.GS301.message.format(serviceIds), Errors.GS301.internalCode) }
     }
 }

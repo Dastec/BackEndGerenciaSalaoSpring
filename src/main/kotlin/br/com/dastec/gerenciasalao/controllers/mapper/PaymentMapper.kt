@@ -99,7 +99,7 @@ class PaymentMapper(
                     break@forPaymentObject
                 }
             }
-            paymentsObjects.removeIf{it.valuePayment == 0.0}
+            paymentsObjects.removeIf { it.valuePayment == 0.0 }
         }
     }
 }

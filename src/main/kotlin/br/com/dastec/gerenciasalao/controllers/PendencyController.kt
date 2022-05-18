@@ -21,40 +21,39 @@ import org.springframework.web.bind.annotation.RestController
 class PendencyController(
     private val pendencyService: PendencyService,
     private val customerServiceModelService: CustomerServiceModelService
-    ) {
+) {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun addPendency(@RequestBody postAddPendencyRequest: PostAddPendencyRequest){
+    fun addPendency(@RequestBody postAddPendencyRequest: PostAddPendencyRequest) {
         val customerService = customerServiceModelService.findById(postAddPendencyRequest.customerService)
 
         pendencyService.createPendency(postAddPendencyRequest.toPendencyModel(customerService))
     }
 
     @PutMapping("/{id}")
-    fun updatePendency(@PathVariable id: Long){
+    fun updatePendency(@PathVariable id: Long) {
         val pendency = pendencyService.findById(id)
         pendencyService.updatePendency(pendency)
     }
 
     @PutMapping("finalize/{id}")
-    fun finaizePendency(@PathVariable id: Long){
+    fun finaizePendency(@PathVariable id: Long) {
         val pendency = pendencyService.findById(id)
-        val putFinishPendencyRequest:  PutFinishPendencyRequest = PutFinishPendencyRequest()
+        val putFinishPendencyRequest: PutFinishPendencyRequest = PutFinishPendencyRequest()
         pendencyService.finalizePendency(putFinishPendencyRequest.toPendencyModel(pendency))
     }
 
     @GetMapping
-    fun findAll(): List<PendencyModel>{
+    fun findAll(): List<PendencyModel> {
         return pendencyService.findAll()
     }
 
     @GetMapping("/customerservice/{id}")
-    fun findByIdCustomomer(@PathVariable id: Long): PendencyModel{
+    fun findByIdCustomomer(@PathVariable id: Long): PendencyModel {
         val customerService = customerServiceModelService.findById(id)
         return pendencyService.findByCustomerService(customerService)
     }
-
 
 
 }

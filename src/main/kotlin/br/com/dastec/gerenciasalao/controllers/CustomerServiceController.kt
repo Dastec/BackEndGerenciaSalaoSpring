@@ -25,42 +25,58 @@ class CustomerServiceController(
     private val customerServiceModelService: CustomerServiceModelService,
     private val customerServiceMapper: CustomerServiceMapper,
     private val customerService: CustomerService
-    ) {
+) {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun startCustomerService(@RequestBody postStartCustomerServiceRequest: PostStartCustomerServiceRequest){
-        customerServiceModelService.startCustomerService(customerServiceMapper.postStartRequestToModel(postStartCustomerServiceRequest))
+    fun startCustomerService(@RequestBody postStartCustomerServiceRequest: PostStartCustomerServiceRequest) {
+        customerServiceModelService.startCustomerService(
+            customerServiceMapper.postStartRequestToModel(
+                postStartCustomerServiceRequest
+            )
+        )
     }
 
     @PutMapping("/{id}")
-    fun update(@PathVariable id: Long, @RequestBody putStartCustomerServiceRequest: PutUpdateCustomerServiceRequest){
+    fun update(@PathVariable id: Long, @RequestBody putStartCustomerServiceRequest: PutUpdateCustomerServiceRequest) {
         val previousCustomerService = customerServiceModelService.findById(id)
-        customerServiceModelService.updateCustomerService(customerServiceMapper.putUpdateRequestToModel(putStartCustomerServiceRequest, previousCustomerService))
+        customerServiceModelService.updateCustomerService(
+            customerServiceMapper.putUpdateRequestToModel(
+                putStartCustomerServiceRequest,
+                previousCustomerService
+            )
+        )
     }
 
     @PutMapping("finalize/{id}")
-    fun finalizeCustomerService(@PathVariable id: Long){
+    fun finalizeCustomerService(@PathVariable id: Long) {
         var previousCustomerService = customerServiceModelService.findById(id)
-        if (previousCustomerService.statusCustomerService == CustomerServiceStatus.FINALIZADOCOMPENDENCIA  || previousCustomerService.statusCustomerService == CustomerServiceStatus.FINALIZADO){
-            throw IllegalStateException(Errors.GS503.message.format(previousCustomerService.idCustomerService), Errors.GS503.internalCode)
+        if (previousCustomerService.statusCustomerService == CustomerServiceStatus.FINALIZADOCOMPENDENCIA || previousCustomerService.statusCustomerService == CustomerServiceStatus.FINALIZADO) {
+            throw IllegalStateException(
+                Errors.GS503.message.format(previousCustomerService.idCustomerService),
+                Errors.GS503.internalCode
+            )
         }
-        customerServiceModelService.finalizeCustomerService(customerServiceMapper.putFinalizeRequestToModel(previousCustomerService))
+        customerServiceModelService.finalizeCustomerService(
+            customerServiceMapper.putFinalizeRequestToModel(
+                previousCustomerService
+            )
+        )
     }
 
     @GetMapping
-    fun findAll(): List<CustomerServiceModel>{
+    fun findAll(): List<CustomerServiceModel> {
         return customerServiceModelService.findAll()
     }
 
     @GetMapping("/customer/{id}")
-    fun findAllById(@PathVariable id: Long): List<CustomerServiceModel>{
+    fun findAllById(@PathVariable id: Long): List<CustomerServiceModel> {
         val customer = customerService.findById(id)
         return customerServiceModelService.findAllById(customer)
     }
 
     @GetMapping("/statusaberto/{id}")
-    fun findByCustomerServiceWithStatusAberto(@PathVariable id: Long): List<CustomerServiceModel>{
+    fun findByCustomerServiceWithStatusAberto(@PathVariable id: Long): List<CustomerServiceModel> {
         val customer = customerService.findById(id)
         return customerServiceModelService.findByCustomerServiceWithStatusAberto(customer.idCustomer!!)
     }

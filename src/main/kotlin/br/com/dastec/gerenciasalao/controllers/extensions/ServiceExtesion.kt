@@ -5,7 +5,7 @@ import br.com.dastec.gerenciasalao.controllers.requests.PutServiceRequest
 import br.com.dastec.gerenciasalao.models.CategoryModel
 import br.com.dastec.gerenciasalao.models.ServiceModel
 
-fun PostServiceRequest.toServiceModel(categoryModel: CategoryModel): ServiceModel{
+fun PostServiceRequest.toServiceModel(categoryModel: CategoryModel): ServiceModel {
     return ServiceModel(
         nameService = this.nameService,
         category = categoryModel,
@@ -13,7 +13,7 @@ fun PostServiceRequest.toServiceModel(categoryModel: CategoryModel): ServiceMode
     )
 }
 
-fun PutServiceRequest.toServiceModel(serviceModel: ServiceModel,categoryModel: CategoryModel): ServiceModel{
+fun PutServiceRequest.toServiceModel(serviceModel: ServiceModel, categoryModel: CategoryModel): ServiceModel {
     return ServiceModel(
         idService = serviceModel.idService,
         nameService = this.nameService ?: serviceModel.nameService,

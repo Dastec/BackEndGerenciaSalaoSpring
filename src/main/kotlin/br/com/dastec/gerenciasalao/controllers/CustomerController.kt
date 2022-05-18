@@ -24,29 +24,29 @@ class CustomerController(val customerService: CustomerService) {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun create(@RequestBody @Valid postCustomerRequest: PostCustomerModelRequest){
+    fun create(@RequestBody @Valid postCustomerRequest: PostCustomerModelRequest) {
         customerService.create(postCustomerRequest.toCustomerModel(), postCustomerRequest.phoneNumber)
     }
 
     @PutMapping("/{id}")
-    fun update(@PathVariable @Valid id: Long, @RequestBody putCustomerRequest: PutCustomerModelRequest){
+    fun update(@PathVariable @Valid id: Long, @RequestBody putCustomerRequest: PutCustomerModelRequest) {
         val customerModel: CustomerModel = customerService.findById(id)
         customerService.update(putCustomerRequest.toCustomerModel(customerModel), putCustomerRequest.phoneNumber)
     }
 
     @DeleteMapping("/{clientKey}")
-    fun delete(@PathVariable clientKey: String){
+    fun delete(@PathVariable clientKey: String) {
         val customerModel: CustomerModel = customerService.findByClientKey(clientKey)
         customerService.delete(deleteCustomer(customerModel))
     }
 
     @GetMapping()
-    fun findAll(): List<CustomerModel>{
+    fun findAll(): List<CustomerModel> {
         return customerService.findAll()
     }
 
     @GetMapping("{customerId}")
-    fun findById(@PathVariable @Valid customerId: Long):CustomerModel{
+    fun findById(@PathVariable @Valid customerId: Long): CustomerModel {
         return customerService.findById(customerId)
     }
 
@@ -56,12 +56,12 @@ class CustomerController(val customerService: CustomerService) {
     }
 
     @GetMapping("/status/{status}")
-    fun findByStatus(@PathVariable status: String):List<CustomerModel>{
+    fun findByStatus(@PathVariable status: String): List<CustomerModel> {
         return customerService.findByStatus(status)
     }
 
     @GetMapping("/clientkey/{clientKey}")
-    fun findByClientKey(@PathVariable clientKey: String):CustomerModel{
+    fun findByClientKey(@PathVariable clientKey: String): CustomerModel {
         return customerService.findByClientKey(clientKey)
     }
 }

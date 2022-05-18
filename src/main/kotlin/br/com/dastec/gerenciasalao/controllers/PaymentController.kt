@@ -4,10 +4,13 @@ import br.com.dastec.gerenciasalao.controllers.mapper.PaymentMapper
 import br.com.dastec.gerenciasalao.controllers.requests.payments.PostPaymentServiceRequest
 import br.com.dastec.gerenciasalao.controllers.requests.payments.PostPaymentServiceWithPendencyRequest
 import br.com.dastec.gerenciasalao.controllers.requests.payments.PutPendecyServiceRequest
+import br.com.dastec.gerenciasalao.exceptions.BadRequestException
+import br.com.dastec.gerenciasalao.exceptions.enums.Errors
 import br.com.dastec.gerenciasalao.models.PaymentModel
 import br.com.dastec.gerenciasalao.services.CustomerServiceModelService
 import br.com.dastec.gerenciasalao.services.FormOfPaymentService
 import br.com.dastec.gerenciasalao.services.PaymentService
+import br.com.dastec.gerenciasalao.services.PendencyService
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -23,13 +26,13 @@ import org.springframework.web.bind.annotation.RestController
 class PaymentController(
     private val paymentService: PaymentService,
     private val customerServiceModelService: CustomerServiceModelService,
-    private val formOfPaymentService: FormOfPaymentService,
-    private val paymentMapper: PaymentMapper
+    private val paymentMapper: PaymentMapper,
+    private val pendencyService: PendencyService
 ) {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun payService(@RequestBody postPaymentServiceRequest: PostPaymentServiceRequest){
+    fun payService(@RequestBody postPaymentServiceRequest: PostPaymentServiceRequest) {
         paymentService.payService(paymentMapper.postPaymentServiceRequestToPaymentModel(postPaymentServiceRequest))
     }
 
@@ -37,39 +40,47 @@ class PaymentController(
     //Esse endpoint é para teste
     @PostMapping("/paypendency/test")
     @ResponseStatus(HttpStatus.CREATED)
-    fun payServicePendency(@RequestBody postPaymentServiceRequest: PostPaymentServiceRequest){
-        paymentService.payServiceWithPendency(paymentMapper.postPaymentPendencyServiceRequestToPaymentModel(postPaymentServiceRequest))
+    fun payServicePendencyTest(@RequestBody postPaymentServiceRequest: PostPaymentServiceRequest) {
+        paymentService.payServiceWithPendency(
+            paymentMapper.postPaymentPendencyServiceRequestToPaymentModel(
+                postPaymentServiceRequest
+            )
+        )
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
     @PostMapping("/paypendencies")
     @ResponseStatus(HttpStatus.CREATED)
-    fun payServicePendencyFinal(@RequestBody postPaymentServiceWithPendencyRequest: PostPaymentServiceWithPendencyRequest){
+    fun payServicePendency(@RequestBody postPaymentServiceWithPendencyRequest: PostPaymentServiceWithPendencyRequest) {
+
+        paymentService.validPaymentPendency(postPaymentServiceWithPendencyRequest)
         paymentMapper.postPayPendencyRequestToPaymentModel(postPaymentServiceWithPendencyRequest)
     }
 
-
     @PutMapping
-    fun updatePayServicePendency(@PathVariable id: Long, @RequestBody putPaymentServiceRequest: PutPendecyServiceRequest){
-        TODO("Criar validação que só seja possivel editar pagamento que esteja em aberto")
-        val previouPayment = paymentService.findById(id)
-        paymentService.payServiceWithPendency(paymentMapper.putPaymentServiceRequestToPaymentModel(putPaymentServiceRequest, previouPayment))
+    fun updatePayService(@PathVariable id: Long, @RequestBody putPaymentServiceRequest: PutPendecyServiceRequest) {
+        val previousPayment = paymentService.findById(id)
+        paymentService.updatePayService(
+            paymentMapper.putPaymentServiceRequestToPaymentModel(
+                putPaymentServiceRequest,
+                previousPayment
+            )
+        )
     }
 
     @GetMapping
-    fun findAll(): List<PaymentModel>{
+    fun findAll(): List<PaymentModel> {
         return paymentService.findAll()
     }
 
     @GetMapping("/customerservice/{id}")
-    fun findPaymentByCustomerService(@PathVariable id : Long): List<PaymentModel>{
+    fun findPaymentByCustomerService(@PathVariable id: Long): List<PaymentModel> {
         val customerService = customerServiceModelService.findById(id)
         return paymentService.findPaymentByCustomerService(customerService)
     }
 
     @GetMapping("/customerservicewithstatusaaberto/{id}")
-    fun findPaymentWithCustomerServiceWithStatus(@PathVariable id : Long): List<PaymentModel>{
+    fun findPaymentWithCustomerServiceWithStatus(@PathVariable id: Long): List<PaymentModel> {
         val customerService = customerServiceModelService.findById(id)
         return paymentService.findPaymentsByCustomerWithCustomerServiceWithStatusAberto(customerService.idCustomerService!!)
     }

@@ -23,13 +23,13 @@ class SeviceController(val serviceModelService: ServiceModelService, val categor
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun create(@RequestBody postServiceRequest: PostServiceRequest){
+    fun create(@RequestBody postServiceRequest: PostServiceRequest) {
         val category = categoryService.findById(postServiceRequest.idCategory)
         serviceModelService.create(postServiceRequest.toServiceModel(category))
     }
 
     @PutMapping("/{id}")
-    fun update(@PathVariable id : Long, @RequestBody putServiceRequest: PutServiceRequest){
+    fun update(@PathVariable id: Long, @RequestBody putServiceRequest: PutServiceRequest) {
         val category = categoryService.findById(putServiceRequest.idCategory)
         val service = serviceModelService.findById(id)
 
@@ -46,11 +46,9 @@ class SeviceController(val serviceModelService: ServiceModelService, val categor
         return serviceModelService.findAll()
     }
 
-
     @GetMapping("/category/{id}")
     fun findByCategory(@PathVariable id: Long): List<ServiceModel> {
         val category = categoryService.findById(id)
         return serviceModelService.findByCategory(category)
     }
-
 }

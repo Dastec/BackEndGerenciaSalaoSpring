@@ -10,10 +10,13 @@ import br.com.dastec.gerenciasalao.models.enums.CustomerServiceStatus
 import java.time.LocalDate
 import java.time.LocalTime
 
-fun PostStartCustomerServiceRequest.toCustomerService(services: MutableList<ServiceModel>, customer: CustomerModel): CustomerServiceModel{
+fun PostStartCustomerServiceRequest.toCustomerService(
+    services: MutableList<ServiceModel>,
+    customer: CustomerModel
+): CustomerServiceModel {
     var totalValue = 0.0
-    for (service in services){
-        totalValue+=service.price!!
+    for (service in services) {
+        totalValue += service.price!!
     }
     return CustomerServiceModel(
         endTime = null,
@@ -26,10 +29,14 @@ fun PostStartCustomerServiceRequest.toCustomerService(services: MutableList<Serv
     )
 }
 
-fun PutUpdateCustomerServiceRequest.toCustomerService(previuoCustomerService: CustomerServiceModel, services: MutableList<ServiceModel>, customer: CustomerModel): CustomerServiceModel{
+fun PutUpdateCustomerServiceRequest.toCustomerService(
+    previuoCustomerService: CustomerServiceModel,
+    services: MutableList<ServiceModel>,
+    customer: CustomerModel
+): CustomerServiceModel {
     var totalValue = 0.0
-    for (service in services){
-        totalValue+=service.price!!
+    for (service in services) {
+        totalValue += service.price!!
     }
     return CustomerServiceModel(
         idCustomerService = previuoCustomerService.idCustomerService,
@@ -45,7 +52,10 @@ fun PutUpdateCustomerServiceRequest.toCustomerService(previuoCustomerService: Cu
     )
 }
 
-fun PutFinalizeCustomerServiceRequest.toCustomerService(previuoCustomerService: CustomerServiceModel, paidValue: Double): CustomerServiceModel{
+fun PutFinalizeCustomerServiceRequest.toCustomerService(
+    previuoCustomerService: CustomerServiceModel,
+    paidValue: Double
+): CustomerServiceModel {
 
     return CustomerServiceModel(
         idCustomerService = previuoCustomerService.idCustomerService,

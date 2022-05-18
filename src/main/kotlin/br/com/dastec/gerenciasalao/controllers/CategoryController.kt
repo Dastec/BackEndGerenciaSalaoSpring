@@ -22,33 +22,33 @@ class CategoryController(val categoryService: CategoryService) {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun create(@RequestBody postCategoryRequest: PostCategoryRequest){
+    fun create(@RequestBody postCategoryRequest: PostCategoryRequest) {
         categoryService.create(postCategoryRequest.toCategoryModel())
     }
 
     @PutMapping("/{id}")
-    fun update(@PathVariable id: Long, @RequestBody putCategoryRequest: PutCategoryRequest){
+    fun update(@PathVariable id: Long, @RequestBody putCategoryRequest: PutCategoryRequest) {
         val previousCategory = categoryService.findById(id)
         categoryService.update(putCategoryRequest.toCategoryModel(previousCategory))
     }
 
     @DeleteMapping("/{id}")
-    fun delete(@PathVariable id: Long){
+    fun delete(@PathVariable id: Long) {
         categoryService.delete(id)
     }
 
     @GetMapping("/{id}")
-    fun findById(@PathVariable id: Long): CategoryModel{
+    fun findById(@PathVariable id: Long): CategoryModel {
         return categoryService.findById(id)
     }
 
     @GetMapping("/name/{name}")
-    fun findById(@PathVariable name: String): List<CategoryModel>{
+    fun findById(@PathVariable name: String): List<CategoryModel> {
         return categoryService.findByNameCategory(name)
     }
 
     @GetMapping()
-    fun findAll(): List<CategoryModel>{
+    fun findAll(): List<CategoryModel> {
         return categoryService.findAll()
     }
 
