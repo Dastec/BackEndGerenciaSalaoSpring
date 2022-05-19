@@ -6,7 +6,10 @@ import br.com.dastec.gerenciasalao.controllers.requests.customers.PostCustomerMo
 import br.com.dastec.gerenciasalao.controllers.requests.customers.PostPhoneRequest
 import br.com.dastec.gerenciasalao.controllers.requests.customers.PutCustomerModelRequest
 import br.com.dastec.gerenciasalao.controllers.requests.customers.PutPhoneRequest
+import br.com.dastec.gerenciasalao.controllers.responses.CustomerResponse
 import br.com.dastec.gerenciasalao.models.PhoneNumberModel
+import br.com.dastec.gerenciasalao.services.PhoneNumberService
+import org.springframework.beans.factory.annotation.Autowired
 import java.time.LocalDate
 import java.util.*
 
@@ -69,5 +72,6 @@ fun PutPhoneRequest.toPhoneNumberModel(previusPhone: PhoneNumberModel): PhoneNum
         customerModel = previusPhone.customerModel
     )
 }
+
 
 

@@ -1,5 +1,6 @@
 package br.com.dastec.gerenciasalao.models
 
+import br.com.dastec.gerenciasalao.controllers.responses.PhoneNumberResponse
 import br.com.dastec.gerenciasalao.models.enums.TypePhoneNumber
 import javax.persistence.*
 
@@ -23,4 +24,12 @@ data class PhoneNumberModel(
     @JoinColumn(name = "customer_id", nullable = false)
     var customerModel: CustomerModel
 
-)
+){
+    fun toPhoneNumberResponse(): PhoneNumberResponse {
+        return PhoneNumberResponse(
+            type = this.type,
+            ddd = this.ddd,
+            number = this.number
+        )
+    }
+}

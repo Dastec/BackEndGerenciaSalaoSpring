@@ -5,8 +5,8 @@ import br.com.dastec.gerenciasalao.exceptions.NotFoundException
 import br.com.dastec.gerenciasalao.exceptions.enums.Errors
 import br.com.dastec.gerenciasalao.models.CustomerModel
 import br.com.dastec.gerenciasalao.models.CustomerServiceModel
-import br.com.dastec.gerenciasalao.models.enums.CustomerServiceStatus
 import br.com.dastec.gerenciasalao.repositories.CustomerServiceRepository
+import net.bytebuddy.asm.Advice.Return
 import org.springframework.stereotype.Service
 
 @Service
@@ -32,8 +32,12 @@ class CustomerServiceModelService(private val customerServiceRepository: Custome
         customerServiceRepository.save(customerServiceModel)
     }
 
-    fun finalizeCustomerService(customerServiceModel: CustomerServiceModel) {
+    fun cancelCustomerService(customerServiceModel: CustomerServiceModel) {
         customerServiceRepository.save(customerServiceModel)
+    }
+
+    fun finalizeCustomerService(customerServiceModel: CustomerServiceModel): CustomerServiceModel {
+        return customerServiceRepository.save(customerServiceModel)
     }
 
     fun finalizeCustomerServicePendencyStatus(customerServiceModel: CustomerServiceModel) {

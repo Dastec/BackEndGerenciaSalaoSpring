@@ -3,13 +3,17 @@ package br.com.dastec.gerenciasalao.controllers
 import br.com.dastec.gerenciasalao.controllers.mapper.CustomerServiceMapper
 import br.com.dastec.gerenciasalao.controllers.requests.customerservice.PostStartCustomerServiceRequest
 import br.com.dastec.gerenciasalao.controllers.requests.customerservice.PutUpdateCustomerServiceRequest
-import br.com.dastec.gerenciasalao.controllers.requests.payments.PostPaymentServiceWithPendencyRequest
+import br.com.dastec.gerenciasalao.controllers.responses.CreateResponse
+import br.com.dastec.gerenciasalao.controllers.responses.CustomerServiceResponse
+import br.com.dastec.gerenciasalao.controllers.responses.FinalizeCustomerServiceResponse
+import br.com.dastec.gerenciasalao.exceptions.BadRequestException
 import br.com.dastec.gerenciasalao.exceptions.IllegalStateException
 import br.com.dastec.gerenciasalao.exceptions.enums.Errors
 import br.com.dastec.gerenciasalao.models.CustomerServiceModel
 import br.com.dastec.gerenciasalao.models.enums.CustomerServiceStatus
 import br.com.dastec.gerenciasalao.services.*
 import org.springframework.http.HttpStatus
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -29,16 +33,18 @@ class CustomerServiceController(
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun startCustomerService(@RequestBody postStartCustomerServiceRequest: PostStartCustomerServiceRequest) {
+    fun startCustomerService(@RequestBody postStartCustomerServiceRequest: PostStartCustomerServiceRequest): CreateResponse {
         customerServiceModelService.startCustomerService(
             customerServiceMapper.postStartRequestToModel(
                 postStartCustomerServiceRequest
             )
         )
+        return CreateResponse("Atendimento iniciado com sucesso")
+
     }
 
     @PutMapping("/{id}")
-    fun update(@PathVariable id: Long, @RequestBody putStartCustomerServiceRequest: PutUpdateCustomerServiceRequest) {
+    fun updateCustomerService(@PathVariable id: Long, @RequestBody putStartCustomerServiceRequest: PutUpdateCustomerServiceRequest): CreateResponse {
         val previousCustomerService = customerServiceModelService.findById(id)
         customerServiceModelService.updateCustomerService(
             customerServiceMapper.putUpdateRequestToModel(
@@ -46,10 +52,21 @@ class CustomerServiceController(
                 previousCustomerService
             )
         )
+        return CreateResponse("Atendimento atualizado com sucesso")
+    }
+
+    @DeleteMapping("/{id}")
+    fun cancelCustomerService(@PathVariable id: Long): CreateResponse {
+        val previousCustomerService = customerServiceModelService.findById(id)
+        if (previousCustomerService.statusCustomerService == CustomerServiceStatus.CANCELADO){
+            throw BadRequestException(Errors.GS505.message.format(previousCustomerService.idCustomerService), Errors.GS505.internalCode)
+        }
+        customerServiceModelService.cancelCustomerService(customerServiceMapper.putCancelRequestToModel(previousCustomerService))
+        return CreateResponse("Atendimento cancelado com sucesso")
     }
 
     @PutMapping("finalize/{id}")
-    fun finalizeCustomerService(@PathVariable id: Long) {
+    fun finalizeCustomerService(@PathVariable id: Long): FinalizeCustomerServiceResponse {
         var previousCustomerService = customerServiceModelService.findById(id)
         if (previousCustomerService.statusCustomerService == CustomerServiceStatus.FINALIZADOCOMPENDENCIA || previousCustomerService.statusCustomerService == CustomerServiceStatus.FINALIZADO) {
             throw IllegalStateException(
@@ -57,28 +74,24 @@ class CustomerServiceController(
                 Errors.GS503.internalCode
             )
         }
-        customerServiceModelService.finalizeCustomerService(
-            customerServiceMapper.putFinalizeRequestToModel(
-                previousCustomerService
-            )
-        )
+        return customerServiceMapper.toFinalizeCustomerServiceResponse(customerServiceModelService.finalizeCustomerService(customerServiceMapper.putFinalizeRequestToModel(previousCustomerService)))
     }
 
     @GetMapping
-    fun findAll(): List<CustomerServiceModel> {
-        return customerServiceModelService.findAll()
+    fun findAll(): MutableList<CustomerServiceResponse> {
+        return customerServiceMapper.toListCustomerServiceResponse(customerServiceModelService.findAll())
     }
 
     @GetMapping("/customer/{id}")
-    fun findAllById(@PathVariable id: Long): List<CustomerServiceModel> {
+    fun findAllById(@PathVariable id: Long): MutableList<CustomerServiceResponse> {
         val customer = customerService.findById(id)
-        return customerServiceModelService.findAllById(customer)
+        return customerServiceMapper.toListCustomerServiceResponse(customerServiceModelService.findAllById(customer))
     }
 
     @GetMapping("/statusaberto/{id}")
-    fun findByCustomerServiceWithStatusAberto(@PathVariable id: Long): List<CustomerServiceModel> {
+    fun findByCustomerServiceWithStatusAberto(@PathVariable id: Long): MutableList<CustomerServiceResponse> {
         val customer = customerService.findById(id)
-        return customerServiceModelService.findByCustomerServiceWithStatusAberto(customer.idCustomer!!)
+        return customerServiceMapper.toListCustomerServiceResponse(customerServiceModelService.findByCustomerServiceWithStatusAberto(customer.idCustomer!!))
     }
 
 }

@@ -3,6 +3,7 @@ package br.com.dastec.gerenciasalao.controllers
 import br.com.dastec.gerenciasalao.controllers.extensions.toServiceModel
 import br.com.dastec.gerenciasalao.controllers.requests.PostServiceRequest
 import br.com.dastec.gerenciasalao.controllers.requests.PutServiceRequest
+import br.com.dastec.gerenciasalao.controllers.responses.CreateResponse
 import br.com.dastec.gerenciasalao.models.CategoryModel
 import br.com.dastec.gerenciasalao.models.ServiceModel
 import br.com.dastec.gerenciasalao.services.CategoryService
@@ -23,17 +24,21 @@ class SeviceController(val serviceModelService: ServiceModelService, val categor
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun create(@RequestBody postServiceRequest: PostServiceRequest) {
+    fun create(@RequestBody postServiceRequest: PostServiceRequest): CreateResponse {
         val category = categoryService.findById(postServiceRequest.idCategory)
         serviceModelService.create(postServiceRequest.toServiceModel(category))
+
+        return CreateResponse("Serviço criado com sucesso")
     }
 
     @PutMapping("/{id}")
-    fun update(@PathVariable id: Long, @RequestBody putServiceRequest: PutServiceRequest) {
+    fun update(@PathVariable id: Long, @RequestBody putServiceRequest: PutServiceRequest): CreateResponse {
         val category = categoryService.findById(putServiceRequest.idCategory)
         val service = serviceModelService.findById(id)
 
         serviceModelService.update(putServiceRequest.toServiceModel(service, category))
+
+        return CreateResponse("Serviço atualizado com sucesso")
     }
 
     @GetMapping("/{id}")

@@ -20,6 +20,7 @@ enum class Errors(val message: String, val internalCode: String) {
     GS502("Atendimento nº%s sem pendência!", "GS-502"),
     GS503("Atendimento nº%s não está com status aberto!", "GS-503"),
     GS504("Atendimento nº%s não está com pendência!", "GS-504"),
+    GS505("Atendimento nº%s já está cancelado!", "GS-505"),
 
     GS601("Pedência nº%s não foi encontrada!", "GS-601"),
 

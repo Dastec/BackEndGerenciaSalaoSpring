@@ -29,7 +29,7 @@ class PaymentService(
 
     fun payService(payment: PaymentModel) {
         val customerService = customerServiceModelService.findById(payment.customerService.idCustomerService!!)
-        if (customerService.statusCustomerService == CustomerServiceStatus.FINALIZADO) {
+        if (customerService.statusCustomerService == CustomerServiceStatus.FINALIZADO || customerService.statusCustomerService == CustomerServiceStatus.FINALIZADOCOMPENDENCIA) {
             throw BadRequestException(
                 Errors.GS503.message.format(customerService.idCustomerService),
                 Errors.GS503.internalCode

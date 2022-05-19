@@ -3,6 +3,7 @@ package br.com.dastec.gerenciasalao.controllers
 import br.com.dastec.gerenciasalao.controllers.extensions.toCategoryModel
 import br.com.dastec.gerenciasalao.controllers.requests.categories.PostCategoryRequest
 import br.com.dastec.gerenciasalao.controllers.requests.categories.PutCategoryRequest
+import br.com.dastec.gerenciasalao.controllers.responses.CreateResponse
 import br.com.dastec.gerenciasalao.models.CategoryModel
 import br.com.dastec.gerenciasalao.services.CategoryService
 import org.springframework.http.HttpStatus
@@ -22,19 +23,22 @@ class CategoryController(val categoryService: CategoryService) {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun create(@RequestBody postCategoryRequest: PostCategoryRequest) {
+    fun create(@RequestBody postCategoryRequest: PostCategoryRequest): CreateResponse {
         categoryService.create(postCategoryRequest.toCategoryModel())
+        return CreateResponse("Categoria criada com sucesso")
     }
 
     @PutMapping("/{id}")
-    fun update(@PathVariable id: Long, @RequestBody putCategoryRequest: PutCategoryRequest) {
+    fun update(@PathVariable id: Long, @RequestBody putCategoryRequest: PutCategoryRequest): CreateResponse {
         val previousCategory = categoryService.findById(id)
         categoryService.update(putCategoryRequest.toCategoryModel(previousCategory))
+        return CreateResponse("Categoria atualizada com sucesso")
     }
 
     @DeleteMapping("/{id}")
-    fun delete(@PathVariable id: Long) {
+    fun delete(@PathVariable id: Long): CreateResponse {
         categoryService.delete(id)
+        return CreateResponse("Categoria deletada com sucesso")
     }
 
     @GetMapping("/{id}")

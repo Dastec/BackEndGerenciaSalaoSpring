@@ -3,6 +3,7 @@ package br.com.dastec.gerenciasalao.controllers
 import br.com.dastec.gerenciasalao.controllers.extensions.toFormOfPayment
 import br.com.dastec.gerenciasalao.controllers.requests.formofpayment.PostFormPaymentRequest
 import br.com.dastec.gerenciasalao.controllers.requests.formofpayment.PutFormPaymentRequest
+import br.com.dastec.gerenciasalao.controllers.responses.CreateResponse
 import br.com.dastec.gerenciasalao.models.FormOfPaymentModel
 import br.com.dastec.gerenciasalao.services.FormOfPaymentService
 import org.springframework.http.HttpStatus
@@ -22,15 +23,17 @@ class FormOfPaymentController(private val formOfPaymentService: FormOfPaymentSer
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun create(@RequestBody postFormPaymentRequest: PostFormPaymentRequest) {
+    fun create(@RequestBody postFormPaymentRequest: PostFormPaymentRequest): CreateResponse {
         formOfPaymentService.create(postFormPaymentRequest.toFormOfPayment())
+        return CreateResponse("Forma de pagamento criada com sucesso")
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.CREATED)
-    fun update(@PathVariable id: Long, @RequestBody putFormPaymentRequest: PutFormPaymentRequest) {
+    fun update(@PathVariable id: Long, @RequestBody putFormPaymentRequest: PutFormPaymentRequest): CreateResponse {
         val previouFormPayment = formOfPaymentService.findById(id)
         formOfPaymentService.create(putFormPaymentRequest.toFormOfPayment(previouFormPayment))
+        return CreateResponse("Forma de pagamento atualizada com sucesso")
     }
 
     @GetMapping
@@ -39,7 +42,8 @@ class FormOfPaymentController(private val formOfPaymentService: FormOfPaymentSer
     }
 
     @DeleteMapping("/{id}")
-    fun delete(@PathVariable id: Long) {
+    fun delete(@PathVariable id: Long): CreateResponse {
         formOfPaymentService.delete(id)
+        return CreateResponse("Forma de pagamento deletada com sucesso")
     }
 }

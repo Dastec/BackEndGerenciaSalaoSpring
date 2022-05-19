@@ -3,6 +3,7 @@ package br.com.dastec.gerenciasalao.controllers
 import br.com.dastec.gerenciasalao.controllers.extensions.toPendencyModel
 import br.com.dastec.gerenciasalao.controllers.requests.pendency.PostAddPendencyRequest
 import br.com.dastec.gerenciasalao.controllers.requests.pendency.PutFinishPendencyRequest
+import br.com.dastec.gerenciasalao.controllers.responses.CreateResponse
 import br.com.dastec.gerenciasalao.models.PendencyModel
 import br.com.dastec.gerenciasalao.services.CustomerServiceModelService
 import br.com.dastec.gerenciasalao.services.PendencyService
@@ -25,23 +26,28 @@ class PendencyController(
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun addPendency(@RequestBody postAddPendencyRequest: PostAddPendencyRequest) {
+    fun addPendency(@RequestBody postAddPendencyRequest: PostAddPendencyRequest): CreateResponse {
         val customerService = customerServiceModelService.findById(postAddPendencyRequest.customerService)
-
         pendencyService.createPendency(postAddPendencyRequest.toPendencyModel(customerService))
+
+        return CreateResponse("Pendência incluída com sucesso")
     }
 
     @PutMapping("/{id}")
-    fun updatePendency(@PathVariable id: Long) {
+    fun updatePendency(@PathVariable id: Long): CreateResponse {
         val pendency = pendencyService.findById(id)
         pendencyService.updatePendency(pendency)
+
+        return CreateResponse("Pendência atualizada com sucesso")
     }
 
     @PutMapping("finalize/{id}")
-    fun finaizePendency(@PathVariable id: Long) {
+    fun finaizePendency(@PathVariable id: Long): CreateResponse {
         val pendency = pendencyService.findById(id)
         val putFinishPendencyRequest: PutFinishPendencyRequest = PutFinishPendencyRequest()
         pendencyService.finalizePendency(putFinishPendencyRequest.toPendencyModel(pendency))
+
+        return CreateResponse("Pendência finalizada com sucesso")
     }
 
     @GetMapping

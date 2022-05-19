@@ -8,6 +8,7 @@ import java.time.LocalDate
 import javax.validation.constraints.NotEmpty
 
 data class PostCustomerModelRequest(
+    var idCustomer: Long? = null,
 
     @field:NotEmpty(message = "O campo apelido não pôde ser null ou vazio!")
     var alias: String,

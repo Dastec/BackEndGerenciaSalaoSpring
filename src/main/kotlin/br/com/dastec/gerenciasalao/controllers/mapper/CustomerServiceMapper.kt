@@ -2,7 +2,8 @@ package br.com.dastec.gerenciasalao.controllers.mapper
 
 import br.com.dastec.gerenciasalao.controllers.requests.customerservice.PostStartCustomerServiceRequest
 import br.com.dastec.gerenciasalao.controllers.requests.customerservice.PutUpdateCustomerServiceRequest
-import br.com.dastec.gerenciasalao.controllers.requests.payments.PostPaymentServiceWithPendencyRequest
+import br.com.dastec.gerenciasalao.controllers.responses.CustomerServiceResponse
+import br.com.dastec.gerenciasalao.controllers.responses.FinalizeCustomerServiceResponse
 import br.com.dastec.gerenciasalao.models.CustomerServiceModel
 import br.com.dastec.gerenciasalao.models.PendencyModel
 import br.com.dastec.gerenciasalao.models.enums.CustomerServiceStatus
@@ -17,7 +18,8 @@ class CustomerServiceMapper(
     private val customerService: CustomerService,
     private val paymentService: PaymentService,
     private val pendencyService: PendencyService,
-    private val formOfPaymentService: FormOfPaymentService
+    private val formOfPaymentService: FormOfPaymentService,
+    private val customerMapper: CustomerMapper
 ) {
 
     fun postStartRequestToModel(postStartCustomerServiceRequest: PostStartCustomerServiceRequest): CustomerServiceModel {
@@ -86,6 +88,73 @@ class CustomerServiceMapper(
             services = previousCustomerService.services,
             observation = previousCustomerService.observation,
             statusCustomerService = previousCustomerService.statusCustomerService
+        )
+    }
+
+    fun putCancelRequestToModel(
+        previousCustomerService: CustomerServiceModel
+    ): CustomerServiceModel {
+
+        return CustomerServiceModel(
+            idCustomerService = previousCustomerService.idCustomerService,
+            dateCustomerService = previousCustomerService.dateCustomerService,
+            startTime = previousCustomerService.startTime,
+            endTime = previousCustomerService.endTime,
+            totalValue = previousCustomerService.totalValue,
+            paidValue = previousCustomerService.paidValue,
+            customer = previousCustomerService.customer,
+            services = previousCustomerService.services,
+            observation = previousCustomerService.observation,
+            statusCustomerService = CustomerServiceStatus.CANCELADO
+        )
+    }
+
+    fun toCustomerServiceResponse(customerService: CustomerServiceModel): CustomerServiceResponse {
+        return CustomerServiceResponse(
+            idCustomerService = customerService.idCustomerService,
+            dateCustomerService = customerService.dateCustomerService,
+            startTime = customerService.startTime,
+            endTime = customerService.endTime,
+            totalValue = customerService.totalValue,
+            paidValue = customerService.paidValue,
+            customer = customerMapper.toCustomerResponse(customerService.customer),
+            services = customerService.services,
+            observation = customerService.observation,
+            statusCustomerService = customerService.statusCustomerService
+
+        )
+    }
+
+    fun toListCustomerServiceResponse(customerServices: List<CustomerServiceModel>): MutableList<CustomerServiceResponse> {
+        val customerServicesResponse: MutableList<CustomerServiceResponse> = mutableListOf()
+
+        for (customerService in customerServices) {
+            val customerServiceResponse = CustomerServiceResponse(
+                idCustomerService = customerService.idCustomerService,
+                dateCustomerService = customerService.dateCustomerService,
+                startTime = customerService.startTime,
+                endTime = customerService.endTime,
+                totalValue = customerService.totalValue,
+                paidValue = customerService.paidValue,
+                customer = customerMapper.toCustomerResponse(customerService.customer),
+                services = customerService.services,
+                observation = customerService.observation,
+                statusCustomerService = customerService.statusCustomerService
+
+            )
+            customerServicesResponse.add(customerServiceResponse)
+        }
+        return customerServicesResponse
+    }
+
+    fun toFinalizeCustomerServiceResponse(customerService: CustomerServiceModel): FinalizeCustomerServiceResponse{
+        return FinalizeCustomerServiceResponse(
+            statusCustomerService = customerService.statusCustomerService,
+            idCustomerService = customerService.idCustomerService,
+            customer = customerService.customer.alias,
+            totalValue = customerService.totalValue,
+            paidValue = customerService.paidValue,
+            pendingValue = (customerService.totalValue!! - customerService.paidValue!!),
         )
     }
 }

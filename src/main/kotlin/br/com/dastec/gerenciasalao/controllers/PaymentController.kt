@@ -4,6 +4,7 @@ import br.com.dastec.gerenciasalao.controllers.mapper.PaymentMapper
 import br.com.dastec.gerenciasalao.controllers.requests.payments.PostPaymentServiceRequest
 import br.com.dastec.gerenciasalao.controllers.requests.payments.PostPaymentServiceWithPendencyRequest
 import br.com.dastec.gerenciasalao.controllers.requests.payments.PutPendecyServiceRequest
+import br.com.dastec.gerenciasalao.controllers.responses.CreateResponse
 import br.com.dastec.gerenciasalao.exceptions.BadRequestException
 import br.com.dastec.gerenciasalao.exceptions.enums.Errors
 import br.com.dastec.gerenciasalao.models.PaymentModel
@@ -27,13 +28,13 @@ class PaymentController(
     private val paymentService: PaymentService,
     private val customerServiceModelService: CustomerServiceModelService,
     private val paymentMapper: PaymentMapper,
-    private val pendencyService: PendencyService
 ) {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun payService(@RequestBody postPaymentServiceRequest: PostPaymentServiceRequest) {
+    fun payService(@RequestBody postPaymentServiceRequest: PostPaymentServiceRequest): CreateResponse {
         paymentService.payService(paymentMapper.postPaymentServiceRequestToPaymentModel(postPaymentServiceRequest))
+        return CreateResponse("Pagamento incluído com sucesso")
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -51,14 +52,14 @@ class PaymentController(
 
     @PostMapping("/paypendencies")
     @ResponseStatus(HttpStatus.CREATED)
-    fun payServicePendency(@RequestBody postPaymentServiceWithPendencyRequest: PostPaymentServiceWithPendencyRequest) {
-
+    fun payServicePendency(@RequestBody postPaymentServiceWithPendencyRequest: PostPaymentServiceWithPendencyRequest): CreateResponse {
         paymentService.validPaymentPendency(postPaymentServiceWithPendencyRequest)
         paymentMapper.postPayPendencyRequestToPaymentModel(postPaymentServiceWithPendencyRequest)
+        return CreateResponse("Pagamento incluído com sucesso")
     }
 
     @PutMapping
-    fun updatePayService(@PathVariable id: Long, @RequestBody putPaymentServiceRequest: PutPendecyServiceRequest) {
+    fun updatePayService(@PathVariable id: Long, @RequestBody putPaymentServiceRequest: PutPendecyServiceRequest): CreateResponse {
         val previousPayment = paymentService.findById(id)
         paymentService.updatePayService(
             paymentMapper.putPaymentServiceRequestToPaymentModel(
@@ -66,6 +67,7 @@ class PaymentController(
                 previousPayment
             )
         )
+        return CreateResponse("Pagamento atualizado com sucesso")
     }
 
     @GetMapping

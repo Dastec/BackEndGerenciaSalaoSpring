@@ -1,6 +1,7 @@
 package br.com.dastec.gerenciasalao.models
 
 import br.com.dastec.gerenciasalao.models.enums.CustomerStatus
+import br.com.dastec.gerenciasalao.services.PhoneNumberService
 import java.time.LocalDate
 import javax.persistence.*
 
@@ -25,10 +26,6 @@ data class CustomerModel(
     @Column(name = "birth_date", nullable = false)
     var birthDate: LocalDate,
 
-//    @OneToMany(mappedBy = "customerModel")
-//    @JoinColumn(name = "customer_id")
-//    var phones: List<PhoneNumberModel>,
-
     @Column(name = "photo")
     var photo: String?,
 
@@ -36,7 +33,8 @@ data class CustomerModel(
     var clientKey: String?,
 
     @Column(name = "created_at")
-    var createdAt: LocalDate?
+    var createdAt: LocalDate?,
+
 )
 {
 
