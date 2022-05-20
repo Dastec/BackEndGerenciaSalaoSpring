@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
+import javax.validation.Valid
 
 @RestController
 @RequestMapping("/api/v1/category")
@@ -23,13 +24,13 @@ class CategoryController(val categoryService: CategoryService) {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun create(@RequestBody postCategoryRequest: PostCategoryRequest): CreateResponse {
+    fun create(@Valid @RequestBody postCategoryRequest: PostCategoryRequest): CreateResponse {
         categoryService.create(postCategoryRequest.toCategoryModel())
         return CreateResponse("Categoria criada com sucesso")
     }
 
     @PutMapping("/{id}")
-    fun update(@PathVariable id: Long, @RequestBody putCategoryRequest: PutCategoryRequest): CreateResponse {
+    fun update(@PathVariable id: Long, @Valid @RequestBody putCategoryRequest: PutCategoryRequest): CreateResponse {
         val previousCategory = categoryService.findById(id)
         categoryService.update(putCategoryRequest.toCategoryModel(previousCategory))
         return CreateResponse("Categoria atualizada com sucesso")

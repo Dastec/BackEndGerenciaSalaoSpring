@@ -27,16 +27,16 @@ class CustomerController(val customerService: CustomerService, val customerMappe
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun create(@RequestBody @Valid postCustomerRequest: PostCustomerModelRequest): CreateResponse {
+    fun create(@Valid @RequestBody postCustomerRequest: PostCustomerModelRequest): CreateResponse {
         customerService.create(postCustomerRequest.toCustomerModel(), postCustomerRequest.phoneNumber)
         return CreateResponse("Cliente criado com sucesso")
     }
 
     @PutMapping("/{id}")
-    fun update(@PathVariable @Valid id: Long, @RequestBody putCustomerRequest: PutCustomerModelRequest): CreateResponse {
+    fun update(@PathVariable id: Long, @Valid @RequestBody putCustomerRequest: PutCustomerModelRequest): CreateResponse {
         val customerModel: CustomerModel = customerService.findById(id)
         customerService.update(putCustomerRequest.toCustomerModel(customerModel), putCustomerRequest.phoneNumber)
-        return CreateResponse("Clinte Atualizada com sucesso")
+        return CreateResponse("Cliente Atualizada com sucesso")
     }
 
     @DeleteMapping("/{clientKey}")

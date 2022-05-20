@@ -10,10 +10,10 @@ import javax.validation.constraints.NotEmpty
 data class PostCustomerModelRequest(
     var idCustomer: Long? = null,
 
-    @field:NotEmpty(message = "O campo apelido não pôde ser null ou vazio!")
+    @field:NotEmpty(message = "O campo apelido não pode ser null ou vazio!")
     var alias: String,
 
-    @field:NotEmpty(message = "O campo nome completo não pôde ser  null ou vazio!")
+    @field:NotEmpty(message = "O campo nome completo não pode ser null ou vazio!")
     @JsonAlias("full_name")
     var fullName: String,
 
@@ -24,6 +24,7 @@ data class PostCustomerModelRequest(
     @JsonAlias("birth_date")
     var birthDate: LocalDate,
 
+    @field:NotEmpty(message = "Ao menos deve-se passar um número de telefone!")
     @JsonAlias("phone_numbers")
     var phoneNumber: List<PostPhoneRequest>,
 

@@ -33,10 +33,8 @@ data class CustomerServiceModel(
     @JoinColumn(name = "customer_id", nullable = false)
     var customer: CustomerModel,
 
-    @ManyToMany
-    @JoinTable(name = "customer_service_service",
-        joinColumns = [JoinColumn(name = "customer_service_id")],
-        inverseJoinColumns = [JoinColumn(name = "service_id")])
+    @OneToMany
+    @JoinColumn(name = "customer_service_id")
     var services: MutableList<ServiceModel>,
 
     var observation: String?,
