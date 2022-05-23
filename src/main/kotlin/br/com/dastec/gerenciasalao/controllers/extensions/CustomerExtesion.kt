@@ -6,10 +6,7 @@ import br.com.dastec.gerenciasalao.controllers.requests.customers.PostCustomerMo
 import br.com.dastec.gerenciasalao.controllers.requests.customers.PostPhoneRequest
 import br.com.dastec.gerenciasalao.controllers.requests.customers.PutCustomerModelRequest
 import br.com.dastec.gerenciasalao.controllers.requests.customers.PutPhoneRequest
-import br.com.dastec.gerenciasalao.controllers.responses.CustomerResponse
 import br.com.dastec.gerenciasalao.models.PhoneNumberModel
-import br.com.dastec.gerenciasalao.services.PhoneNumberService
-import org.springframework.beans.factory.annotation.Autowired
 import java.time.LocalDate
 import java.util.*
 
@@ -20,7 +17,7 @@ fun PostCustomerModelRequest.toCustomerModel(): CustomerModel {
         cpf = this.cpf,
         birthDate = this.birthDate,
         photo = this.photo,
-        status = CustomerStatus.ATIVO,
+        status = CustomerStatus.ACTIVE,
         clientKey = UUID.randomUUID().toString(),
         createdAt = LocalDate.now()
     )
@@ -48,7 +45,7 @@ fun deleteCustomer(customerModel: CustomerModel): CustomerModel {
         cpf = customerModel.cpf,
         birthDate = customerModel.birthDate,
         photo = customerModel.photo,
-        status = CustomerStatus.EXCLUIDO,
+        status = CustomerStatus.EXCLUDED,
         clientKey = customerModel.clientKey!!,
         createdAt = customerModel.createdAt
     )

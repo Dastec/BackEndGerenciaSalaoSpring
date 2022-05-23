@@ -18,13 +18,13 @@ class FinalizePendencyInTheCustomerServiceByPaymentListener(
     fun listener(paymentEvent: PaymentEventFinalizePendency){
         val customerService = paymentEvent.paymentModel.customerService.copy(
             paidValue = paymentEvent.paymentModel.customerService.paidValue!! + paymentEvent.paymentModel.valuePayment,
-            statusCustomerService = CustomerServiceStatus.FINALIZADO
+            statusCustomerService = CustomerServiceStatus.FINISHED
             )
         customerServiceModelService.finalizeCustomerServicePendencyStatus(customerService)
 
         val pendency = pendencyService.findByCustomerService(paymentEvent.paymentModel.customerService)
         pendency.valuePendency = pendency.valuePendency - paymentEvent.paymentModel.valuePayment
-        pendency.status = PendencyStatus.PAGO
+        pendency.status = PendencyStatus.PAID
         pendencyService.finalizePendency(pendency)
     }
 }

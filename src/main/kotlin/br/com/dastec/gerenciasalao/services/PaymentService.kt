@@ -29,7 +29,7 @@ class PaymentService(
 
     fun payService(payment: PaymentModel) {
         val customerService = customerServiceModelService.findById(payment.customerService.idCustomerService!!)
-        if (customerService.statusCustomerService == CustomerServiceStatus.FINALIZADO || customerService.statusCustomerService == CustomerServiceStatus.FINALIZADOCOMPENDENCIA) {
+        if (customerService.statusCustomerService == CustomerServiceStatus.FINISHED || customerService.statusCustomerService == CustomerServiceStatus.FINALIZEDPENDING) {
             throw BadRequestException(
                 Errors.GS503.message.format(customerService.idCustomerService),
                 Errors.GS503.internalCode
@@ -37,7 +37,7 @@ class PaymentService(
         }
 
         val payments =
-            findPaymentsByCustomerWithCustomerServiceWithStatusAberto(payment.customerService.idCustomerService!!)
+            findPaymentsByCustomerWithCustomerServiceWithStatusOpen(payment.customerService.idCustomerService!!)
         val paidValue = payments.sumOf { it.valuePayment }
 
         if ((paidValue + payment.valuePayment) > customerService.totalValue!!) {
@@ -54,7 +54,7 @@ class PaymentService(
 
     fun payServiceWithPendency(payment: PaymentModel) {
         val customerService = customerServiceModelService.findById(payment.customerService.idCustomerService!!)
-        if (customerService.statusCustomerService == CustomerServiceStatus.FINALIZADO) {
+        if (customerService.statusCustomerService == CustomerServiceStatus.FINISHED) {
             throw BadRequestException(
                 Errors.GS504.message.format(customerService.idCustomerService),
                 Errors.GS504.internalCode
@@ -71,22 +71,22 @@ class PaymentService(
             )
         }
 
-        if (customerService.statusCustomerService == CustomerServiceStatus.FINALIZADOCOMPENDENCIA &&
+        if (customerService.statusCustomerService == CustomerServiceStatus.FINALIZEDPENDING &&
             (payment.valuePayment + customerService.paidValue!!) == customerService.totalValue!!
         ) {
             applicationEventPublisher.publishEvent(PaymentEventFinalizePendency(this, payment))
-            payment.status = PaymentStatus.LANCADO
-        } else if (customerService.statusCustomerService == CustomerServiceStatus.FINALIZADOCOMPENDENCIA &&
+            payment.status = PaymentStatus.LAUNCHED
+        } else if (customerService.statusCustomerService == CustomerServiceStatus.FINALIZEDPENDING &&
             (payment.valuePayment + customerService.paidValue!!) < customerService.totalValue!!
         ) {
             applicationEventPublisher.publishEvent(PaymentEventUpdatePendency(this, payment))
-            payment.status = PaymentStatus.LANCADO
+            payment.status = PaymentStatus.LAUNCHED
         }
         paymentRepository.save(payment)
     }
 
-    fun updateStatusLancado(payment: PaymentModel) {
-        payment.status = PaymentStatus.LANCADO
+    fun updateStatusLaunched(payment: PaymentModel) {
+        payment.status = PaymentStatus.LAUNCHED
         paymentRepository.save(payment)
     }
 
@@ -104,7 +104,7 @@ class PaymentService(
         return paymentRepository.findByCustomerService(customerService)
     }
 
-    fun findPaymentsByCustomerWithCustomerServiceWithStatusAberto(id: Long): List<PaymentModel> {
+    fun findPaymentsByCustomerWithCustomerServiceWithStatusOpen(id: Long): List<PaymentModel> {
         return paymentRepository.findPaymentsWithCustomerServiceWithStatusAberto(id)
     }
 

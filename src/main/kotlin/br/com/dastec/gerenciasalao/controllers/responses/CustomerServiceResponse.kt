@@ -1,6 +1,5 @@
 package br.com.dastec.gerenciasalao.controllers.responses
 
-import br.com.dastec.gerenciasalao.models.ServiceModel
 import br.com.dastec.gerenciasalao.models.enums.CustomerServiceStatus
 import com.fasterxml.jackson.annotation.JsonAlias
 import java.time.LocalDate
@@ -23,14 +22,15 @@ data class CustomerServiceResponse(
     @JsonAlias("paid_value")
     var paidValue: Double?,
 
-    @JsonAlias("customer_id")
-    var customer: CustomerResponse,
+    var customer: String,
+
+    var payments: MutableList<PaymentResponse>,
 
     @JsonAlias("services")
-    var services: MutableList<ServiceModel>,
+    var saleServices: MutableList<SaleServiceResponse>,
 
     var observation: String?,
-
+    
     @JsonAlias("status")
     var statusCustomerService: CustomerServiceStatus
 )

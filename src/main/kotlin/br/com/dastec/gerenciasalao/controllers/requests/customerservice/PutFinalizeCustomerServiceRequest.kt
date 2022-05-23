@@ -1,3 +1,5 @@
 package br.com.dastec.gerenciasalao.controllers.requests.customerservice
 
-class PutFinalizeCustomerServiceRequest
+data class PutFinalizeCustomerServiceRequest(
+    val observation: String?
+)

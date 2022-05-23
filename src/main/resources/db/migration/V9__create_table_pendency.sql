@@ -4,5 +4,5 @@ create table pendency(
 	value_pendency decimal(10,2) not null,
 	status varchar(50) not null,
 
-	foreign key(customer_service_id) references customer_service(id_customer_service)
+	foreign key(customer_service_id) references customer_services(id_customer_service)
 )

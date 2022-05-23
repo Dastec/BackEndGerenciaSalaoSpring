@@ -3,13 +3,13 @@ package br.com.dastec.gerenciasalao.models
 import javax.persistence.*
 
 @Entity
-@Table(name = "sale_service")
+@Table(name = "sale_services")
 data class SaleServiceModel(
 
     @Column(name = "id_sale_service")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val idSaleService: Long,
+    val idSaleService: Long? = null,
 
 
     @ManyToOne
@@ -18,7 +18,7 @@ data class SaleServiceModel(
 
     @ManyToOne
     @JoinColumn(name = "customer_service_id")
-    val customerService: CustomerServiceModel,
+    val customerService: CustomerServiceModel? = null,
 
     val price: Double
 

@@ -3,7 +3,7 @@ package br.com.dastec.gerenciasalao.models
 import javax.persistence.*
 
 @Entity
-@Table(name = "form_of_payment")
+@Table(name = "forms_of_payment")
 data class FormOfPaymentModel(
 
     @Column(name ="id_form_payment")

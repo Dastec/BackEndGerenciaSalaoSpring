@@ -25,14 +25,14 @@ class CategoryController(val categoryService: CategoryService) {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun create(@Valid @RequestBody postCategoryRequest: PostCategoryRequest): CreateResponse {
-        categoryService.create(postCategoryRequest.toCategoryModel())
+        categoryService.createCategory(postCategoryRequest.toCategoryModel())
         return CreateResponse("Categoria criada com sucesso")
     }
 
     @PutMapping("/{id}")
     fun update(@PathVariable id: Long, @Valid @RequestBody putCategoryRequest: PutCategoryRequest): CreateResponse {
         val previousCategory = categoryService.findById(id)
-        categoryService.update(putCategoryRequest.toCategoryModel(previousCategory))
+        categoryService.updateCategory(putCategoryRequest.toCategoryModel(previousCategory))
         return CreateResponse("Categoria atualizada com sucesso")
     }
 

@@ -6,14 +6,13 @@ import br.com.dastec.gerenciasalao.controllers.requests.customers.PutPhoneReques
 import br.com.dastec.gerenciasalao.exceptions.NotFoundException
 import br.com.dastec.gerenciasalao.exceptions.enums.Errors
 import br.com.dastec.gerenciasalao.models.CustomerModel
-import br.com.dastec.gerenciasalao.models.PhoneNumberModel
 import br.com.dastec.gerenciasalao.repositories.CustomerRepository
 import org.springframework.stereotype.Service
 
 @Service
 class CustomerService(private val customerRepository: CustomerRepository, private val phoneNumberService: PhoneNumberService) {
 
-    fun create(customerModel: CustomerModel, phones: List<PostPhoneRequest>){
+    fun createCustomer(customerModel: CustomerModel, phones: List<PostPhoneRequest>){
         val customer = customerRepository.save(customerModel)
 
         for (phone in phones){
@@ -21,7 +20,7 @@ class CustomerService(private val customerRepository: CustomerRepository, privat
         }
     }
 
-    fun update(customerModel: CustomerModel, phones: List<PutPhoneRequest>){
+    fun updateCustomer(customerModel: CustomerModel, phones: List<PutPhoneRequest>){
         if (customerRepository.existsById(customerModel.idCustomer)){
             val customer = customerRepository.save(customerModel)
 
@@ -35,7 +34,7 @@ class CustomerService(private val customerRepository: CustomerRepository, privat
         }
     }
 
-    fun delete(customerModel: CustomerModel){
+    fun deleteCustomer(customerModel: CustomerModel){
         customerRepository.save(customerModel)
     }
 
@@ -63,7 +62,7 @@ class CustomerService(private val customerRepository: CustomerRepository, privat
         return customerRepository.findByStatus(status)
     }
 
-    fun cpfAvaliable(cpf: String): Boolean {
+    fun cpfAvailable(cpf: String): Boolean {
         return !customerRepository.existsByCpf(cpf)
     }
 }

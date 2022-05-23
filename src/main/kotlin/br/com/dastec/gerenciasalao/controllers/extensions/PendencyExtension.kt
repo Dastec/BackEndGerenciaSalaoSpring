@@ -11,7 +11,7 @@ fun PostAddPendencyRequest.toPendencyModel(customerService: CustomerServiceModel
     return PendencyModel(
         customerService = customerService,
         valuePendency = this.valuePendency,
-        status = PendencyStatus.ABERTO
+        status = PendencyStatus.OPEN
     )
 }
 
@@ -29,6 +29,6 @@ fun PutFinishPendencyRequest.toPendencyModel(previouPendecy: PendencyModel): Pen
         idPendencyModel = previouPendecy.idPendencyModel,
         customerService = previouPendecy.customerService,
         valuePendency = 0.0,
-        status = PendencyStatus.PAGO
+        status = PendencyStatus.PAID
     )
 }

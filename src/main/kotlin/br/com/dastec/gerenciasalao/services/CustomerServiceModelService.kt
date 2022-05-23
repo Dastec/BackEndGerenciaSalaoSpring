@@ -1,32 +1,64 @@
 package br.com.dastec.gerenciasalao.services
 
+import br.com.dastec.gerenciasalao.exceptions.BadRequestException
 import br.com.dastec.gerenciasalao.exceptions.IllegalStateException
 import br.com.dastec.gerenciasalao.exceptions.NotFoundException
 import br.com.dastec.gerenciasalao.exceptions.enums.Errors
 import br.com.dastec.gerenciasalao.models.CustomerModel
 import br.com.dastec.gerenciasalao.models.CustomerServiceModel
 import br.com.dastec.gerenciasalao.repositories.CustomerServiceRepository
-import net.bytebuddy.asm.Advice.Return
 import org.springframework.stereotype.Service
 
 @Service
-class CustomerServiceModelService(private val customerServiceRepository: CustomerServiceRepository) {
+class CustomerServiceModelService(
+    private val customerServiceRepository: CustomerServiceRepository,
+    val saleServiceModelService: SaleServiceModelService
+) {
 
     fun startCustomerService(customerServiceModel: CustomerServiceModel) {
-        val customerServiceWithStatusOpen =
-            findByCustomerServiceWithStatusAberto(customerServiceModel.customer.idCustomer!!)
-        if (!customerServiceWithStatusOpen.isEmpty()) {
+        if (findByCustomerServiceWithStatusOpen(customerServiceModel.customer!!.idCustomer!!).isNotEmpty()
+        ) {
             throw IllegalStateException(
-                Errors.GS102.message.format(customerServiceModel.customer.alias),
+                Errors.GS102.message.format(customerServiceModel.customer!!.alias),
                 Errors.GS102.internalCode
             )
         }
+
+        if (saleServiceModelService.findByCustomerService(customerServiceModel).isEmpty()) {
+            throw BadRequestException(
+                Errors.GS508.message.format(customerServiceModel.idCustomerService),
+                Errors.GS508.internalCode
+            )
+        }
+
         customerServiceRepository.save(customerServiceModel)
     }
 
-    fun findByCustomerServiceWithStatusAberto(idCustomer: Long): List<CustomerServiceModel> {
-        return customerServiceRepository.findByCustomerServiceWithStatusAberto(idCustomer)
+    fun createCustomerService(customerServiceModel: CustomerServiceModel): CustomerServiceModel {
+        if (findByCustomerServiceWithStatusCreated(customerServiceModel.customer!!.idCustomer!!).isNotEmpty() || findByCustomerServiceWithStatusOpen(
+                customerServiceModel.customer!!.idCustomer!!
+            ).isNotEmpty()
+        ) {
+            throw IllegalStateException(
+                Errors.GS103.message.format(customerServiceModel.customer!!.alias),
+                Errors.GS103.internalCode
+            )
+        }
+        return customerServiceRepository.save(customerServiceModel)
     }
+
+    fun findByCustomerServiceWithStatusOpen(idCustomerService: Long): List<CustomerServiceModel> {
+        return customerServiceRepository.findByCustomerServiceWithStatusOpen(idCustomerService)
+    }
+
+    fun findByCustomerServiceWithStatusCreated(idCustomer: Long): List<CustomerServiceModel> {
+        return customerServiceRepository.findByCustomerServiceWithStatusCreated(idCustomer)
+    }
+
+    fun findByCustomerServiceWithStatusFinalizedPending(idCustomer: Long): List<CustomerServiceModel> {
+        return customerServiceRepository.findByCustomerServiceWithStatusFinalizedPending(idCustomer)
+    }
+
 
     fun updateCustomerService(customerServiceModel: CustomerServiceModel) {
         customerServiceRepository.save(customerServiceModel)
@@ -57,7 +89,7 @@ class CustomerServiceModelService(private val customerServiceRepository: Custome
         }
     }
 
-    fun findAllById(customer: CustomerModel): List<CustomerServiceModel> {
+    fun findAllByCustomer(customer: CustomerModel): List<CustomerServiceModel> {
         return customerServiceRepository.findByCustomer(customer)
     }
 

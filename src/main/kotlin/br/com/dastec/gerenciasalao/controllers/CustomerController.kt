@@ -28,21 +28,21 @@ class CustomerController(val customerService: CustomerService, val customerMappe
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun create(@Valid @RequestBody postCustomerRequest: PostCustomerModelRequest): CreateResponse {
-        customerService.create(postCustomerRequest.toCustomerModel(), postCustomerRequest.phoneNumber)
+        customerService.createCustomer(postCustomerRequest.toCustomerModel(), postCustomerRequest.phoneNumber)
         return CreateResponse("Cliente criado com sucesso")
     }
 
     @PutMapping("/{id}")
     fun update(@PathVariable id: Long, @Valid @RequestBody putCustomerRequest: PutCustomerModelRequest): CreateResponse {
         val customerModel: CustomerModel = customerService.findById(id)
-        customerService.update(putCustomerRequest.toCustomerModel(customerModel), putCustomerRequest.phoneNumber)
+        customerService.updateCustomer(putCustomerRequest.toCustomerModel(customerModel), putCustomerRequest.phoneNumber)
         return CreateResponse("Cliente Atualizada com sucesso")
     }
 
     @DeleteMapping("/{clientKey}")
     fun delete(@PathVariable clientKey: String): CreateResponse {
         val customerModel: CustomerModel = customerService.findByClientKey(clientKey)
-        customerService.delete(deleteCustomer(customerModel))
+        customerService.deleteCustomer(deleteCustomer(customerModel))
 
         return CreateResponse("Cliente deletada com sucesso")
     }

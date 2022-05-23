@@ -3,6 +3,7 @@ package br.com.dastec.gerenciasalao.controllers.mapper
 import br.com.dastec.gerenciasalao.controllers.requests.payments.PostPaymentServiceRequest
 import br.com.dastec.gerenciasalao.controllers.requests.payments.PostPaymentServiceWithPendencyRequest
 import br.com.dastec.gerenciasalao.controllers.requests.payments.PutPendecyServiceRequest
+import br.com.dastec.gerenciasalao.controllers.responses.PaymentResponse
 import br.com.dastec.gerenciasalao.models.PaymentModel
 import br.com.dastec.gerenciasalao.services.CustomerServiceModelService
 import br.com.dastec.gerenciasalao.services.FormOfPaymentService
@@ -101,5 +102,31 @@ class PaymentMapper(
             }
             paymentsObjects.removeIf { it.valuePayment == 0.0 }
         }
+    }
+
+    //Response
+    fun toPaymentResponse(payment: PaymentModel): PaymentResponse{
+        return PaymentResponse(
+            idPayment = payment.idPayment,
+            formOfPayment = payment.formOfPayment,
+            valuePayment = payment.valuePayment,
+            datePayment = payment.datePayment
+        )
+
+    }
+
+    fun toListPaymentResponse(payments: List<PaymentModel>): MutableList<PaymentResponse>{
+        var paymentResponses: MutableList<PaymentResponse> = mutableListOf()
+        for (payment in payments){
+            paymentResponses.add(
+                PaymentResponse(
+                    idPayment = payment.idPayment,
+                    formOfPayment = payment.formOfPayment,
+                    valuePayment = payment.valuePayment,
+                    datePayment = payment.datePayment
+                )
+            )
+        }
+        return paymentResponses
     }
 }

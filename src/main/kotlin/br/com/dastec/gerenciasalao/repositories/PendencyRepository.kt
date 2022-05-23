@@ -12,7 +12,7 @@ interface PendencyRepository : JpaRepository<PendencyModel, Long> {
 
     fun findByCustomerService(customerServiceModel: CustomerServiceModel): PendencyModel
 
-    @Query("SELECT p from PendencyModel p WHERE p.customerService.idCustomerService = ?1 and status = 'ABERTO'")
+    @Query("SELECT p from PendencyModel p WHERE p.customerService.idCustomerService = ?1 and status = 'OPEN'")
     fun findByCustomerServiceWhereStatusAberto(idCustomerService: Long): PendencyModel
 
 }

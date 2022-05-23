@@ -1,10 +1,12 @@
 package br.com.dastec.gerenciasalao.controllers.requests.customerservice
 
+import com.fasterxml.jackson.annotation.JsonAlias
+
 data class PutUpdateCustomerServiceRequest(
 
-    var customer: Long,
+    val customer: Long,
 
-    var services: Set<Long>,
+    @JsonAlias("customer_service")
+    val customerService: Long,
 
-    var observation: String?
-)
+    )

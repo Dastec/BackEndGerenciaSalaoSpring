@@ -5,13 +5,9 @@ import br.com.dastec.gerenciasalao.controllers.requests.payments.PostPaymentServ
 import br.com.dastec.gerenciasalao.controllers.requests.payments.PostPaymentServiceWithPendencyRequest
 import br.com.dastec.gerenciasalao.controllers.requests.payments.PutPendecyServiceRequest
 import br.com.dastec.gerenciasalao.controllers.responses.CreateResponse
-import br.com.dastec.gerenciasalao.exceptions.BadRequestException
-import br.com.dastec.gerenciasalao.exceptions.enums.Errors
 import br.com.dastec.gerenciasalao.models.PaymentModel
 import br.com.dastec.gerenciasalao.services.CustomerServiceModelService
-import br.com.dastec.gerenciasalao.services.FormOfPaymentService
 import br.com.dastec.gerenciasalao.services.PaymentService
-import br.com.dastec.gerenciasalao.services.PendencyService
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -81,9 +77,9 @@ class PaymentController(
         return paymentService.findPaymentByCustomerService(customerService)
     }
 
-    @GetMapping("/customerservicewithstatusaaberto/{id}")
+    @GetMapping("/customerservicewithstatusopen/{id}")
     fun findPaymentWithCustomerServiceWithStatus(@PathVariable id: Long): List<PaymentModel> {
         val customerService = customerServiceModelService.findById(id)
-        return paymentService.findPaymentsByCustomerWithCustomerServiceWithStatusAberto(customerService.idCustomerService!!)
+        return paymentService.findPaymentsByCustomerWithCustomerServiceWithStatusOpen(customerService.idCustomerService!!)
     }
 }

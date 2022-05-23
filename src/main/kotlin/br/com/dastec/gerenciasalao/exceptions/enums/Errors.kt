@@ -6,6 +6,7 @@ enum class Errors(val message: String, val internalCode: String) {
 
     GS101("Cliente nº%s não foi encontrado!", "GS-101"),
     GS102("Cliente %s já tem um atendimento em aberto!", "GS-102"),
+    GS103("Cliente %s já tem um atendimento criado ou aberto!", "GS-103"),
 
     GS201("Categoria nº%s não foi encontrada!", "GS-201"),
 
@@ -21,6 +22,9 @@ enum class Errors(val message: String, val internalCode: String) {
     GS503("Atendimento nº%s não está com status aberto!", "GS-503"),
     GS504("Atendimento nº%s não está com pendência!", "GS-504"),
     GS505("Atendimento nº%s já está cancelado!", "GS-505"),
+    GS506("Atendimento nº%s já está finalizado!", "GS-506"),
+    GS507("Não é possível adicionar duas vezes o mesmo serviço dentro do mesmo atendimento!", "GS-507"),
+    GS508("O atendimento não tem nenhum serviço adicionado!", "GS-508"),
 
     GS601("Pedência nº%s não foi encontrada!", "GS-601"),
 

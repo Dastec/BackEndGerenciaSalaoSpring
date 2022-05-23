@@ -4,7 +4,6 @@ import br.com.dastec.gerenciasalao.controllers.extensions.toServiceModel
 import br.com.dastec.gerenciasalao.controllers.requests.PostServiceRequest
 import br.com.dastec.gerenciasalao.controllers.requests.PutServiceRequest
 import br.com.dastec.gerenciasalao.controllers.responses.CreateResponse
-import br.com.dastec.gerenciasalao.models.CategoryModel
 import br.com.dastec.gerenciasalao.models.ServiceModel
 import br.com.dastec.gerenciasalao.services.CategoryService
 import br.com.dastec.gerenciasalao.services.ServiceModelService

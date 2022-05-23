@@ -1,7 +1,6 @@
 package br.com.dastec.gerenciasalao.models
 
 import br.com.dastec.gerenciasalao.models.enums.CustomerStatus
-import br.com.dastec.gerenciasalao.services.PhoneNumberService
 import java.time.LocalDate
 import javax.persistence.*
 
@@ -42,7 +41,7 @@ data class CustomerModel(
     @Enumerated(EnumType.STRING)
     var status: CustomerStatus? = null
         set(value) {
-            if (field == CustomerStatus.EXCLUIDO) {
+            if (field == CustomerStatus.EXCLUDED) {
                 throw Exception("Não é possivel alterar Status ${field}")
             }
             field = value

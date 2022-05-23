@@ -2,12 +2,11 @@ package br.com.dastec.gerenciasalao.controllers.requests.customerservice
 
 import br.com.dastec.gerenciasalao.models.CustomerModel
 import br.com.dastec.gerenciasalao.models.ServiceModel
+import com.fasterxml.jackson.annotation.JsonAlias
 
 data class PostStartCustomerServiceRequest(
 
-    var customer: Long,
+    @JsonAlias("customer_service")
+    val customerService: Long,
 
-    val services: Set<Long>,
-
-    val observation: String?
 )

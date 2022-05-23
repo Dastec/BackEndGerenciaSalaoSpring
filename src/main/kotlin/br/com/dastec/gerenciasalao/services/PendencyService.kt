@@ -43,20 +43,20 @@ class PendencyService(
         }
     }
 
-    fun findByCustomerServiceWhereStatusAberto(customerServiceModel: CustomerServiceModel): PendencyModel {
+    fun findByCustomerServiceWhereStatusOpen(customerServiceModel: CustomerServiceModel): PendencyModel {
         return pendencyRepository.findByCustomerServiceWhereStatusAberto(customerServiceModel.idCustomerService!!)
     }
 
     fun findAllByCustomerService(customerServices: Set<CustomerServiceModel>): MutableList<PendencyModel> {
         val pendencies = mutableListOf<PendencyModel>()
         for (customerService in customerServices) {
-            if (customerService.statusCustomerService != CustomerServiceStatus.FINALIZADOCOMPENDENCIA) {
+            if (customerService.statusCustomerService != CustomerServiceStatus.FINALIZEDPENDING) {
                 throw BadRequestException(
                     Errors.GS504.message.format(customerService.idCustomerService),
                     Errors.GS504.internalCode
                 )
             }
-            pendencies.add(findByCustomerServiceWhereStatusAberto(customerService))
+            pendencies.add(findByCustomerServiceWhereStatusOpen(customerService))
         }
         return pendencies
     }

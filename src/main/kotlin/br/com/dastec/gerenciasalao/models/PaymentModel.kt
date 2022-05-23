@@ -1,12 +1,11 @@
 package br.com.dastec.gerenciasalao.models
 
 import br.com.dastec.gerenciasalao.models.enums.PaymentStatus
-import java.math.BigDecimal
 import java.time.LocalDate
 import javax.persistence.*
 
 @Entity
-@Table(name = "payment")
+@Table(name = "payments")
 data class PaymentModel(
 
     @Column(name = "id_payment")
@@ -31,5 +30,5 @@ data class PaymentModel(
 
     @Enumerated(EnumType.STRING)
     @Column(name = "payment_status")
-    var status: PaymentStatus = PaymentStatus.ABERTO
+    var status: PaymentStatus = PaymentStatus.OPEN
 )

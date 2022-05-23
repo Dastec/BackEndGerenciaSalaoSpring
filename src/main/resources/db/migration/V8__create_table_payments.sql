@@ -1,4 +1,4 @@
-create table payment(
+create table payments(
 	id_payment bigint primary key auto_increment,
 	form_payment_id bigint not null,
 	customer_service_id bigint not null,
@@ -6,6 +6,6 @@ create table payment(
 	date_payment date not null,
 	payment_status varchar(30),
 
-	foreign key(form_payment_id) references form_of_payment(id_form_payment),
-	foreign key(customer_service_id) references customer_service(id_customer_service)
+	foreign key(form_payment_id) references forms_of_payment(id_form_payment),
+	foreign key(customer_service_id) references customer_services(id_customer_service)
 )

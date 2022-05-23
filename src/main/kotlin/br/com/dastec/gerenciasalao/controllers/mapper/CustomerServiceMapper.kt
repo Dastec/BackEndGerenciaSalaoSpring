@@ -1,8 +1,11 @@
 package br.com.dastec.gerenciasalao.controllers.mapper
 
+import br.com.dastec.gerenciasalao.controllers.requests.customerservice.PostCreateCustomerServiceRequest
 import br.com.dastec.gerenciasalao.controllers.requests.customerservice.PostStartCustomerServiceRequest
+import br.com.dastec.gerenciasalao.controllers.requests.customerservice.PutFinalizeCustomerServiceRequest
 import br.com.dastec.gerenciasalao.controllers.requests.customerservice.PutUpdateCustomerServiceRequest
 import br.com.dastec.gerenciasalao.controllers.responses.CustomerServiceResponse
+import br.com.dastec.gerenciasalao.controllers.responses.CustomerServiceWithPendencyResponse
 import br.com.dastec.gerenciasalao.controllers.responses.FinalizeCustomerServiceResponse
 import br.com.dastec.gerenciasalao.models.CustomerServiceModel
 import br.com.dastec.gerenciasalao.models.PendencyModel
@@ -19,46 +22,60 @@ class CustomerServiceMapper(
     private val paymentService: PaymentService,
     private val pendencyService: PendencyService,
     private val formOfPaymentService: FormOfPaymentService,
-    private val customerMapper: CustomerMapper
+    private val customerMapper: CustomerMapper,
+    private val saleServiceModelService: SaleServiceModelService,
+    private val saleServiceMapper: SaleServiceMapper,
+    private val paymentMapper: PaymentMapper,
+    private val pendencyMapper: PendencyMapper
 ) {
 
-    fun postStartRequestToModel(postStartCustomerServiceRequest: PostStartCustomerServiceRequest): CustomerServiceModel {
-        val customer = customerService.findById(postStartCustomerServiceRequest.customer)
-        var services = serviceModelService.findByIds(postStartCustomerServiceRequest.services)
-
+    fun createCustomerModel(postCreateCustomerServiceRequest: PostCreateCustomerServiceRequest): CustomerServiceModel {
+        val customer = customerService.findById(postCreateCustomerServiceRequest.customer)
         return CustomerServiceModel(
             endTime = null,
-            totalValue = services.sumOf { it.price!! },
+            totalValue = null,
             customer = customer,
-            services = services,
-            observation = postStartCustomerServiceRequest.observation
+            observation = null
+        )
+    }
+
+    fun postStartRequestToModel(postStartCustomerServiceRequest: PostStartCustomerServiceRequest): CustomerServiceModel {
+        val customerService = customerServiceModelService.findById(postStartCustomerServiceRequest.customerService)
+        var saleServices = saleServiceModelService.findByCustomerService(customerService)
+
+        return CustomerServiceModel(
+            idCustomerService = customerService.idCustomerService,
+            endTime = null,
+            totalValue = saleServices.sumOf { it.price },
+            customer = customerService.customer,
+            saleServices = saleServices,
+            statusCustomerService = CustomerServiceStatus.OPEN,
+            observation = null
         )
     }
 
     fun putUpdateRequestToModel(
         putUpdateCustomerServiceRequest: PutUpdateCustomerServiceRequest,
-        previouCustomerService: CustomerServiceModel
     ): CustomerServiceModel {
         val customer = customerService.findById(putUpdateCustomerServiceRequest.customer)
-        var services = serviceModelService.findByIds(putUpdateCustomerServiceRequest.services)
+        val previousCustomerService = customerServiceModelService.findById(putUpdateCustomerServiceRequest.customerService)
+        var saleServices = saleServiceModelService.findByCustomerService(previousCustomerService)
 
         return CustomerServiceModel(
-            idCustomerService = previouCustomerService.idCustomerService,
-            dateCustomerService = previouCustomerService.dateCustomerService,
-            startTime = previouCustomerService.startTime,
-            endTime = previouCustomerService.endTime,
-            totalValue = services.sumOf { it.price!! },
-            paidValue = previouCustomerService.paidValue,
+            idCustomerService = previousCustomerService.idCustomerService,
+            startTime = previousCustomerService.startTime,
+            endTime = null,
+            totalValue = saleServices.sumOf { it.price },
             customer = customer,
-            services = services,
-            observation = putUpdateCustomerServiceRequest.observation,
-            statusCustomerService = previouCustomerService.statusCustomerService
+            saleServices = saleServices,
+            statusCustomerService = previousCustomerService.statusCustomerService,
+            observation = null
         )
     }
 
-    fun putFinalizeRequestToModel(previousCustomerService: CustomerServiceModel): CustomerServiceModel {
+    fun putFinalizeRequestToModel(previousCustomerService: CustomerServiceModel, putFinalizeCustomerServiceRequest: PutFinalizeCustomerServiceRequest): CustomerServiceModel {
         val payments =
-            paymentService.findPaymentsByCustomerWithCustomerServiceWithStatusAberto(previousCustomerService.idCustomerService!!)
+            paymentService.findPaymentsByCustomerWithCustomerServiceWithStatusOpen(previousCustomerService.idCustomerService!!)
         val paidValue = payments.sumOf { it.valuePayment }
 
         if (paidValue < previousCustomerService.totalValue!!) {
@@ -68,13 +85,13 @@ class CustomerServiceMapper(
                     valuePendency = previousCustomerService.totalValue!! - paidValue
                 )
             )
-            previousCustomerService.statusCustomerService = CustomerServiceStatus.FINALIZADOCOMPENDENCIA
+            previousCustomerService.statusCustomerService = CustomerServiceStatus.FINALIZEDPENDING
         } else {
-            previousCustomerService.statusCustomerService = CustomerServiceStatus.FINALIZADO
+            previousCustomerService.statusCustomerService = CustomerServiceStatus.FINISHED
         }
 
         for (payment in payments) {
-            paymentService.updateStatusLancado(payment)
+            paymentService.updateStatusLaunched(payment)
         }
 
         return CustomerServiceModel(
@@ -85,8 +102,8 @@ class CustomerServiceMapper(
             totalValue = previousCustomerService.totalValue,
             paidValue = paidValue,
             customer = previousCustomerService.customer,
-            services = previousCustomerService.services,
-            observation = previousCustomerService.observation,
+            saleServices = previousCustomerService.saleServices,
+            observation = putFinalizeCustomerServiceRequest.observation,
             statusCustomerService = previousCustomerService.statusCustomerService
         )
     }
@@ -103,13 +120,16 @@ class CustomerServiceMapper(
             totalValue = previousCustomerService.totalValue,
             paidValue = previousCustomerService.paidValue,
             customer = previousCustomerService.customer,
-            services = previousCustomerService.services,
+            saleServices  = previousCustomerService.saleServices,
             observation = previousCustomerService.observation,
-            statusCustomerService = CustomerServiceStatus.CANCELADO
+            statusCustomerService = CustomerServiceStatus.CANCELLED
         )
     }
 
+    //Responses
     fun toCustomerServiceResponse(customerService: CustomerServiceModel): CustomerServiceResponse {
+        val saleServicesResponse = saleServiceMapper.toSaleServiceResponse(saleServiceModelService.findByCustomerService(customerService))
+        val paymentsResponse =  paymentMapper.toListPaymentResponse(paymentService.findPaymentByCustomerService(customerService))
         return CustomerServiceResponse(
             idCustomerService = customerService.idCustomerService,
             dateCustomerService = customerService.dateCustomerService,
@@ -117,8 +137,9 @@ class CustomerServiceMapper(
             endTime = customerService.endTime,
             totalValue = customerService.totalValue,
             paidValue = customerService.paidValue,
-            customer = customerMapper.toCustomerResponse(customerService.customer),
-            services = customerService.services,
+            customer = customerService.customer!!.alias,
+            payments = paymentsResponse,
+            saleServices = saleServicesResponse,
             observation = customerService.observation,
             statusCustomerService = customerService.statusCustomerService
 
@@ -128,7 +149,10 @@ class CustomerServiceMapper(
     fun toListCustomerServiceResponse(customerServices: List<CustomerServiceModel>): MutableList<CustomerServiceResponse> {
         val customerServicesResponse: MutableList<CustomerServiceResponse> = mutableListOf()
 
+
         for (customerService in customerServices) {
+            val saleServicesResponse = saleServiceMapper.toSaleServiceResponse(saleServiceModelService.findByCustomerService(customerService))
+            val paymentsResponse =  paymentMapper.toListPaymentResponse(paymentService.findPaymentByCustomerService(customerService))
             val customerServiceResponse = CustomerServiceResponse(
                 idCustomerService = customerService.idCustomerService,
                 dateCustomerService = customerService.dateCustomerService,
@@ -136,11 +160,11 @@ class CustomerServiceMapper(
                 endTime = customerService.endTime,
                 totalValue = customerService.totalValue,
                 paidValue = customerService.paidValue,
-                customer = customerMapper.toCustomerResponse(customerService.customer),
-                services = customerService.services,
+                customer = customerService.customer!!.alias,
+                payments = paymentsResponse,
+                saleServices = saleServicesResponse,
                 observation = customerService.observation,
                 statusCustomerService = customerService.statusCustomerService
-
             )
             customerServicesResponse.add(customerServiceResponse)
         }
@@ -151,10 +175,58 @@ class CustomerServiceMapper(
         return FinalizeCustomerServiceResponse(
             statusCustomerService = customerService.statusCustomerService,
             idCustomerService = customerService.idCustomerService,
-            customer = customerService.customer.alias,
+            customer = customerService.customer!!.alias,
             totalValue = customerService.totalValue,
             paidValue = customerService.paidValue,
             pendingValue = (customerService.totalValue!! - customerService.paidValue!!),
         )
+    }
+
+    fun toCustomerServiceWithPendencyResponse(customerService: CustomerServiceModel): CustomerServiceWithPendencyResponse {
+        val saleServicesResponse = saleServiceMapper.toSaleServiceResponse(saleServiceModelService.findByCustomerService(customerService))
+        val paymentsResponse =  paymentMapper.toListPaymentResponse(paymentService.findPaymentByCustomerService(customerService))
+        val pendency = pendencyMapper.toPendencyResponse(pendencyService.findByCustomerService(customerService))
+        return CustomerServiceWithPendencyResponse(
+            idCustomerService = customerService.idCustomerService,
+            dateCustomerService = customerService.dateCustomerService,
+            startTime = customerService.startTime,
+            endTime = customerService.endTime,
+            totalValue = customerService.totalValue,
+            paidValue = customerService.paidValue,
+            customer = customerService.customer!!.alias,
+            payments = paymentsResponse,
+            saleServices = saleServicesResponse,
+            observation = customerService.observation,
+            pendency = pendency,
+            statusCustomerService = customerService.statusCustomerService
+
+        )
+    }
+
+    fun toListCustomerServiceWithPendencyResponse(customerServices: List<CustomerServiceModel>): MutableList<CustomerServiceWithPendencyResponse> {
+        val customerServicesWithPendencyResponse: MutableList<CustomerServiceWithPendencyResponse> = mutableListOf()
+
+
+        for (customerService in customerServices) {
+            val saleServicesResponse = saleServiceMapper.toSaleServiceResponse(saleServiceModelService.findByCustomerService(customerService))
+            val paymentsResponse =  paymentMapper.toListPaymentResponse(paymentService.findPaymentByCustomerService(customerService))
+            val pendency = pendencyMapper.toPendencyResponse(pendencyService.findByCustomerService(customerService))
+            val customerServiceWithPendencyResponse = CustomerServiceWithPendencyResponse(
+                idCustomerService = customerService.idCustomerService,
+                dateCustomerService = customerService.dateCustomerService,
+                startTime = customerService.startTime,
+                endTime = customerService.endTime,
+                totalValue = customerService.totalValue,
+                paidValue = customerService.paidValue,
+                customer = customerService.customer!!.alias,
+                payments = paymentsResponse,
+                saleServices = saleServicesResponse,
+                observation = customerService.observation,
+                pendency = pendency,
+                statusCustomerService = customerService.statusCustomerService
+            )
+            customerServicesWithPendencyResponse.add(customerServiceWithPendencyResponse)
+        }
+        return customerServicesWithPendencyResponse
     }
 }

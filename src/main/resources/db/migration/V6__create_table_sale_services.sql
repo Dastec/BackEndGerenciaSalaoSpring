@@ -1,7 +1,9 @@
-create table pendency(
+create table sale_services(
 	id_sale_service bigint primary key auto_increment,
 	service_id bigint not null,
 	price decimal(10,2) not null,
+	customer_service_id bigint,
 
 	foreign key(service_id) references services(id_service),
-)
+	foreign key(customer_service_id) references customer_services(id_customer_service)
+);
