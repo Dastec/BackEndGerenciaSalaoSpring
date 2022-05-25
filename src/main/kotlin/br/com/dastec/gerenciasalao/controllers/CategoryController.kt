@@ -24,7 +24,7 @@ class CategoryController(val categoryService: CategoryService) {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun create(@Valid @RequestBody postCategoryRequest: PostCategoryRequest): CreateResponse {
+    fun createCategory(@Valid @RequestBody postCategoryRequest: PostCategoryRequest): CreateResponse {
         categoryService.createCategory(postCategoryRequest.toCategoryModel())
         return CreateResponse("Categoria criada com sucesso")
     }

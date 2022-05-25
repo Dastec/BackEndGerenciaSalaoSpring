@@ -18,19 +18,17 @@ class ControllerAdvice {
 
     @ExceptionHandler(BadRequestException::class)
     fun handleBadRequestException(ex: BadRequestException, request: WebRequest): ResponseEntity<ErrorResponse>{
-        val erro = ErrorResponse(
-            HttpStatus.BAD_REQUEST.value(),
+        val error = ErrorResponse(
             ex.message,
             ex.errorCode,
             null
         )
-        return ResponseEntity(erro, HttpStatus.BAD_REQUEST)
+        return ResponseEntity(error, HttpStatus.BAD_REQUEST)
     }
 
     @ExceptionHandler(NotFoundException::class)
     fun handleNotFoundException(ex: NotFoundException, request: WebRequest): ResponseEntity<ErrorResponse> {
         val error = ErrorResponse(
-            HttpStatus.NOT_FOUND.value(),
             ex.message,
             ex.errorCode,
             null
@@ -38,14 +36,12 @@ class ControllerAdvice {
         return ResponseEntity(error, HttpStatus.NOT_FOUND)
     }
 
-
     @ExceptionHandler(MethodArgumentNotValidException::class)
     fun handleMethodArgumentNotValidException(
         ex: MethodArgumentNotValidException,
         request: WebRequest
     ): ResponseEntity<ErrorResponse> {
         val error = ErrorResponse(
-            HttpStatus.BAD_REQUEST.value(),
             Errors.GS001.message,
             Errors.GS001.internalCode,
             ex.bindingResult.fieldErrors.map { FieldErrorResponse(it.defaultMessage ?: "Invalid", it.field) }
@@ -56,7 +52,6 @@ class ControllerAdvice {
     @ExceptionHandler(CustomerServiceHasNoPendingException::class)
     fun handleCustomerServiceHasNoPendingException(ex: CustomerServiceHasNoPendingException, request: WebRequest): ResponseEntity<ErrorResponse> {
         val error = ErrorResponse(
-            HttpStatus.BAD_REQUEST.value(),
             ex.message,
             ex.errorCode,
             null
@@ -67,7 +62,6 @@ class ControllerAdvice {
     @ExceptionHandler(IllegalStateException::class)
     fun handleIllegalStateException(ex: IllegalStateException, request: WebRequest): ResponseEntity<ErrorResponse> {
         val error = ErrorResponse(
-            HttpStatus.BAD_REQUEST.value(),
             ex.message,
             ex.errorCode,
             null

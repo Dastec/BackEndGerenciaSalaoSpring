@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
+import javax.validation.Valid
 
 @RestController
 @RequestMapping("api/v1/payment")
@@ -28,7 +29,7 @@ class PaymentController(
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun payService(@RequestBody postPaymentServiceRequest: PostPaymentServiceRequest): CreateResponse {
+    fun payService(@Valid @RequestBody postPaymentServiceRequest: PostPaymentServiceRequest): CreateResponse {
         paymentService.payService(paymentMapper.postPaymentServiceRequestToPaymentModel(postPaymentServiceRequest))
         return CreateResponse("Pagamento incluído com sucesso")
     }
@@ -37,7 +38,7 @@ class PaymentController(
     //Esse endpoint é para teste
     @PostMapping("/paypendency/test")
     @ResponseStatus(HttpStatus.CREATED)
-    fun payServicePendencyTest(@RequestBody postPaymentServiceRequest: PostPaymentServiceRequest) {
+    fun payServicePendencyTest(@Valid @RequestBody postPaymentServiceRequest: PostPaymentServiceRequest) {
         paymentService.payServiceWithPendency(
             paymentMapper.postPaymentPendencyServiceRequestToPaymentModel(
                 postPaymentServiceRequest
@@ -48,14 +49,14 @@ class PaymentController(
 
     @PostMapping("/paypendencies")
     @ResponseStatus(HttpStatus.CREATED)
-    fun payServicePendency(@RequestBody postPaymentServiceWithPendencyRequest: PostPaymentServiceWithPendencyRequest): CreateResponse {
+    fun payServicePendency(@Valid @RequestBody postPaymentServiceWithPendencyRequest: PostPaymentServiceWithPendencyRequest): CreateResponse {
         paymentService.validPaymentPendency(postPaymentServiceWithPendencyRequest)
         paymentMapper.postPayPendencyRequestToPaymentModel(postPaymentServiceWithPendencyRequest)
         return CreateResponse("Pagamento incluído com sucesso")
     }
 
     @PutMapping
-    fun updatePayService(@PathVariable id: Long, @RequestBody putPaymentServiceRequest: PutPendecyServiceRequest): CreateResponse {
+    fun updatePayService(@PathVariable id: Long, @Valid @RequestBody putPaymentServiceRequest: PutPendecyServiceRequest): CreateResponse {
         val previousPayment = paymentService.findById(id)
         paymentService.updatePayService(
             paymentMapper.putPaymentServiceRequestToPaymentModel(

@@ -24,10 +24,10 @@ class CustomerService(private val customerRepository: CustomerRepository, privat
         if (customerRepository.existsById(customerModel.idCustomer)){
             val customer = customerRepository.save(customerModel)
 
-            val previusPhones = phoneNumberService.findAllByCustomerId(customer.idCustomer!!)
+            val previousPhones = phoneNumberService.findAllByCustomerId(customer.idCustomer!!)
 
             for (phone in phones){
-                phoneNumberService.update(phone.toPhoneNumberModel(previusPhones!![phones.indexOf(phone)]))
+                phoneNumberService.update(phone.toPhoneNumberModel(previousPhones!![phones.indexOf(phone)]))
             }
         }else{
             throw Exception("Usuario não encontrado")

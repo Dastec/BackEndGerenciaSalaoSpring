@@ -23,8 +23,9 @@ enum class Errors(val message: String, val internalCode: String) {
     GS504("Atendimento nº%s não está com pendência!", "GS-504"),
     GS505("Atendimento nº%s já está cancelado!", "GS-505"),
     GS506("Atendimento nº%s já está finalizado!", "GS-506"),
-    GS507("Não é possível adicionar duas vezes o mesmo serviço dentro do mesmo atendimento!", "GS-507"),
+    GS507("Não é possível adicionar duas vezes o mesmo serviço dentro de um atendimento!", "GS-507"),
     GS508("O atendimento não tem nenhum serviço adicionado!", "GS-508"),
+    GS509("Nenhum atendimento encontrado!", "GS-509"),
 
     GS601("Pedência nº%s não foi encontrada!", "GS-601"),
 

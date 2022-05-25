@@ -16,6 +16,6 @@ interface SaleServiceRepository: JpaRepository<SaleServiceModel, Long> {
 
     fun findByCustomerService(customerServiceModel: CustomerServiceModel): MutableList<SaleServiceModel>
 
-    @Query(value = "select u from SaleServiceModel u where u.service.idService = ?1 and u.customerService.idCustomerService = ?2 ")
+    @Query(value = "select u from SaleServiceModel u where u.customerService.idCustomerService = ?1 and u.service.idService = ?2")
     fun findByCustomerServiceAndService(idCustomerService: Long, idServiceModel: Long): MutableList<SaleServiceModel>
 }

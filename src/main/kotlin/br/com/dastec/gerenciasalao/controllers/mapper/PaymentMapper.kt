@@ -4,6 +4,8 @@ import br.com.dastec.gerenciasalao.controllers.requests.payments.PostPaymentServ
 import br.com.dastec.gerenciasalao.controllers.requests.payments.PostPaymentServiceWithPendencyRequest
 import br.com.dastec.gerenciasalao.controllers.requests.payments.PutPendecyServiceRequest
 import br.com.dastec.gerenciasalao.controllers.responses.PaymentResponse
+import br.com.dastec.gerenciasalao.exceptions.BadRequestException
+import br.com.dastec.gerenciasalao.exceptions.enums.Errors
 import br.com.dastec.gerenciasalao.models.PaymentModel
 import br.com.dastec.gerenciasalao.services.CustomerServiceModelService
 import br.com.dastec.gerenciasalao.services.FormOfPaymentService
@@ -56,13 +58,10 @@ class PaymentMapper(
 
     fun postPayPendencyRequestToPaymentModel(postPaymentServiceWithPendencyRequest: PostPaymentServiceWithPendencyRequest) {
         //Lista de atendimentos
-        var customerServices =
-            customerServiceModelService.findAllByIds(postPaymentServiceWithPendencyRequest.customerServices)
-                .sortedBy { it.idCustomerService }
+        var customerServices = customerServiceModelService.findAllByIds(postPaymentServiceWithPendencyRequest.customerServices).sortedBy { it.idCustomerService }
 
         //valores ordenados dec
-        var paymentsObjects =
-            postPaymentServiceWithPendencyRequest.paymentObject.sortedBy { it.valuePayment.dec() }.toMutableList()
+        var paymentsObjects = postPaymentServiceWithPendencyRequest.paymentObject.sortedBy { it.valuePayment.dec() }.toMutableList()
 
         forCustomerService@ for (customerService in customerServices) {
             val customerServiceCurrent = customerServiceModelService.findById(customerService.idCustomerService!!)

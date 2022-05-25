@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
+import javax.validation.Valid
 
 @RestController
 @RequestMapping("api/v1/customerservices")
@@ -34,9 +35,9 @@ class CustomerServiceController(
     private val customerService: CustomerService
 ) {
 
-    @PostMapping
+    @PostMapping("/start")
     @ResponseStatus(HttpStatus.CREATED)
-    fun startCustomerService(@RequestBody postStartCustomerServiceRequest: PostStartCustomerServiceRequest): CreateResponse {
+    fun startCustomerService(@Valid @RequestBody postStartCustomerServiceRequest: PostStartCustomerServiceRequest): CreateResponse {
         customerServiceModelService.startCustomerService(
             customerServiceMapper.postStartRequestToModel(
                 postStartCustomerServiceRequest
@@ -48,7 +49,7 @@ class CustomerServiceController(
 
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
-    fun createCustomerService(@RequestBody postCreateCustomerServiceRequest: PostCreateCustomerServiceRequest): CustomerServiceModel {
+    fun createCustomerService(@Valid @RequestBody postCreateCustomerServiceRequest: PostCreateCustomerServiceRequest): CustomerServiceModel {
         return customerServiceModelService.createCustomerService(
             customerServiceMapper.createCustomerModel(
                 postCreateCustomerServiceRequest
@@ -57,7 +58,7 @@ class CustomerServiceController(
     }
 
     @PutMapping()
-    fun updateCustomerService(@RequestBody putUpdateCustomerServiceRequest: PutUpdateCustomerServiceRequest): CreateResponse {
+    fun updateCustomerService(@Valid @RequestBody putUpdateCustomerServiceRequest: PutUpdateCustomerServiceRequest): CreateResponse {
         customerServiceModelService.updateCustomerService(
             customerServiceMapper.putUpdateRequestToModel(
                 putUpdateCustomerServiceRequest
@@ -86,7 +87,7 @@ class CustomerServiceController(
     @PutMapping("finalize/{id}")
     fun finalizeCustomerService(
         @PathVariable id: Long,
-        @RequestBody putFinalizeCustomerServiceRequest: PutFinalizeCustomerServiceRequest
+        @Valid @RequestBody putFinalizeCustomerServiceRequest: PutFinalizeCustomerServiceRequest
     ): FinalizeCustomerServiceResponse {
         var previousCustomerService = customerServiceModelService.findById(id)
         if (previousCustomerService.statusCustomerService == CustomerServiceStatus.FINALIZEDPENDING || previousCustomerService.statusCustomerService == CustomerServiceStatus.FINISHED) {

@@ -54,7 +54,7 @@ class PaymentService(
 
     fun payServiceWithPendency(payment: PaymentModel) {
         val customerService = customerServiceModelService.findById(payment.customerService.idCustomerService!!)
-        if (customerService.statusCustomerService == CustomerServiceStatus.FINISHED) {
+        if (customerService.statusCustomerService == CustomerServiceStatus.FINISHED || customerService.statusCustomerService == CustomerServiceStatus.OPEN) {
             throw BadRequestException(
                 Errors.GS504.message.format(customerService.idCustomerService),
                 Errors.GS504.internalCode

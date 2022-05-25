@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
+import javax.validation.Valid
 
 @RestController
 @RequestMapping("/api/v1/service")
@@ -23,7 +24,7 @@ class SeviceController(val serviceModelService: ServiceModelService, val categor
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun create(@RequestBody postServiceRequest: PostServiceRequest): CreateResponse {
+    fun create(@Valid @RequestBody postServiceRequest: PostServiceRequest): CreateResponse {
         val category = categoryService.findById(postServiceRequest.idCategory)
         serviceModelService.create(postServiceRequest.toServiceModel(category))
 
@@ -31,7 +32,7 @@ class SeviceController(val serviceModelService: ServiceModelService, val categor
     }
 
     @PutMapping("/{id}")
-    fun update(@PathVariable id: Long, @RequestBody putServiceRequest: PutServiceRequest): CreateResponse {
+    fun update(@PathVariable id: Long, @Valid @RequestBody putServiceRequest: PutServiceRequest): CreateResponse {
         val category = categoryService.findById(putServiceRequest.idCategory)
         val service = serviceModelService.findById(id)
 

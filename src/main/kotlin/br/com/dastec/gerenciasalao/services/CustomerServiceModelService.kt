@@ -18,7 +18,7 @@ class CustomerServiceModelService(
     fun startCustomerService(customerServiceModel: CustomerServiceModel) {
         if (findByCustomerServiceWithStatusOpen(customerServiceModel.customer!!.idCustomer!!).isNotEmpty()
         ) {
-            throw IllegalStateException(
+            throw BadRequestException(
                 Errors.GS102.message.format(customerServiceModel.customer!!.alias),
                 Errors.GS102.internalCode
             )
@@ -39,7 +39,7 @@ class CustomerServiceModelService(
                 customerServiceModel.customer!!.idCustomer!!
             ).isNotEmpty()
         ) {
-            throw IllegalStateException(
+            throw BadRequestException(
                 Errors.GS103.message.format(customerServiceModel.customer!!.alias),
                 Errors.GS103.internalCode
             )
@@ -73,9 +73,6 @@ class CustomerServiceModelService(
     }
 
     fun finalizeCustomerServicePendencyStatus(customerServiceModel: CustomerServiceModel) {
-//        if (customerServiceModel.statusCustomerService == CustomerServiceStatus.ABERTO  || customerServiceModel.statusCustomerService == CustomerServiceStatus.FINALIZADO){
-//            throw IllegalStateException(Errors.GS504.message.format(customerServiceModel.idCustomerService), Errors.GS504.internalCode)
-//        }
         customerServiceRepository.save(customerServiceModel)
     }
 

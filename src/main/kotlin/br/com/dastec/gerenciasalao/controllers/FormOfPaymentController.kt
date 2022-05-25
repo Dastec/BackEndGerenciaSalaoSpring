@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
+import javax.validation.Valid
 
 @RestController
 @RequestMapping("api/v1/formpayment")
@@ -23,14 +24,14 @@ class FormOfPaymentController(private val formOfPaymentService: FormOfPaymentSer
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun create(@RequestBody postFormPaymentRequest: PostFormPaymentRequest): CreateResponse {
+    fun create(@Valid @RequestBody postFormPaymentRequest: PostFormPaymentRequest): CreateResponse {
         formOfPaymentService.create(postFormPaymentRequest.toFormOfPayment())
         return CreateResponse("Forma de pagamento criada com sucesso")
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.CREATED)
-    fun update(@PathVariable id: Long, @RequestBody putFormPaymentRequest: PutFormPaymentRequest): CreateResponse {
+    fun update(@PathVariable id: Long, @Valid @RequestBody putFormPaymentRequest: PutFormPaymentRequest): CreateResponse {
         val previouFormPayment = formOfPaymentService.findById(id)
         formOfPaymentService.create(putFormPaymentRequest.toFormOfPayment(previouFormPayment))
         return CreateResponse("Forma de pagamento atualizada com sucesso")
