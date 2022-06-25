@@ -31,5 +31,7 @@ enum class Errors(val message: String, val internalCode: String) {
 
     GS701("Pagamento nº%s não foi encontrado!", "GS-701"),
     GS702("Pagamento ultrapassa o valor do atendimento %s!", "GS-702"),
-    GS703("Pagamento ultrapassa o valor dos atendimentos selecionados!", "GS-703")
+    GS703("Pagamento ultrapassa o valor dos atendimentos selecionados!", "GS-703"),
+
+    GS1001("A senhas e a confimarção devem ser iguais!", "GS-1001")
 }

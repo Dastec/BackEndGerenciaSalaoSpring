@@ -1,9 +1,6 @@
 package br.com.dastec.gerenciasalao.exceptions.controller
 
-import br.com.dastec.gerenciasalao.exceptions.BadRequestException
-import br.com.dastec.gerenciasalao.exceptions.CustomerServiceHasNoPendingException
-import br.com.dastec.gerenciasalao.exceptions.IllegalStateException
-import br.com.dastec.gerenciasalao.exceptions.NotFoundException
+import br.com.dastec.gerenciasalao.exceptions.*
 import br.com.dastec.gerenciasalao.exceptions.enums.Errors
 import br.com.dastec.gerenciasalao.exceptions.response.ErrorResponse
 import br.com.dastec.gerenciasalao.exceptions.response.FieldErrorResponse
@@ -61,6 +58,16 @@ class ControllerAdvice {
 
     @ExceptionHandler(IllegalStateException::class)
     fun handleIllegalStateException(ex: IllegalStateException, request: WebRequest): ResponseEntity<ErrorResponse> {
+        val error = ErrorResponse(
+            ex.message,
+            ex.errorCode,
+            null
+        )
+        return ResponseEntity(error, HttpStatus.BAD_REQUEST)
+    }
+
+    @ExceptionHandler(PasswordInvalidException::class)
+    fun handlePasswordInvalidException(ex: CustomerServiceHasNoPendingException, request: WebRequest): ResponseEntity<ErrorResponse> {
         val error = ErrorResponse(
             ex.message,
             ex.errorCode,

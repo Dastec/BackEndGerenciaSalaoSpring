@@ -24,6 +24,7 @@ extra["springCloudVersion"] = "2021.0.2-SNAPSHOT"
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-web")
+	implementation("org.springframework.boot:spring-boot-starter-security")
 
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
@@ -42,6 +43,13 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-devtools")
 	runtimeOnly("mysql:mysql-connector-java")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
+
+	// https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt
+	implementation ("io.jsonwebtoken:jjwt:0.9.1")
+
+	// https://mvnrepository.com/artifact/com.google.code.gson/gson
+	implementation ("com.google.code.gson:gson:2.9.0")
+
 }
 
 tasks.withType<Test> {

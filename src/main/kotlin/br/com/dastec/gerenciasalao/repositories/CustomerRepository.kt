@@ -14,6 +14,8 @@ interface CustomerRepository: JpaRepository<CustomerModel, Long> {
     @Query(value = "select u from CustomerModel u where u.fullName like %?1%")
     fun findByFullNameContainingIgnoreCase(name: String): List<CustomerModel>
 
+    fun findByFullNameLike(name: String): List<CustomerModel>
+
     fun findByStatus(status: String):List<CustomerModel>
 
     fun existsByCpf(cpf: String): Boolean

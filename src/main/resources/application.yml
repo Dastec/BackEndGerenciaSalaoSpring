@@ -8,3 +8,10 @@ spring:
     password: 1234
   Jackson:
     default-property-inclusion: non_null
+
+server:
+  port: 8081
+
+jwt:
+  secret: 0412c946-a382-4be6-9245-ebde9ef911dd
+  expiration: 999999
