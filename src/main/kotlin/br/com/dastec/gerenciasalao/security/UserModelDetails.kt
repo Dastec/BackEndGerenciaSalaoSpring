@@ -1,7 +1,7 @@
 package br.com.dastec.gerenciasalao.security
 
 import br.com.dastec.gerenciasalao.models.UserModel
-import br.com.dastec.gerenciasalao.models.enums.PersonStatus
+import br.com.dastec.gerenciasalao.models.enums.SalonStatus
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
@@ -23,5 +23,5 @@ class UserModelDetails(val userModel: UserModel): UserDetails{
 
     override fun isCredentialsNonExpired(): Boolean = true
 
-    override fun isEnabled(): Boolean =  userModel.person.status == PersonStatus.ACTIVE
+    override fun isEnabled(): Boolean =  userModel.beautySalon.status == SalonStatus.ACTIVE
 }

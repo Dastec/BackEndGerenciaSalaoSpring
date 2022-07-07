@@ -9,6 +9,7 @@ import br.com.dastec.gerenciasalao.controllers.responses.CustomerServiceWithPend
 import br.com.dastec.gerenciasalao.controllers.responses.FinalizeCustomerServiceResponse
 import br.com.dastec.gerenciasalao.models.CustomerServiceModel
 import br.com.dastec.gerenciasalao.models.PendencyModel
+import br.com.dastec.gerenciasalao.models.UserModel
 import br.com.dastec.gerenciasalao.models.enums.CustomerServiceStatus
 import br.com.dastec.gerenciasalao.services.*
 import org.springframework.stereotype.Component
@@ -82,7 +83,7 @@ class CustomerServiceMapper(
             pendencyService.createPendency(
                 PendencyModel(
                     customerService = previousCustomerService,
-                    valuePendency = previousCustomerService.totalValue!! - paidValue
+                    valuePendency = previousCustomerService.totalValue!! - paidValue,
                 )
             )
             previousCustomerService.statusCustomerService = CustomerServiceStatus.FINALIZEDPENDING

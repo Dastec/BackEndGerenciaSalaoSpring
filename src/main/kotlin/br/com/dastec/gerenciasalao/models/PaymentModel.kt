@@ -11,24 +11,29 @@ data class PaymentModel(
     @Column(name = "id_payment")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var idPayment: Long? = null,
+    val idPayment: Long? = null,
 
     @ManyToOne
     @JoinColumn(name = "form_payment_id")
-    var formOfPayment: FormOfPaymentModel,
+    val formOfPayment: FormOfPaymentModel,
 
     @ManyToOne
     @JoinColumn(name = "customer_service_id")
-    var customerService: CustomerServiceModel,
+    val customerService: CustomerServiceModel,
 
     @Column(name = "value_payment")
-    var valuePayment: Double = 0.0,
+    val valuePayment: Double = 0.0,
 
 
     @Column(name = "date_payment")
-    var datePayment: LocalDate = LocalDate.now(),
+    val datePayment: LocalDate = LocalDate.now(),
 
     @Enumerated(EnumType.STRING)
     @Column(name = "payment_status")
-    var status: PaymentStatus = PaymentStatus.OPEN
+    var status: PaymentStatus = PaymentStatus.OPEN,
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    val user: UserModel?,
+
 )

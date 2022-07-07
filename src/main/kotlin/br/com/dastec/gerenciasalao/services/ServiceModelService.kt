@@ -4,6 +4,7 @@ import br.com.dastec.gerenciasalao.exceptions.BadRequestException
 import br.com.dastec.gerenciasalao.exceptions.NotFoundException
 import br.com.dastec.gerenciasalao.exceptions.enums.Errors
 import br.com.dastec.gerenciasalao.models.CategoryModel
+import br.com.dastec.gerenciasalao.models.BeautySalonModel
 import br.com.dastec.gerenciasalao.models.ServiceModel
 import br.com.dastec.gerenciasalao.repositories.ServiceRepository
 import org.springframework.stereotype.Service
@@ -32,12 +33,12 @@ class ServiceModelService(private val serviceRepository: ServiceRepository) {
         }
     }
 
-    fun findByName(name: String): List<ServiceModel>{
-        return serviceRepository.findByNameServiceContainingIgnoreCase(name)
+    fun findByName(person: BeautySalonModel, name: String): List<ServiceModel>{
+        return serviceRepository.findByNameServiceContainingIgnoreCase(person, name)
     }
 
-    fun findAll(): List<ServiceModel>{
-        return serviceRepository.findAll()
+    fun findAll(person: BeautySalonModel): List<ServiceModel>{
+        return serviceRepository.findAllByBeautySalon(person)
     }
 
     fun findByCategory(category: CategoryModel): List<ServiceModel>{

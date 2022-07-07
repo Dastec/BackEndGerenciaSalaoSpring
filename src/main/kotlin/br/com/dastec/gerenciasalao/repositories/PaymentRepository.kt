@@ -12,6 +12,6 @@ interface PaymentRepository: JpaRepository<PaymentModel, Long> {
     fun findByCustomerService(customerService: CustomerServiceModel):List<PaymentModel>
 
     @Query(value = "select u from PaymentModel u where u.customerService.idCustomerService = ?1 and u.status = 'OPEN'")
-    fun findPaymentsWithCustomerServiceWithStatusAberto(idCustomerService: Long):List<PaymentModel>
+    fun findPaymentsWithCustomerServiceWithStatusOpen(idCustomerService: Long):List<PaymentModel>
 
 }

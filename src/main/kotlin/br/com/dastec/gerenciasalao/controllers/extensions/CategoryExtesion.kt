@@ -3,16 +3,21 @@ package br.com.dastec.gerenciasalao.controllers.extensions
 import br.com.dastec.gerenciasalao.controllers.requests.categories.PostCategoryRequest
 import br.com.dastec.gerenciasalao.controllers.requests.categories.PutCategoryRequest
 import br.com.dastec.gerenciasalao.models.CategoryModel
+import br.com.dastec.gerenciasalao.models.BeautySalonModel
 
-fun PostCategoryRequest.toCategoryModel(): CategoryModel {
+fun PostCategoryRequest.toCategoryModel(beautySalonModel: BeautySalonModel): CategoryModel {
     return CategoryModel(
-        nameCategory = this.nameCategory
+        nameCategory = this.nameCategory,
+        beautySalon = beautySalonModel
+
     )
 }
 
 fun PutCategoryRequest.toCategoryModel(categoryModel: CategoryModel): CategoryModel {
     return CategoryModel(
         idCategory = categoryModel.idCategory,
-        nameCategory = this.nameCategory ?: categoryModel.nameCategory
+        nameCategory = this.nameCategory ?: categoryModel.nameCategory,
+        beautySalon = categoryModel.beautySalon
+
     )
 }

@@ -1,6 +1,5 @@
 package br.com.dastec.gerenciasalao.models
 
-import java.math.BigDecimal
 import javax.persistence.*
 
 @Entity
@@ -12,12 +11,16 @@ data class ServiceModel(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val idService: Long? = null,
 
-    @Column(name = "name_service", nullable = false, unique = true)
+    @Column(name = "name_service", nullable = false)
     val nameService: String,
 
     @ManyToOne
     @JoinColumn(name = "id_category", nullable = false)
     val category: CategoryModel,
 
-    val price: Double?
+    val price: Double?,
+
+    @ManyToOne
+    @JoinColumn(name = "salon_id")
+    var beautySalon: BeautySalonModel,
 )

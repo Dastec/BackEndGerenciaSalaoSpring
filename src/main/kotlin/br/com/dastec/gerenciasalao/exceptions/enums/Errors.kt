@@ -1,6 +1,10 @@
 package br.com.dastec.gerenciasalao.exceptions.enums
 
 enum class Errors(val message: String, val internalCode: String) {
+    GSL000("Unathorized", "GSL-000"),
+    GSL001("Usuário %s não encontrado!", "GSL-001"),
+    GSL002("Erro ao logar!", "GSL-002"),
+    GSL003("Token inválido!", "GSL-003"),
 
     GS001("Invalid Request", "GS-001" ),
 

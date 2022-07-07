@@ -3,13 +3,15 @@ package br.com.dastec.gerenciasalao.controllers.extensions
 import br.com.dastec.gerenciasalao.controllers.requests.PostServiceRequest
 import br.com.dastec.gerenciasalao.controllers.requests.PutServiceRequest
 import br.com.dastec.gerenciasalao.models.CategoryModel
+import br.com.dastec.gerenciasalao.models.BeautySalonModel
 import br.com.dastec.gerenciasalao.models.ServiceModel
 
-fun PostServiceRequest.toServiceModel(categoryModel: CategoryModel): ServiceModel {
+fun PostServiceRequest.toServiceModel(categoryModel: CategoryModel, beautySalonModel: BeautySalonModel): ServiceModel {
     return ServiceModel(
         nameService = this.nameService,
         category = categoryModel,
         price = this.price,
+        beautySalon = beautySalonModel
     )
 }
 
@@ -19,6 +21,7 @@ fun PutServiceRequest.toServiceModel(serviceModel: ServiceModel, categoryModel: 
         nameService = this.nameService ?: serviceModel.nameService,
         category = categoryModel,
         price = this.price,
+        beautySalon = serviceModel.beautySalon
     )
 }
 

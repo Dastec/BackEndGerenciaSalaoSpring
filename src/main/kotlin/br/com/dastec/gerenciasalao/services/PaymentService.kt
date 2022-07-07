@@ -105,7 +105,7 @@ class PaymentService(
     }
 
     fun findPaymentsByCustomerWithCustomerServiceWithStatusOpen(id: Long): List<PaymentModel> {
-        return paymentRepository.findPaymentsWithCustomerServiceWithStatusAberto(id)
+        return paymentRepository.findPaymentsWithCustomerServiceWithStatusOpen(id)
     }
 
     fun validPaymentPendency(postPaymentServiceWithPendencyRequest: PostPaymentServiceWithPendencyRequest) {

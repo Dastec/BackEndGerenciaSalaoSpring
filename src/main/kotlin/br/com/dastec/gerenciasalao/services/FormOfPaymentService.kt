@@ -3,6 +3,7 @@ package br.com.dastec.gerenciasalao.services
 import br.com.dastec.gerenciasalao.exceptions.NotFoundException
 import br.com.dastec.gerenciasalao.exceptions.enums.Errors
 import br.com.dastec.gerenciasalao.models.FormOfPaymentModel
+import br.com.dastec.gerenciasalao.models.BeautySalonModel
 import br.com.dastec.gerenciasalao.repositories.FormOfPaymentRepository
 import org.springframework.stereotype.Service
 
@@ -21,8 +22,8 @@ class FormOfPaymentService(private val formOfPaymentRepository: FormOfPaymentRep
         formOfPaymentRepository.deleteById(id)
     }
 
-    fun findAll():List<FormOfPaymentModel>{
-        return formOfPaymentRepository.findAll()
+    fun findAll(salon: BeautySalonModel):List<FormOfPaymentModel>{
+        return formOfPaymentRepository.findAllByBeautySalon(salon)
     }
 
     fun findById(id: Long):FormOfPaymentModel{

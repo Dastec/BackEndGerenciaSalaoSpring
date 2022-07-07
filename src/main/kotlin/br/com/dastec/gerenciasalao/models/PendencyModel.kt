@@ -13,7 +13,7 @@ data class PendencyModel(
     var idPendencyModel: Long? = null,
 
     @ManyToOne
-    @JoinColumn(name = "customer_service_id", unique = true)
+    @JoinColumn(name = "customer_service_id")
     var customerService: CustomerServiceModel,
 
     @Column(name = "value_pendency", nullable = false)
@@ -21,5 +21,4 @@ data class PendencyModel(
 
     @Enumerated(EnumType.STRING)
     var status: PendencyStatus = PendencyStatus.OPEN,
-
     )

@@ -19,7 +19,7 @@ data class CustomerModel(
     @Column(name = "full_name", nullable = false)
     var fullName: String,
 
-    @Column(name = "cpf", nullable = false, unique = true)
+    @Column(name = "cpf", nullable = false)
     var cpf: String,
 
     @Column(name = "birth_date", nullable = false)
@@ -28,17 +28,20 @@ data class CustomerModel(
     @Column(name = "photo")
     var photo: String?,
 
-    @Column(name = "client_key", nullable = false, unique = true)
+    @Column(name = "client_key", nullable = false)
     var clientKey: String?,
 
     @Column(name = "created_at")
     var createdAt: LocalDate?,
 
-)
-{
+    @ManyToOne
+    @JoinColumn(name = "salon_id")
+    var beautySalon: BeautySalonModel,
 
-    @Column(name = "status", nullable = false)
+    )
+{
     @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
     var status: CustomerStatus? = null
         set(value) {
             if (field == CustomerStatus.EXCLUDED) {
@@ -56,8 +59,9 @@ data class CustomerModel(
         photo: String?,
         status: CustomerStatus,
         clientKey: String,
-        createdAt: LocalDate?
-        ): this(idCustomer, alias, fullName, cpf, birthDate, photo, clientKey, createdAt){
+        createdAt: LocalDate?,
+        beautySalonModel: BeautySalonModel
+        ): this(idCustomer, alias, fullName, cpf, birthDate, photo, clientKey, createdAt, beautySalonModel){
             this.status = status
         }
 }

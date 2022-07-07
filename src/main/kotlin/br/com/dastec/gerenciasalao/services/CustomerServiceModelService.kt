@@ -1,7 +1,6 @@
 package br.com.dastec.gerenciasalao.services
 
 import br.com.dastec.gerenciasalao.exceptions.BadRequestException
-import br.com.dastec.gerenciasalao.exceptions.IllegalStateException
 import br.com.dastec.gerenciasalao.exceptions.NotFoundException
 import br.com.dastec.gerenciasalao.exceptions.enums.Errors
 import br.com.dastec.gerenciasalao.models.CustomerModel

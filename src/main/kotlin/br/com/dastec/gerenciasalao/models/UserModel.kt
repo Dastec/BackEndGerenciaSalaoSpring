@@ -1,29 +1,28 @@
 package br.com.dastec.gerenciasalao.models
 
 import br.com.dastec.gerenciasalao.models.enums.Role
-import com.fasterxml.jackson.annotation.ObjectIdGenerators.UUIDGenerator
-import org.hibernate.annotations.Type
-import java.util.UUID
+import java.util.*
 import javax.persistence.*
 
 @Entity
 @Table(name = "users")
 data class UserModel(
+
     @Column(name = "id_user", unique = true, updatable = false, nullable = false)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val idUser: Long? = null,
 
-    @Column(name = "user_key",nullable = false, unique = true)
+    @Column(name = "user_key",nullable = false, unique = true, updatable = false)
     val userKey: String = UUID.randomUUID().toString(),
 
-    @Column(name = "user_name", nullable = false, unique = true)
+    @Column(name = "user_name", nullable = false)
     val userName: String,
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     val password: String,
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     val email: String,
 
     @Column(name = "verified_email", nullable = false)
@@ -35,9 +34,9 @@ data class UserModel(
     @Column(name = "verified_phone", nullable = false)
     val verifiedPhone: Boolean = false,
 
-    @OneToOne
-    @JoinColumn(name = "person_id")
-    val person: PersonModel,
+    @ManyToOne
+    @JoinColumn(name = "salon_id")
+    val beautySalon: BeautySalonModel,
 
     @Column(name = "role")
     @Enumerated(EnumType.STRING)

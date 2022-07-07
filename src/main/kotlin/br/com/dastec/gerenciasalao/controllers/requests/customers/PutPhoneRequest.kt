@@ -1,12 +1,9 @@
 package br.com.dastec.gerenciasalao.controllers.requests.customers
 
 import br.com.dastec.gerenciasalao.models.enums.TypePhoneNumber
-import org.hibernate.validator.constraints.Length
 import javax.persistence.EnumType
 import javax.persistence.Enumerated
-import javax.validation.constraints.Max
 import javax.validation.constraints.NotBlank
-import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.Pattern
 
 data class PutPhoneRequest(

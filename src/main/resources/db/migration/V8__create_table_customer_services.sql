@@ -9,5 +9,6 @@ create table customer_services(
 	customer_id bigint,
 	observation  varchar(500),
 
+
 	foreign key (customer_id) references customers(id_customer)
 );

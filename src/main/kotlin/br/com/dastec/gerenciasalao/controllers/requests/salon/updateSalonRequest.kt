@@ -1,9 +1,8 @@
-package br.com.dastec.gerenciasalao.controllers.requests.person
+package br.com.dastec.gerenciasalao.controllers.requests.salon
 
 import com.fasterxml.jackson.annotation.JsonAlias
-import javax.persistence.Column
 
-data class updatePersonRequest(
+data class updateSalonRequest(
 
     var name: String,
 

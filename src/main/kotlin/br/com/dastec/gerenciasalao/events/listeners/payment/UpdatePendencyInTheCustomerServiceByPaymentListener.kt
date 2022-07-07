@@ -1,7 +1,6 @@
 package br.com.dastec.gerenciasalao.events.listeners.payment
 
 import br.com.dastec.gerenciasalao.events.PaymentEventUpdatePendency
-import br.com.dastec.gerenciasalao.models.enums.PendencyStatus
 import br.com.dastec.gerenciasalao.services.CustomerServiceModelService
 import br.com.dastec.gerenciasalao.services.PendencyService
 import org.springframework.context.event.EventListener

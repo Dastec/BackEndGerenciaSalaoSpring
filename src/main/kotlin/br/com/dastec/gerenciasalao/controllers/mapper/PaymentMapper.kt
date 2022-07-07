@@ -4,13 +4,12 @@ import br.com.dastec.gerenciasalao.controllers.requests.payments.PostPaymentServ
 import br.com.dastec.gerenciasalao.controllers.requests.payments.PostPaymentServiceWithPendencyRequest
 import br.com.dastec.gerenciasalao.controllers.requests.payments.PutPendecyServiceRequest
 import br.com.dastec.gerenciasalao.controllers.responses.PaymentResponse
-import br.com.dastec.gerenciasalao.exceptions.BadRequestException
-import br.com.dastec.gerenciasalao.exceptions.enums.Errors
 import br.com.dastec.gerenciasalao.models.PaymentModel
+import br.com.dastec.gerenciasalao.models.UserModel
 import br.com.dastec.gerenciasalao.services.CustomerServiceModelService
 import br.com.dastec.gerenciasalao.services.FormOfPaymentService
 import br.com.dastec.gerenciasalao.services.PaymentService
-import br.com.dastec.gerenciasalao.services.PendencyService
+import br.com.dastec.gerenciasalao.services.UserService
 import org.springframework.stereotype.Component
 
 @Component
@@ -20,24 +19,26 @@ class PaymentMapper(
     private val formOfPaymentService: FormOfPaymentService,
 ) {
 
-    fun postPaymentServiceRequestToPaymentModel(postPaymentServiceRequest: PostPaymentServiceRequest): PaymentModel {
+    fun postPaymentServiceRequestToPaymentModel(postPaymentServiceRequest: PostPaymentServiceRequest, userModel: UserModel): PaymentModel {
         val customerService = customerServiceModelService.findById(postPaymentServiceRequest.customerService)
         val formOfPayment = formOfPaymentService.findById(postPaymentServiceRequest.formOfPayment)
         return PaymentModel(
             formOfPayment = formOfPayment,
             customerService = customerService,
-            valuePayment = postPaymentServiceRequest.valuePayment
+            valuePayment = postPaymentServiceRequest.valuePayment,
+            user = userModel
         )
     }
 
-    fun postPaymentPendencyServiceRequestToPaymentModel(postPaymentServiceRequest: PostPaymentServiceRequest): PaymentModel {
+    fun postPaymentPendencyServiceRequestToPaymentModel(postPaymentServiceRequest: PostPaymentServiceRequest, userModel: UserModel): PaymentModel {
         val customerService = customerServiceModelService.findById(postPaymentServiceRequest.customerService)
         val formOfPayment = formOfPaymentService.findById(postPaymentServiceRequest.formOfPayment)
 
         return PaymentModel(
             formOfPayment = formOfPayment,
             customerService = customerService,
-            valuePayment = postPaymentServiceRequest.valuePayment
+            valuePayment = postPaymentServiceRequest.valuePayment,
+            user = userModel
         )
     }
 
@@ -52,11 +53,12 @@ class PaymentMapper(
             formOfPayment = formOfPayment,
             customerService = previousPayment.customerService,
             valuePayment = putPaymentServiceRequest.valuePayment,
-            datePayment = previousPayment.datePayment
+            datePayment = previousPayment.datePayment,
+            user = previousPayment.user
         )
     }
 
-    fun postPayPendencyRequestToPaymentModel(postPaymentServiceWithPendencyRequest: PostPaymentServiceWithPendencyRequest) {
+    fun postPayPendencyRequestToPaymentModel(postPaymentServiceWithPendencyRequest: PostPaymentServiceWithPendencyRequest, userModel: UserModel) {
         //Lista de atendimentos
         var customerServices = customerServiceModelService.findAllByIds(postPaymentServiceWithPendencyRequest.customerServices).sortedBy { it.idCustomerService }
 
@@ -71,7 +73,8 @@ class PaymentMapper(
                         PaymentModel(
                             formOfPayment = formOfPaymentService.findById(paymentsObject.formOfPayment),
                             customerService = customerServiceCurrent,
-                            valuePayment = paymentsObject.valuePayment
+                            valuePayment = paymentsObject.valuePayment,
+                            user = userModel
                         )
                     )
                     paymentsObject.valuePayment = 0.0
@@ -80,7 +83,8 @@ class PaymentMapper(
                         PaymentModel(
                             formOfPayment = formOfPaymentService.findById(paymentsObject.formOfPayment),
                             customerService = customerServiceCurrent,
-                            valuePayment = paymentsObject.valuePayment
+                            valuePayment = paymentsObject.valuePayment,
+                            user = userModel
                         )
                     )
                     paymentsObject.valuePayment = 0.0
@@ -91,7 +95,8 @@ class PaymentMapper(
                         PaymentModel(
                             formOfPayment = formOfPaymentService.findById(paymentsObject.formOfPayment),
                             customerService = customerServiceCurrent,
-                            valuePayment = customerServiceCurrent.totalValue!! - customerServiceCurrent.paidValue!!
+                            valuePayment = customerServiceCurrent.totalValue!! - customerServiceCurrent.paidValue!!,
+                            user = userModel
                         )
                     )
                     paymentsObject.valuePayment =

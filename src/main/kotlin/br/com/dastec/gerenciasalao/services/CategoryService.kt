@@ -3,6 +3,7 @@ package br.com.dastec.gerenciasalao.services
 import br.com.dastec.gerenciasalao.exceptions.NotFoundException
 import br.com.dastec.gerenciasalao.exceptions.enums.Errors
 import br.com.dastec.gerenciasalao.models.CategoryModel
+import br.com.dastec.gerenciasalao.models.BeautySalonModel
 import br.com.dastec.gerenciasalao.repositories.CategoryRepository
 import org.springframework.stereotype.Service
 
@@ -23,12 +24,12 @@ class CategoryService(private val categoryRepository: CategoryRepository) {
         }
     }
 
-    fun findAll():List<CategoryModel>{
-        return categoryRepository.findAll()
+    fun findAll(salon: BeautySalonModel):List<CategoryModel>{
+        return categoryRepository.findAllByBeautySalon(salon)
     }
 
-    fun findByNameCategory(name: String): List<CategoryModel>{
-        return categoryRepository.findByNameCategoryContainingIgnoreCase(name)
+    fun findByNameCategory(person: BeautySalonModel, name: String): List<CategoryModel>{
+        return categoryRepository.findByNameCategoryContainingIgnoreCase(person, name)
     }
 
     fun delete(id: Long){

@@ -20,6 +20,6 @@ data class SaleServiceModel(
     @JoinColumn(name = "customer_service_id")
     val customerService: CustomerServiceModel? = null,
 
-    val price: Double
+    val price: Double,
 
 )

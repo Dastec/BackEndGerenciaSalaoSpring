@@ -1,8 +1,5 @@
 package br.com.dastec.gerenciasalao.controllers.requests.customerservice
 
-import br.com.dastec.gerenciasalao.models.CustomerModel
-import br.com.dastec.gerenciasalao.models.ServiceModel
-import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.NotNull
 
 data class PostCreateCustomerServiceRequest(

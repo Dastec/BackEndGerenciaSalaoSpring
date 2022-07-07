@@ -1,10 +1,12 @@
 package br.com.dastec.gerenciasalao.models
 
 data class UserInformationModel(
-    var name: String,
-    var fiscalIdentification: String,
-    var userKey: String,
-    var email: String,
-    var phoneNumber: String,
-    var exp: Long
+    val idUser: Long,
+    val sub: String,
+    val name: String,
+    val userKey: String,
+    val email: String,
+    val phoneNumber: String,
+    val exp: Long,
+    val salonId: Long
 )

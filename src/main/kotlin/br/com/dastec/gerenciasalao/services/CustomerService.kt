@@ -6,6 +6,7 @@ import br.com.dastec.gerenciasalao.controllers.requests.customers.PutPhoneReques
 import br.com.dastec.gerenciasalao.exceptions.NotFoundException
 import br.com.dastec.gerenciasalao.exceptions.enums.Errors
 import br.com.dastec.gerenciasalao.models.CustomerModel
+import br.com.dastec.gerenciasalao.models.BeautySalonModel
 import br.com.dastec.gerenciasalao.repositories.CustomerRepository
 import org.springframework.stereotype.Service
 
@@ -44,7 +45,11 @@ class CustomerService(private val customerRepository: CustomerRepository, privat
         }
     }
 
-    fun findAll():List<CustomerModel>{
+    fun findAllBySalonModel(person: BeautySalonModel): List<CustomerModel>{
+        return customerRepository.findAllByBeautySalon(person)
+    }
+
+    fun findAll(): List<CustomerModel>{
         return customerRepository.findAll()
     }
 
@@ -54,12 +59,12 @@ class CustomerService(private val customerRepository: CustomerRepository, privat
         }
     }
 
-    fun findByNameContaining(name: String):List<CustomerModel>{
-        return customerRepository.findByFullNameContainingIgnoreCase(name)
+    fun findByNameContaining(person: BeautySalonModel, name: String):List<CustomerModel>{
+        return customerRepository.findByFullNameAndSalon(person, name)
     }
 
-    fun findByStatus(status: String): List<CustomerModel>{
-        return customerRepository.findByStatus(status)
+    fun findByStatus(person: BeautySalonModel, status: String): List<CustomerModel>{
+        return customerRepository.findByStatusAndSalonModel(person, status)
     }
 
     fun cpfAvailable(cpf: String): Boolean {

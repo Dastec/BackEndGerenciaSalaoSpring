@@ -7,5 +7,8 @@ create table customers(
 	photo text,
 	client_key varchar(100),
 	created_at date,
-	status varchar(100)
+	status varchar(100),
+	salon_id bigint not null,
+
+	foreign key(salon_id) references beauty_salons(id_salon)
 )

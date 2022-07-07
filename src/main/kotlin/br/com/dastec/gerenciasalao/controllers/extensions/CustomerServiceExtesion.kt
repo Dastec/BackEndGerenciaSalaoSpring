@@ -1,15 +1,5 @@
 package br.com.dastec.gerenciasalao.controllers.extensions
 
-import br.com.dastec.gerenciasalao.controllers.requests.customerservice.PostStartCustomerServiceRequest
-import br.com.dastec.gerenciasalao.controllers.requests.customerservice.PutFinalizeCustomerServiceRequest
-import br.com.dastec.gerenciasalao.controllers.requests.customerservice.PutUpdateCustomerServiceRequest
-import br.com.dastec.gerenciasalao.models.CustomerModel
-import br.com.dastec.gerenciasalao.models.CustomerServiceModel
-import br.com.dastec.gerenciasalao.models.ServiceModel
-import br.com.dastec.gerenciasalao.models.enums.CustomerServiceStatus
-import java.time.LocalDate
-import java.time.LocalTime
-
 //fun PostStartCustomerServiceRequest.toCustomerService(
 //    services: MutableList<ServiceModel>,
 //    customer: CustomerModel

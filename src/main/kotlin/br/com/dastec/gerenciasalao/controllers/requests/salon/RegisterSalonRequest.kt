@@ -1,8 +1,8 @@
-package br.com.dastec.gerenciasalao.controllers.requests.person
+package br.com.dastec.gerenciasalao.controllers.requests.salon
 
 import com.fasterxml.jackson.annotation.JsonAlias
 
-data class RegisterPersonRequest(
+data class RegisterSalonRequest(
 
     var name: String,
 

@@ -33,6 +33,11 @@ class UserService(private val userRepository: UserRepository,
     fun findAll(): List<UserModel> {
         return userRepository.findAll()
     }
+
+    fun findByUserName(userName: String): UserModel? {
+
+        return userRepository.findByUserName(userName)
+    }
 }
 
 

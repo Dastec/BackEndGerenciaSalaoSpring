@@ -6,6 +6,7 @@ import br.com.dastec.gerenciasalao.exceptions.response.ErrorResponse
 import br.com.dastec.gerenciasalao.exceptions.response.FieldErrorResponse
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.authentication.InternalAuthenticationServiceException
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.context.request.WebRequest
@@ -31,19 +32,6 @@ class ControllerAdvice {
             null
         )
         return ResponseEntity(error, HttpStatus.NOT_FOUND)
-    }
-
-    @ExceptionHandler(MethodArgumentNotValidException::class)
-    fun handleMethodArgumentNotValidException(
-        ex: MethodArgumentNotValidException,
-        request: WebRequest
-    ): ResponseEntity<ErrorResponse> {
-        val error = ErrorResponse(
-            Errors.GS001.message,
-            Errors.GS001.internalCode,
-            ex.bindingResult.fieldErrors.map { FieldErrorResponse(it.defaultMessage ?: "Invalid", it.field) }
-        )
-        return ResponseEntity(error, HttpStatus.BAD_REQUEST)
     }
 
     @ExceptionHandler(CustomerServiceHasNoPendingException::class)
@@ -75,4 +63,38 @@ class ControllerAdvice {
         )
         return ResponseEntity(error, HttpStatus.BAD_REQUEST)
     }
+
+    @ExceptionHandler(AuthenticationException::class)
+    fun handleAuthenticationException(ex: CustomerServiceHasNoPendingException, request: WebRequest): ResponseEntity<ErrorResponse> {
+        val error = ErrorResponse(
+            ex.message,
+            ex.errorCode,
+            null
+        )
+        return ResponseEntity(error, HttpStatus.BAD_REQUEST)
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException::class)
+    fun handleMethodArgumentNotValidException(
+        ex: MethodArgumentNotValidException,
+        request: WebRequest
+    ): ResponseEntity<ErrorResponse> {
+        val error = ErrorResponse(
+            Errors.GS001.message,
+            Errors.GS001.internalCode,
+            ex.bindingResult.fieldErrors.map { FieldErrorResponse(it.defaultMessage ?: "Invalid", it.field) }
+        )
+        return ResponseEntity(error, HttpStatus.BAD_REQUEST)
+    }
+
+    @ExceptionHandler(InternalAuthenticationServiceException::class)
+    fun handleInternalAuthenticationServiceException(ex: CustomerServiceHasNoPendingException, request: WebRequest): ResponseEntity<ErrorResponse> {
+        val error = ErrorResponse(
+            ex.message,
+            Errors.GSL002.internalCode,
+            null
+        )
+        return ResponseEntity(error, HttpStatus.BAD_REQUEST)
+    }
 }
+

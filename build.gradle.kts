@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
 	id("org.springframework.boot") version "2.6.7-SNAPSHOT"
 	id("io.spring.dependency-management") version "1.0.11.RELEASE"
@@ -49,6 +47,10 @@ dependencies {
 
 	// https://mvnrepository.com/artifact/com.google.code.gson/gson
 	implementation ("com.google.code.gson:gson:2.9.0")
+
+	// https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api
+	compileOnly("javax.servlet:javax.servlet-api:4.0.1")
+
 
 }
 

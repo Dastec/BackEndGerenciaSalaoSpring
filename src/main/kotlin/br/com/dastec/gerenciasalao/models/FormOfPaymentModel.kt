@@ -11,6 +11,10 @@ data class FormOfPaymentModel(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var idFormPayment: Long? = null,
 
-    @Column(name = "name_form_payment", nullable = false, unique = true)
-    var nameFormPayment: String
+    @Column(name = "name_form_payment", nullable = false)
+    var nameFormPayment: String,
+
+    @ManyToOne
+    @JoinColumn(name = "salon_id")
+    var beautySalon: BeautySalonModel,
 )

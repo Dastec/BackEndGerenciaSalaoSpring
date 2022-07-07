@@ -14,34 +14,27 @@ import br.com.dastec.gerenciasalao.exceptions.IllegalStateException
 import br.com.dastec.gerenciasalao.exceptions.enums.Errors
 import br.com.dastec.gerenciasalao.models.CustomerServiceModel
 import br.com.dastec.gerenciasalao.models.enums.CustomerServiceStatus
-import br.com.dastec.gerenciasalao.services.*
+import br.com.dastec.gerenciasalao.security.JwtUtil
+import br.com.dastec.gerenciasalao.services.CustomerService
+import br.com.dastec.gerenciasalao.services.CustomerServiceModelService
+import br.com.dastec.gerenciasalao.services.UserService
 import org.springframework.http.HttpStatus
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.ResponseStatus
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
 @RestController
-@RequestMapping("api/v1/customerservices")
+@RequestMapping("api/v1/customerservice")
 class CustomerServiceController(
     private val customerServiceModelService: CustomerServiceModelService,
     private val customerServiceMapper: CustomerServiceMapper,
-    private val customerService: CustomerService
+    private val customerService: CustomerService,
 ) {
 
     @PostMapping("/start")
     @ResponseStatus(HttpStatus.CREATED)
     fun startCustomerService(@Valid @RequestBody postStartCustomerServiceRequest: PostStartCustomerServiceRequest): CreateResponse {
         customerServiceModelService.startCustomerService(
-            customerServiceMapper.postStartRequestToModel(
-                postStartCustomerServiceRequest
-            )
+            customerServiceMapper.postStartRequestToModel(postStartCustomerServiceRequest)
         )
         return CreateResponse("Atendimento iniciado com sucesso")
 
@@ -87,9 +80,9 @@ class CustomerServiceController(
     @PutMapping("finalize/{id}")
     fun finalizeCustomerService(
         @PathVariable id: Long,
-        @Valid @RequestBody putFinalizeCustomerServiceRequest: PutFinalizeCustomerServiceRequest
+        @RequestBody putFinalizeCustomerServiceRequest: PutFinalizeCustomerServiceRequest,
     ): FinalizeCustomerServiceResponse {
-        var previousCustomerService = customerServiceModelService.findById(id)
+        val previousCustomerService = customerServiceModelService.findById(id)
         if (previousCustomerService.statusCustomerService == CustomerServiceStatus.FINALIZEDPENDING || previousCustomerService.statusCustomerService == CustomerServiceStatus.FINISHED) {
             throw IllegalStateException(
                 Errors.GS503.message.format(previousCustomerService.idCustomerService),
@@ -100,7 +93,7 @@ class CustomerServiceController(
             customerServiceModelService.finalizeCustomerService(
                 customerServiceMapper.putFinalizeRequestToModel(
                     previousCustomerService,
-                    putFinalizeCustomerServiceRequest
+                    putFinalizeCustomerServiceRequest,
                 )
             )
         )

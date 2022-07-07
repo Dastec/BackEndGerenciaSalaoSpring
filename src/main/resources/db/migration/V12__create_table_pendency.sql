@@ -1,6 +1,6 @@
 create table pendency(
 	id_pendency bigint primary key auto_increment,
-	customer_service_id bigint not null unique,
+	customer_service_id bigint not null,
 	value_pendency decimal(10,2) not null,
 	status varchar(50) not null,
 

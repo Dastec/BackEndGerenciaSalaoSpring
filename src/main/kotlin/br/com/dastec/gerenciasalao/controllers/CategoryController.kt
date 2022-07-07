@@ -5,27 +5,23 @@ import br.com.dastec.gerenciasalao.controllers.requests.categories.PostCategoryR
 import br.com.dastec.gerenciasalao.controllers.requests.categories.PutCategoryRequest
 import br.com.dastec.gerenciasalao.controllers.responses.CreateResponse
 import br.com.dastec.gerenciasalao.models.CategoryModel
+import br.com.dastec.gerenciasalao.security.JwtUtil
 import br.com.dastec.gerenciasalao.services.CategoryService
+import br.com.dastec.gerenciasalao.services.SalonService
+import br.com.dastec.gerenciasalao.services.UserService
+import br.com.dastec.gerenciasalao.utils.SpringUtil
 import org.springframework.http.HttpStatus
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.ResponseStatus
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
 @RestController
 @RequestMapping("/api/v1/category")
-class CategoryController(val categoryService: CategoryService) {
+class CategoryController(val categoryService: CategoryService, val springUtil: SpringUtil) {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun createCategory(@Valid @RequestBody postCategoryRequest: PostCategoryRequest): CreateResponse {
-        categoryService.createCategory(postCategoryRequest.toCategoryModel())
+    fun createCategory(@Valid @RequestBody postCategoryRequest: PostCategoryRequest, @RequestHeader(value = "Authorization") token: String): CreateResponse {
+        categoryService.createCategory(postCategoryRequest.toCategoryModel(springUtil.getSalon(token.split(" ")[1])!!))
         return CreateResponse("Categoria criada com sucesso")
     }
 
@@ -48,13 +44,13 @@ class CategoryController(val categoryService: CategoryService) {
     }
 
     @GetMapping("/name/{name}")
-    fun findById(@PathVariable name: String): List<CategoryModel> {
-        return categoryService.findByNameCategory(name)
+    fun findByName(@PathVariable name: String, @RequestHeader(value = "Authorization") token: String): List<CategoryModel> {
+        return categoryService.findByNameCategory(springUtil.getSalon(token.split(" ")[1]), name)
     }
 
     @GetMapping()
-    fun findAll(): List<CategoryModel> {
-        return categoryService.findAll()
+    fun findAll(@RequestHeader(value = "Authorization") token: String): List<CategoryModel> {
+        return categoryService.findAll(springUtil.getSalon(token.split(" ")[1]))
     }
 
 

@@ -1,6 +1,5 @@
 package br.com.dastec.gerenciasalao.controllers.responses
 
-import br.com.dastec.gerenciasalao.models.PhoneNumberModel
 import com.fasterxml.jackson.annotation.JsonAlias
 import java.time.LocalDate
 

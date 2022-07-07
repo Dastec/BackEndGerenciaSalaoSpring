@@ -5,28 +5,25 @@ import br.com.dastec.gerenciasalao.controllers.requests.PostServiceRequest
 import br.com.dastec.gerenciasalao.controllers.requests.PutServiceRequest
 import br.com.dastec.gerenciasalao.controllers.responses.CreateResponse
 import br.com.dastec.gerenciasalao.models.ServiceModel
+import br.com.dastec.gerenciasalao.security.JwtUtil
 import br.com.dastec.gerenciasalao.services.CategoryService
+import br.com.dastec.gerenciasalao.services.SalonService
 import br.com.dastec.gerenciasalao.services.ServiceModelService
+import br.com.dastec.gerenciasalao.services.UserService
+import br.com.dastec.gerenciasalao.utils.SpringUtil
 import org.springframework.http.HttpStatus
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.ResponseStatus
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
 @RestController
 @RequestMapping("/api/v1/service")
-class SeviceController(val serviceModelService: ServiceModelService, val categoryService: CategoryService) {
+class SeviceController(val serviceModelService: ServiceModelService, val categoryService: CategoryService, val springUtil: SpringUtil) {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun create(@Valid @RequestBody postServiceRequest: PostServiceRequest): CreateResponse {
+    fun create(@Valid @RequestBody postServiceRequest: PostServiceRequest, @RequestHeader(value = "Authorization") token: String): CreateResponse {
         val category = categoryService.findById(postServiceRequest.idCategory)
-        serviceModelService.create(postServiceRequest.toServiceModel(category))
+        serviceModelService.create(postServiceRequest.toServiceModel(category, springUtil.getSalon(token.split(" ")[1])))
 
         return CreateResponse("Serviço criado com sucesso")
     }
@@ -47,8 +44,8 @@ class SeviceController(val serviceModelService: ServiceModelService, val categor
     }
 
     @GetMapping()
-    fun findAll(): List<ServiceModel> {
-        return serviceModelService.findAll()
+    fun findAll(@RequestHeader(value = "Authorization") token: String): List<ServiceModel> {
+        return serviceModelService.findAll(springUtil.getSalon(token.split(" ")[1]))
     }
 
     @GetMapping("/category/{id}")

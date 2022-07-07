@@ -1,6 +1,5 @@
 package br.com.dastec.gerenciasalao.validation.annotation
 
-import br.com.dastec.gerenciasalao.validation.FullNameValidator
 import br.com.dastec.gerenciasalao.validation.IsCurrencyValidator
 import javax.validation.Constraint
 import javax.validation.Payload

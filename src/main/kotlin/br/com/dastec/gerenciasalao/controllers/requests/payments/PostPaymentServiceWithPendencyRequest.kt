@@ -13,7 +13,7 @@ data class PostPaymentServiceWithPendencyRequest(
     var paymentObject: List<paymentObject>,
 
     @JsonAlias("customer_service")
-    @field:NotBlank(message = "É necessário colocar no mínimo um atendimento!")
+    @field:NotNull(message = "É necessário colocar no mínimo um atendimento!")
     var customerServices: Set<Long>,
 )
 

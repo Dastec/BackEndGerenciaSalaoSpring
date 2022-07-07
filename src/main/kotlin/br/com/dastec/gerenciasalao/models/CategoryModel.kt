@@ -10,6 +10,10 @@ data class CategoryModel (
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val idCategory: Long? = null,
 
-    @Column(name = "name_category", nullable = false, unique = true)
-    val nameCategory: String
+    @Column(name = "name_category", nullable = false)
+    val nameCategory: String,
+
+    @ManyToOne
+    @JoinColumn(name = "salon_id")
+    var beautySalon: BeautySalonModel,
 )

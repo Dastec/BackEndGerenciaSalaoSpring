@@ -2,9 +2,7 @@ package br.com.dastec.gerenciasalao.controllers.requests.payments
 
 import br.com.dastec.gerenciasalao.validation.annotation.IsCurrency
 import com.fasterxml.jackson.annotation.JsonAlias
-import java.math.BigDecimal
 import javax.validation.constraints.NotNull
-import javax.validation.constraints.Pattern
 
 
 data class PostPaymentServiceRequest(

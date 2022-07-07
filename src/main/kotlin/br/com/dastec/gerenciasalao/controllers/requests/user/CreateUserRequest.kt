@@ -17,8 +17,8 @@ data class CreateUserRequest(
     @JsonAlias("phone_number")
     val phoneNumber: String,
 
-    @JsonAlias("id_person")
-    val idPerson: Long
+    @JsonAlias("id_salon")
+    val idSalon: Long
 )
 
 

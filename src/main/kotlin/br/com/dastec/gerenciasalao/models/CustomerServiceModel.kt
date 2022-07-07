@@ -42,5 +42,7 @@ data class CustomerServiceModel(
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status_customer_service")
-    var statusCustomerService: CustomerServiceStatus = CustomerServiceStatus.CREATED
+    var statusCustomerService: CustomerServiceStatus = CustomerServiceStatus.CREATED,
+
+
 )

@@ -14,4 +14,4 @@ server:
 
 jwt:
   secret: 0412c946-a382-4be6-9245-ebde9ef911dd
-  expiration: 999999
+  expiration: 900000

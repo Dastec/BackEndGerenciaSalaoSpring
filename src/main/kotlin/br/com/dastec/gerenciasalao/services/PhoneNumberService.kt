@@ -1,7 +1,6 @@
 package br.com.dastec.gerenciasalao.services
 
 import br.com.dastec.gerenciasalao.exceptions.NotFoundException
-import br.com.dastec.gerenciasalao.exceptions.enums.Errors
 import br.com.dastec.gerenciasalao.models.PhoneNumberModel
 import br.com.dastec.gerenciasalao.repositories.PhoneNumberRepository
 import org.springframework.stereotype.Service

@@ -1,22 +1,22 @@
 package br.com.dastec.gerenciasalao.models
 
-import br.com.dastec.gerenciasalao.models.enums.PersonStatus
+import br.com.dastec.gerenciasalao.models.enums.SalonStatus
 import java.time.LocalDate
 import javax.persistence.*
 
 @Entity
-@Table(name = "persons")
-data class PersonModel(
+@Table(name = "beauty_salons")
+data class BeautySalonModel(
 
-    @Column(name = "id_person")
+    @Column(name = "id_salon")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val idPerson: Long? = null,
+    val idSalon: Long? = null,
 
     @Column(nullable = false)
     val name: String,
 
-    @Column(name = "tax_identification", nullable = false, unique = true)
+    @Column(name = "fiscal_identification", nullable = false, unique = true)
     val fiscalIdentification: String,
 
     @Column(name = "created_at")
@@ -24,7 +24,7 @@ data class PersonModel(
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    val status:  PersonStatus = PersonStatus.ACTIVE,
+    val status:  SalonStatus = SalonStatus.ACTIVE,
 
     )
 

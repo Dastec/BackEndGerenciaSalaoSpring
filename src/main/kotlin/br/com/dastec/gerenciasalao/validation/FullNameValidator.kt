@@ -1,6 +1,5 @@
 package br.com.dastec.gerenciasalao.validation
 
-import br.com.dastec.gerenciasalao.services.CustomerService
 import br.com.dastec.gerenciasalao.validation.annotation.FullName
 import javax.validation.ConstraintValidator
 import javax.validation.ConstraintValidatorContext
