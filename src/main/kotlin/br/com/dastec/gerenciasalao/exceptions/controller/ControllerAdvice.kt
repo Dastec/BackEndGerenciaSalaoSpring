@@ -90,7 +90,7 @@ class ControllerAdvice {
     @ExceptionHandler(InternalAuthenticationServiceException::class)
     fun handleInternalAuthenticationServiceException(ex: CustomerServiceHasNoPendingException, request: WebRequest): ResponseEntity<ErrorResponse> {
         val error = ErrorResponse(
-            ex.message,
+            Errors.GSL002.message,
             Errors.GSL002.internalCode,
             null
         )
