@@ -18,6 +18,7 @@ import br.com.dastec.gerenciasalao.security.JwtUtil
 import br.com.dastec.gerenciasalao.services.CustomerService
 import br.com.dastec.gerenciasalao.services.CustomerServiceModelService
 import br.com.dastec.gerenciasalao.services.UserService
+import br.com.dastec.gerenciasalao.utils.SpringUtil
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
@@ -28,6 +29,7 @@ class CustomerServiceController(
     private val customerServiceModelService: CustomerServiceModelService,
     private val customerServiceMapper: CustomerServiceMapper,
     private val customerService: CustomerService,
+    val springUtil: SpringUtil
 ) {
 
     @PostMapping("/start")
@@ -42,11 +44,10 @@ class CustomerServiceController(
 
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
-    fun createCustomerService(@Valid @RequestBody postCreateCustomerServiceRequest: PostCreateCustomerServiceRequest): CustomerServiceModel {
+    fun createCustomerService(@Valid @RequestBody postCreateCustomerServiceRequest: PostCreateCustomerServiceRequest, @RequestHeader(value = "Authorization") token: String): CustomerServiceModel {
+        val salon = springUtil.getSalon(token.split(" ")[1])
         return customerServiceModelService.createCustomerService(
-            customerServiceMapper.createCustomerModel(
-                postCreateCustomerServiceRequest
-            )
+            customerServiceMapper.createCustomerModel(postCreateCustomerServiceRequest, salon)
         )
     }
 

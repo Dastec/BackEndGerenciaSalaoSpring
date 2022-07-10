@@ -11,6 +11,7 @@ fun PostCreateSaleServiceRequest.toSalesServiceModel(service: ServiceModel, cust
         customerService = customerService,
         service = service,
         price = this.price,
+        beautySalon = service.beautySalon
     )
 }
 
@@ -19,7 +20,8 @@ fun PutUpdateSaleServiceRequest.toSalesServiceModel(previousSaleServiceModel: Sa
         idSaleService = previousSaleServiceModel.idSaleService,
         service = previousSaleServiceModel.service,
         customerService = previousSaleServiceModel.customerService,
-        price = this.price
+        price = this.price,
+        beautySalon = previousSaleServiceModel.beautySalon
     )
 }
 

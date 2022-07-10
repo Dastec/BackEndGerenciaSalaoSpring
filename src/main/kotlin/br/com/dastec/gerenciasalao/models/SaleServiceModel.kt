@@ -22,4 +22,7 @@ data class SaleServiceModel(
 
     val price: Double,
 
+    @ManyToOne
+    @JoinColumn(name = "salon_id")
+    var beautySalon: BeautySalonModel,
 )

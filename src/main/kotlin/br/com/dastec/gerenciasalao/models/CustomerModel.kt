@@ -11,28 +11,28 @@ data class CustomerModel(
     @Column(name = "id_customer")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var idCustomer: Long? = null,
+    val idCustomer: Long? = null,
 
     @Column(name = "alias", nullable = false)
-    var alias: String,
+    val alias: String,
 
     @Column(name = "full_name", nullable = false)
-    var fullName: String,
+    val fullName: String,
 
     @Column(name = "cpf", nullable = false)
-    var cpf: String,
+    val cpf: String,
 
     @Column(name = "birth_date", nullable = false)
-    var birthDate: LocalDate,
+    val birthDate: LocalDate,
 
     @Column(name = "photo")
-    var photo: String?,
+    val photo: String?,
 
     @Column(name = "client_key", nullable = false)
-    var clientKey: String?,
+    val clientKey: String?,
 
     @Column(name = "created_at")
-    var createdAt: LocalDate?,
+    val createdAt: LocalDate?,
 
     @ManyToOne
     @JoinColumn(name = "salon_id")

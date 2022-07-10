@@ -13,36 +13,38 @@ data class CustomerServiceModel(
     @Column(name = "id_customer_service")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var idCustomerService: Long? = null,
+    val idCustomerService: Long? = null,
 
     @Column(name = "date_customer_service", nullable = false)
-    var dateCustomerService: LocalDate = LocalDate.now(),
+    val dateCustomerService: LocalDate = LocalDate.now(),
 
     @Column(name = "start_time")
-    var startTime: LocalTime = LocalTime.now(),
+    val startTime: LocalTime = LocalTime.now(),
 
     @Column(name = "end_time")
-    var endTime: LocalTime?,
+    val endTime: LocalTime?,
 
     @Column(name = "total_value")
-    var totalValue: Double?,
+    val totalValue: Double?,
 
     @Column(name = "paid_value")
-    var paidValue: Double? = 0.0,
+    val paidValue: Double? = 0.0,
 
     @ManyToOne
     @JoinColumn(name = "customer_id")
-    var customer: CustomerModel?,
+    val customer: CustomerModel?,
 
     @JsonIgnore
     @OneToMany(mappedBy = "customerService", fetch = FetchType.LAZY)
-    var saleServices: MutableList<SaleServiceModel>? = null,
+    val saleServices: MutableList<SaleServiceModel>? = null,
 
-    var observation: String?,
+    val observation: String?,
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status_customer_service")
     var statusCustomerService: CustomerServiceStatus = CustomerServiceStatus.CREATED,
 
-
+    @ManyToOne
+    @JoinColumn(name = "salon_id")
+    var beautySalon: BeautySalonModel,
 )

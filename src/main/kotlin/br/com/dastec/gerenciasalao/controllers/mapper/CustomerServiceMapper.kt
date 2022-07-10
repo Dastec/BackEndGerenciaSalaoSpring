@@ -7,6 +7,7 @@ import br.com.dastec.gerenciasalao.controllers.requests.customerservice.PutUpdat
 import br.com.dastec.gerenciasalao.controllers.responses.CustomerServiceResponse
 import br.com.dastec.gerenciasalao.controllers.responses.CustomerServiceWithPendencyResponse
 import br.com.dastec.gerenciasalao.controllers.responses.FinalizeCustomerServiceResponse
+import br.com.dastec.gerenciasalao.models.BeautySalonModel
 import br.com.dastec.gerenciasalao.models.CustomerServiceModel
 import br.com.dastec.gerenciasalao.models.PendencyModel
 import br.com.dastec.gerenciasalao.models.UserModel
@@ -18,25 +19,23 @@ import java.time.LocalTime
 @Component
 class CustomerServiceMapper(
     private val customerServiceModelService: CustomerServiceModelService,
-    private val serviceModelService: ServiceModelService,
     private val customerService: CustomerService,
     private val paymentService: PaymentService,
     private val pendencyService: PendencyService,
-    private val formOfPaymentService: FormOfPaymentService,
-    private val customerMapper: CustomerMapper,
     private val saleServiceModelService: SaleServiceModelService,
     private val saleServiceMapper: SaleServiceMapper,
     private val paymentMapper: PaymentMapper,
     private val pendencyMapper: PendencyMapper
 ) {
 
-    fun createCustomerModel(postCreateCustomerServiceRequest: PostCreateCustomerServiceRequest): CustomerServiceModel {
+    fun createCustomerModel(postCreateCustomerServiceRequest: PostCreateCustomerServiceRequest, salonModel: BeautySalonModel): CustomerServiceModel {
         val customer = customerService.findById(postCreateCustomerServiceRequest.customer)
         return CustomerServiceModel(
             endTime = null,
             totalValue = null,
             customer = customer,
-            observation = null
+            observation = null,
+            beautySalon = salonModel
         )
     }
 
@@ -51,7 +50,8 @@ class CustomerServiceMapper(
             customer = customerService.customer,
             saleServices = saleServices,
             statusCustomerService = CustomerServiceStatus.OPEN,
-            observation = null
+            observation = null,
+            beautySalon = customerService.beautySalon
         )
     }
 
@@ -70,7 +70,8 @@ class CustomerServiceMapper(
             customer = customer,
             saleServices = saleServices,
             statusCustomerService = previousCustomerService.statusCustomerService,
-            observation = null
+            observation = null,
+            beautySalon = previousCustomerService.beautySalon
         )
     }
 
@@ -84,6 +85,7 @@ class CustomerServiceMapper(
                 PendencyModel(
                     customerService = previousCustomerService,
                     valuePendency = previousCustomerService.totalValue!! - paidValue,
+                    beautySalon = previousCustomerService.beautySalon
                 )
             )
             previousCustomerService.statusCustomerService = CustomerServiceStatus.FINALIZEDPENDING
@@ -105,7 +107,8 @@ class CustomerServiceMapper(
             customer = previousCustomerService.customer,
             saleServices = previousCustomerService.saleServices,
             observation = putFinalizeCustomerServiceRequest.observation,
-            statusCustomerService = previousCustomerService.statusCustomerService
+            statusCustomerService = previousCustomerService.statusCustomerService,
+            beautySalon = previousCustomerService.beautySalon
         )
     }
 
@@ -123,7 +126,8 @@ class CustomerServiceMapper(
             customer = previousCustomerService.customer,
             saleServices  = previousCustomerService.saleServices,
             observation = previousCustomerService.observation,
-            statusCustomerService = CustomerServiceStatus.CANCELLED
+            statusCustomerService = CustomerServiceStatus.CANCELLED,
+            beautySalon = previousCustomerService.beautySalon
         )
     }
 
@@ -142,8 +146,7 @@ class CustomerServiceMapper(
             payments = paymentsResponse,
             saleServices = saleServicesResponse,
             observation = customerService.observation,
-            statusCustomerService = customerService.statusCustomerService
-
+            statusCustomerService = customerService.statusCustomerService,
         )
     }
 

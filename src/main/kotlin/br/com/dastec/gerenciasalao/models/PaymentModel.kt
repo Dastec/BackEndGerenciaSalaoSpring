@@ -36,4 +36,8 @@ data class PaymentModel(
     @JoinColumn(name = "user_id")
     val user: UserModel?,
 
+    @ManyToOne
+    @JoinColumn(name = "salon_id")
+    var beautySalon: BeautySalonModel,
+
 )

@@ -26,7 +26,8 @@ class PaymentMapper(
             formOfPayment = formOfPayment,
             customerService = customerService,
             valuePayment = postPaymentServiceRequest.valuePayment,
-            user = userModel
+            user = userModel,
+            beautySalon = customerService.beautySalon
         )
     }
 
@@ -38,7 +39,8 @@ class PaymentMapper(
             formOfPayment = formOfPayment,
             customerService = customerService,
             valuePayment = postPaymentServiceRequest.valuePayment,
-            user = userModel
+            user = userModel,
+            beautySalon = customerService.beautySalon
         )
     }
 
@@ -54,7 +56,8 @@ class PaymentMapper(
             customerService = previousPayment.customerService,
             valuePayment = putPaymentServiceRequest.valuePayment,
             datePayment = previousPayment.datePayment,
-            user = previousPayment.user
+            user = previousPayment.user,
+            beautySalon = previousPayment.beautySalon
         )
     }
 
@@ -65,16 +68,19 @@ class PaymentMapper(
         //valores ordenados dec
         var paymentsObjects = postPaymentServiceWithPendencyRequest.paymentObject.sortedBy { it.valuePayment.dec() }.toMutableList()
 
-        forCustomerService@ for (customerService in customerServices) {
-            val customerServiceCurrent = customerServiceModelService.findById(customerService.idCustomerService!!)
-            forPaymentObject@ for (paymentsObject in paymentsObjects) {
+         forCustomerService@
+         for (customerServiceCurrent in customerServices) {
+            //val customerServiceCurrent = customerServiceModelService.findById(customerService.idCustomerService!!)
+            forPaymentObject@
+            for (paymentsObject in paymentsObjects) {
                 if (paymentsObject.valuePayment + customerServiceCurrent.paidValue!! < customerServiceCurrent.totalValue!!) {
                     paymentService.payServiceWithPendency(
                         PaymentModel(
                             formOfPayment = formOfPaymentService.findById(paymentsObject.formOfPayment),
                             customerService = customerServiceCurrent,
                             valuePayment = paymentsObject.valuePayment,
-                            user = userModel
+                            user = userModel,
+                            beautySalon = customerServiceCurrent.beautySalon
                         )
                     )
                     paymentsObject.valuePayment = 0.0
@@ -84,7 +90,8 @@ class PaymentMapper(
                             formOfPayment = formOfPaymentService.findById(paymentsObject.formOfPayment),
                             customerService = customerServiceCurrent,
                             valuePayment = paymentsObject.valuePayment,
-                            user = userModel
+                            user = userModel,
+                            beautySalon = customerServiceCurrent.beautySalon
                         )
                     )
                     paymentsObject.valuePayment = 0.0
@@ -96,7 +103,8 @@ class PaymentMapper(
                             formOfPayment = formOfPaymentService.findById(paymentsObject.formOfPayment),
                             customerService = customerServiceCurrent,
                             valuePayment = customerServiceCurrent.totalValue!! - customerServiceCurrent.paidValue!!,
-                            user = userModel
+                            user = userModel,
+                            beautySalon = customerServiceCurrent.beautySalon
                         )
                     )
                     paymentsObject.valuePayment =
@@ -116,7 +124,6 @@ class PaymentMapper(
             valuePayment = payment.valuePayment,
             datePayment = payment.datePayment
         )
-
     }
 
     fun toListPaymentResponse(payments: List<PaymentModel>): MutableList<PaymentResponse>{

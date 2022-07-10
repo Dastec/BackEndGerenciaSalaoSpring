@@ -13,6 +13,7 @@ fun PostAddPendencyRequest.toPendencyModel(customerService: CustomerServiceModel
         customerService = customerService,
         valuePendency = this.valuePendency,
         status = PendencyStatus.OPEN,
+        beautySalon = customerService.beautySalon
     )
 }
 
@@ -22,6 +23,7 @@ fun PutPendecyServiceRequest.toPendencyModel(previouPendecy: PendencyModel): Pen
         customerService = previouPendecy.customerService,
         valuePendency = this.valuePayment,
         status = previouPendecy.status,
+        beautySalon = previouPendecy.beautySalon
     )
 }
 
@@ -31,5 +33,6 @@ fun PutFinishPendencyRequest.toPendencyModel(previouPendecy: PendencyModel): Pen
         customerService = previouPendecy.customerService,
         valuePendency = 0.0,
         status = PendencyStatus.PAID,
+        beautySalon = previouPendecy.beautySalon
     )
 }

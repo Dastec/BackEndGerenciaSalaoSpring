@@ -21,7 +21,7 @@ class CategoryController(val categoryService: CategoryService, val springUtil: S
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun createCategory(@Valid @RequestBody postCategoryRequest: PostCategoryRequest, @RequestHeader(value = "Authorization") token: String): CreateResponse {
-        categoryService.createCategory(postCategoryRequest.toCategoryModel(springUtil.getSalon(token.split(" ")[1])!!))
+        categoryService.createCategory(postCategoryRequest.toCategoryModel(springUtil.getSalon(token.split(" ")[1])))
         return CreateResponse("Categoria criada com sucesso")
     }
 

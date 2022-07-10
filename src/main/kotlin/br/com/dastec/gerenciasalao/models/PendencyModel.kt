@@ -10,15 +10,19 @@ data class PendencyModel(
     @Column(name = "id_pendency")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var idPendencyModel: Long? = null,
+    val idPendencyModel: Long? = null,
 
     @ManyToOne
     @JoinColumn(name = "customer_service_id")
-    var customerService: CustomerServiceModel,
+    val customerService: CustomerServiceModel,
 
     @Column(name = "value_pendency", nullable = false)
     var valuePendency: Double,
 
     @Enumerated(EnumType.STRING)
     var status: PendencyStatus = PendencyStatus.OPEN,
+
+    @ManyToOne
+    @JoinColumn(name = "salon_id")
+    var beautySalon: BeautySalonModel,
     )

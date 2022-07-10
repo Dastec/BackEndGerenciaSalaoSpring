@@ -8,7 +8,8 @@ create table customer_services(
 	status_customer_service varchar(100) not null,
 	customer_id bigint,
 	observation  varchar(500),
+	salon_id bigint not null,
 
-
+    foreign key(salon_id) references beauty_salons(id_salon),
 	foreign key (customer_id) references customers(id_customer)
 );
