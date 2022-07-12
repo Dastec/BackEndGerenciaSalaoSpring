@@ -11,4 +11,8 @@ class SpringUtil(val jwtUtil: JwtUtil, val salonService: SalonService) {
     fun getSalon(token: String): BeautySalonModel{
         return salonService.findById(jwtUtil.getUserInformation(token).salonId)
     }
+
+    fun hasAuthorization():Boolean{
+        return false
+    }
 }

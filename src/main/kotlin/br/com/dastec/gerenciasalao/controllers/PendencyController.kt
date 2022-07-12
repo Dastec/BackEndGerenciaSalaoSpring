@@ -1,58 +1,68 @@
 package br.com.dastec.gerenciasalao.controllers
 
-import br.com.dastec.gerenciasalao.controllers.extensions.toPendencyModel
-import br.com.dastec.gerenciasalao.controllers.requests.pendency.PostAddPendencyRequest
-import br.com.dastec.gerenciasalao.controllers.requests.pendency.PutFinishPendencyRequest
-import br.com.dastec.gerenciasalao.controllers.responses.CreateResponse
 import br.com.dastec.gerenciasalao.models.PendencyModel
+import br.com.dastec.gerenciasalao.services.CustomerService
 import br.com.dastec.gerenciasalao.services.CustomerServiceModelService
 import br.com.dastec.gerenciasalao.services.PendencyService
-import org.springframework.http.HttpStatus
+import br.com.dastec.gerenciasalao.utils.SpringUtil
 import org.springframework.web.bind.annotation.*
-import javax.validation.Valid
 
 @RestController
 @RequestMapping("api/v1/pendency")
 class PendencyController(
     private val pendencyService: PendencyService,
     private val customerServiceModelService: CustomerServiceModelService,
+    private val springUtil: SpringUtil,
+    private val customerService: CustomerService
 ) {
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    fun addPendency(@Valid @RequestBody postAddPendencyRequest: PostAddPendencyRequest): CreateResponse {
-        val customerService = customerServiceModelService.findById(postAddPendencyRequest.customerService)
-        pendencyService.createPendency(postAddPendencyRequest.toPendencyModel(customerService))
+//    @PostMapping
+//    @ResponseStatus(HttpStatus.CREATED)
+//    fun addPendency(@Valid @RequestBody postAddPendencyRequest: PostAddPendencyRequest, @RequestHeader(value = "Authorization") token: String): CreateResponse {
+//        val salon = springUtil.getSalon(token.split(" ")[1])
+//        val customerService = customerServiceModelService.findById(salon, postAddPendencyRequest.customerService)
+//        pendencyService.createPendency(postAddPendencyRequest.toPendencyModel(customerService))
+//
+//        return CreateResponse("Pendência incluída com sucesso")
+//    }
 
-        return CreateResponse("Pendência incluída com sucesso")
-    }
+//    @PutMapping("/{id}")
+//    fun updatePendency(@PathVariable id: Long, @RequestHeader(value = "Authorization") token: String): CreateResponse {
+//        val salon = springUtil.getSalon(token.split(" ")[1])
+//        val pendency = pendencyService.findById(salon, id)
+//        pendencyService.updatePendency(pendency)
+//
+//        return CreateResponse("Pendência atualizada com sucesso")
+//    }
 
-    @PutMapping("/{id}")
-    fun updatePendency(@PathVariable id: Long): CreateResponse {
-        val pendency = pendencyService.findById(id)
-        pendencyService.updatePendency(pendency)
-
-        return CreateResponse("Pendência atualizada com sucesso")
-    }
-
-    @PutMapping("finalize/{id}")
-    fun finaizePendency(@PathVariable id: Long): CreateResponse {
-        val pendency = pendencyService.findById(id)
-        val putFinishPendencyRequest: PutFinishPendencyRequest = PutFinishPendencyRequest()
-        pendencyService.finalizePendency(putFinishPendencyRequest.toPendencyModel(pendency))
-
-        return CreateResponse("Pendência finalizada com sucesso")
-    }
+//    @PutMapping("finalize/{id}")
+//    fun finalizePendency(@PathVariable id: Long, @RequestHeader(value = "Authorization") token: String): CreateResponse {
+//        val salon = springUtil.getSalon(token.split(" ")[1])
+//        val pendency = pendencyService.findById(salon, id)
+//        val putFinishPendencyRequest: PutFinishPendencyRequest = PutFinishPendencyRequest()
+//        pendencyService.finalizePendency(putFinishPendencyRequest.toPendencyModel(pendency))
+//
+//        return CreateResponse("Pendência finalizada com sucesso")
+//    }
 
     @GetMapping
-    fun findAll(): List<PendencyModel> {
-        return pendencyService.findAll()
+    fun findAll(@RequestHeader(value = "Authorization") token: String): List<PendencyModel> {
+        val salon = springUtil.getSalon(token.split(" ")[1])
+        return pendencyService.findAll(salon)
     }
 
     @GetMapping("/customerservice/{id}")
-    fun findByIdCustomomer(@PathVariable id: Long): PendencyModel {
-        val customerService = customerServiceModelService.findById(id)
+    fun findByIdCustomerService(@PathVariable id: Long, @RequestHeader(value = "Authorization") token: String): PendencyModel {
+        val salon = springUtil.getSalon(token.split(" ")[1])
+        val customerService = customerServiceModelService.findById(salon, id)
         return pendencyService.findByCustomerService(customerService)
+    }
+
+    @GetMapping("/customer/{id}")
+    fun findByIdCustomer(@PathVariable id: Long, @RequestHeader(value = "Authorization") token: String): MutableList<PendencyModel> {
+        val salon = springUtil.getSalon(token.split(" ")[1])
+        val customer = customerService.findByIdAndSalon(salon, id)
+        return pendencyService.findByCustomer(customer)
     }
 
 

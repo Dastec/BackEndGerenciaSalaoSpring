@@ -3,6 +3,7 @@ package br.com.dastec.gerenciasalao.services
 import br.com.dastec.gerenciasalao.exceptions.BadRequestException
 import br.com.dastec.gerenciasalao.exceptions.NotFoundException
 import br.com.dastec.gerenciasalao.exceptions.enums.Errors
+import br.com.dastec.gerenciasalao.models.BeautySalonModel
 import br.com.dastec.gerenciasalao.models.CustomerServiceModel
 import br.com.dastec.gerenciasalao.models.SaleServiceModel
 import br.com.dastec.gerenciasalao.models.ServiceModel
@@ -31,25 +32,23 @@ class SaleServiceModelService(private val saleServiceRepository: SaleServiceRepo
         saleServiceRepository.save(saleServiceModel)
     }
 
-    fun deleteSaleService(id: Long){
-        if (!saleServiceRepository.existsById(id)){
-            NotFoundException(Errors.GS201.message.format(id), Errors.GS201.internalCode)
-        }
+    fun deleteSaleService(salon: BeautySalonModel, id: Long){
+        findById(salon, id)
         saleServiceRepository.deleteById(id)
     }
 
-    fun findById(id: Long): SaleServiceModel{
-        return saleServiceRepository.findById(id).orElseThrow {
-            NotFoundException(Errors.GS301.message.format(id), Errors.GS301.internalCode)
-        }
+    fun findById(salon: BeautySalonModel, id: Long): SaleServiceModel{
+        return saleServiceRepository.findByIdAndSalon(salon, id) ?:
+            throw NotFoundException(Errors.GS301.message.format(id), Errors.GS301.internalCode)
+
     }
 
-    fun findByName(name: String): List<SaleServiceModel>{
-        return saleServiceRepository.findByNameServiceContainingIgnoreCase(name)
+    fun findByName(salon: BeautySalonModel, name: String): List<SaleServiceModel>{
+        return saleServiceRepository.findByNameServiceContainingIgnoreCase(salon, name)
     }
 
-    fun findAll(): List<SaleServiceModel>{
-        return saleServiceRepository.findAll()
+    fun findAll(salon: BeautySalonModel): List<SaleServiceModel>{
+        return saleServiceRepository.findAllByBeautySalon(salon)
     }
 
     fun findByIds(serviceIds: Set<Long>): MutableList<SaleServiceModel>{

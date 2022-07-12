@@ -4,6 +4,7 @@ import br.com.dastec.gerenciasalao.controllers.requests.payments.PostPaymentServ
 import br.com.dastec.gerenciasalao.controllers.requests.payments.PostPaymentServiceWithPendencyRequest
 import br.com.dastec.gerenciasalao.controllers.requests.payments.PutPendecyServiceRequest
 import br.com.dastec.gerenciasalao.controllers.responses.PaymentResponse
+import br.com.dastec.gerenciasalao.models.BeautySalonModel
 import br.com.dastec.gerenciasalao.models.PaymentModel
 import br.com.dastec.gerenciasalao.models.UserModel
 import br.com.dastec.gerenciasalao.services.CustomerServiceModelService
@@ -20,8 +21,8 @@ class PaymentMapper(
 ) {
 
     fun postPaymentServiceRequestToPaymentModel(postPaymentServiceRequest: PostPaymentServiceRequest, userModel: UserModel): PaymentModel {
-        val customerService = customerServiceModelService.findById(postPaymentServiceRequest.customerService)
-        val formOfPayment = formOfPaymentService.findById(postPaymentServiceRequest.formOfPayment)
+        val customerService = customerServiceModelService.findById(userModel.beautySalon, postPaymentServiceRequest.customerService)
+        val formOfPayment = formOfPaymentService.findById(customerService.beautySalon, postPaymentServiceRequest.formOfPayment)
         return PaymentModel(
             formOfPayment = formOfPayment,
             customerService = customerService,
@@ -32,8 +33,8 @@ class PaymentMapper(
     }
 
     fun postPaymentPendencyServiceRequestToPaymentModel(postPaymentServiceRequest: PostPaymentServiceRequest, userModel: UserModel): PaymentModel {
-        val customerService = customerServiceModelService.findById(postPaymentServiceRequest.customerService)
-        val formOfPayment = formOfPaymentService.findById(postPaymentServiceRequest.formOfPayment)
+        val customerService = customerServiceModelService.findById(userModel.beautySalon, postPaymentServiceRequest.customerService)
+        val formOfPayment = formOfPaymentService.findById(customerService.beautySalon, postPaymentServiceRequest.formOfPayment)
 
         return PaymentModel(
             formOfPayment = formOfPayment,
@@ -48,7 +49,7 @@ class PaymentMapper(
         putPaymentServiceRequest: PutPendecyServiceRequest,
         previousPayment: PaymentModel
     ): PaymentModel {
-        val formOfPayment = formOfPaymentService.findById(putPaymentServiceRequest.formOfPayment)
+        val formOfPayment = formOfPaymentService.findById(previousPayment.beautySalon, putPaymentServiceRequest.formOfPayment)
 
         return PaymentModel(
             idPayment = previousPayment.idPayment,
@@ -63,7 +64,7 @@ class PaymentMapper(
 
     fun postPayPendencyRequestToPaymentModel(postPaymentServiceWithPendencyRequest: PostPaymentServiceWithPendencyRequest, userModel: UserModel) {
         //Lista de atendimentos
-        var customerServices = customerServiceModelService.findAllByIds(postPaymentServiceWithPendencyRequest.customerServices).sortedBy { it.idCustomerService }
+        var customerServices = customerServiceModelService.findAllByIds(userModel.beautySalon, postPaymentServiceWithPendencyRequest.customerServices).sortedBy { it.idCustomerService }
 
         //valores ordenados dec
         var paymentsObjects = postPaymentServiceWithPendencyRequest.paymentObject.sortedBy { it.valuePayment.dec() }.toMutableList()
@@ -76,7 +77,7 @@ class PaymentMapper(
                 if (paymentsObject.valuePayment + customerServiceCurrent.paidValue!! < customerServiceCurrent.totalValue!!) {
                     paymentService.payServiceWithPendency(
                         PaymentModel(
-                            formOfPayment = formOfPaymentService.findById(paymentsObject.formOfPayment),
+                            formOfPayment = formOfPaymentService.findById(customerServiceCurrent.beautySalon, paymentsObject.formOfPayment),
                             customerService = customerServiceCurrent,
                             valuePayment = paymentsObject.valuePayment,
                             user = userModel,
@@ -87,7 +88,7 @@ class PaymentMapper(
                 } else if (paymentsObject.valuePayment + customerServiceCurrent.paidValue!! == customerServiceCurrent.totalValue!!) {
                     paymentService.payServiceWithPendency(
                         PaymentModel(
-                            formOfPayment = formOfPaymentService.findById(paymentsObject.formOfPayment),
+                            formOfPayment = formOfPaymentService.findById(customerServiceCurrent.beautySalon, paymentsObject.formOfPayment),
                             customerService = customerServiceCurrent,
                             valuePayment = paymentsObject.valuePayment,
                             user = userModel,
@@ -100,7 +101,7 @@ class PaymentMapper(
                     val difference = customerServiceCurrent.totalValue!! - customerServiceCurrent.paidValue!!
                     paymentService.payServiceWithPendency(
                         PaymentModel(
-                            formOfPayment = formOfPaymentService.findById(paymentsObject.formOfPayment),
+                            formOfPayment = formOfPaymentService.findById(customerServiceCurrent.beautySalon, paymentsObject.formOfPayment),
                             customerService = customerServiceCurrent,
                             valuePayment = customerServiceCurrent.totalValue!! - customerServiceCurrent.paidValue!!,
                             user = userModel,

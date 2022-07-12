@@ -18,24 +18,22 @@ class CategoryService(private val categoryRepository: CategoryRepository) {
         categoryRepository.save(category)
     }
 
-    fun findById(id: Long): CategoryModel{
-        return categoryRepository.findById(id).orElseThrow {
+    fun delete(id: Long){
+        if(categoryRepository.findById(id) == null){
             NotFoundException(Errors.GS201.message.format(id), Errors.GS201.internalCode)
         }
+        categoryRepository.deleteById(id)
+    }
+
+    fun findById(salon: BeautySalonModel, id: Long): CategoryModel{
+        return categoryRepository.findByIdAndSalon(salon, id) ?: throw NotFoundException(Errors.GS201.message.format(id), Errors.GS201.internalCode)
     }
 
     fun findAll(salon: BeautySalonModel):List<CategoryModel>{
         return categoryRepository.findAllByBeautySalon(salon)
     }
 
-    fun findByNameCategory(person: BeautySalonModel, name: String): List<CategoryModel>{
-        return categoryRepository.findByNameCategoryContainingIgnoreCase(person, name)
-    }
-
-    fun delete(id: Long){
-        if(!categoryRepository.existsById(id)){
-            NotFoundException(Errors.GS201.message.format(id), Errors.GS201.internalCode)
-        }
-        categoryRepository.deleteById(id)
+    fun findByNameCategory(salon: BeautySalonModel, name: String): List<CategoryModel>{
+        return categoryRepository.findByNameCategoryContainingIgnoreCase(salon, name)
     }
 }

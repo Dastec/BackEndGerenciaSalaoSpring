@@ -19,7 +19,7 @@ data class PutCustomerModelRequest(
     var fullName: String,
 
     @IsCpf
-    @CpfAvailable
+    //@CpfAvailable
     var cpf: String,
 
     @JsonAlias("birth_date")

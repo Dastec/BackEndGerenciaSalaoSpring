@@ -8,7 +8,7 @@ import javax.validation.ConstraintValidatorContext
 class CpfAvailableValidator(val customerService: CustomerService) : ConstraintValidator<CpfAvailable, String> {
 
     override fun isValid(cpf: String?, context: ConstraintValidatorContext?): Boolean {
-        return customerService.cpfAvailable(cpf!!)
+        return false//customerService.cpfAvailable(cpf!!)
     }
 
 

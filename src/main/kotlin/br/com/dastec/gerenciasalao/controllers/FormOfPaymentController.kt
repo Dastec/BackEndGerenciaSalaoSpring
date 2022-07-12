@@ -27,20 +27,23 @@ class FormOfPaymentController(private val formOfPaymentService: FormOfPaymentSer
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.CREATED)
-    fun update(@PathVariable id: Long, @Valid @RequestBody putFormPaymentRequest: PutFormPaymentRequest): CreateResponse {
-        val previousFormPayment = formOfPaymentService.findById(id)
+    fun update(@PathVariable id: Long, @Valid @RequestBody putFormPaymentRequest: PutFormPaymentRequest, @RequestHeader(value = "Authorization") token: String): CreateResponse {
+        val salon = springUtil.getSalon(token.split(" ")[1])
+        val previousFormPayment = formOfPaymentService.findById(salon, id)
         formOfPaymentService.create(putFormPaymentRequest.toFormOfPayment(previousFormPayment))
         return CreateResponse("Forma de pagamento atualizada com sucesso")
     }
 
     @GetMapping
     fun findAll(@RequestHeader(value = "Authorization") token: String): List<FormOfPaymentModel> {
-        return formOfPaymentService.findAll(springUtil.getSalon(token.split(" ")[1]))
+        val salon = springUtil.getSalon(token.split(" ")[1])
+        return formOfPaymentService.findAll(salon)
     }
 
     @DeleteMapping("/{id}")
-    fun delete(@PathVariable id: Long): CreateResponse {
-        formOfPaymentService.delete(id)
+    fun delete(@PathVariable id: Long, @RequestHeader(value = "Authorization") token: String): CreateResponse {
+        val salon = springUtil.getSalon(token.split(" ")[1])
+        formOfPaymentService.delete(salon, id)
         return CreateResponse("Forma de pagamento deletada com sucesso")
     }
 }

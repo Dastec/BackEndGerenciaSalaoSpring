@@ -20,7 +20,7 @@ data class PostCustomerModelRequest(
     val fullName: String,
 
     @IsCpf
-    @CpfAvailable
+    //@CpfAvailable
     val cpf: String,
 
     @JsonAlias("birth_date")

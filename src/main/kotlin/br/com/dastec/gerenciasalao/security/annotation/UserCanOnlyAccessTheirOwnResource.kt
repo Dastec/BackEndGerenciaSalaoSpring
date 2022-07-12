@@ -1,4 +1,4 @@
-package br.com.dastec.gerenciasalao.security
+package br.com.dastec.gerenciasalao.security.annotation
 
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.access.prepost.PreFilter

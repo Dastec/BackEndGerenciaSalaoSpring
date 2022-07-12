@@ -10,7 +10,8 @@ import java.util.*
 @Repository
 interface CustomerRepository: JpaRepository<CustomerModel, Long> {
 
-    fun findByClientKey(clientKey: String):Optional<CustomerModel>
+    @Query(value = "select u from CustomerModel u where u.beautySalon = ?1 AND u.clientKey = ?2")
+    fun findByClientKey(salon: BeautySalonModel, clientKey: String):Optional<CustomerModel>
 
     @Query(value = "select u from CustomerModel u where u.beautySalon = ?1 AND u.fullName like %?2%")
     fun findByFullNameAndSalon(salon: BeautySalonModel, name: String): List<CustomerModel>
@@ -19,7 +20,11 @@ interface CustomerRepository: JpaRepository<CustomerModel, Long> {
     @Query(value = "select u from CustomerModel u where u.beautySalon = ?1 AND u.status = ?2")
     fun findByStatusAndSalonModel(salon: BeautySalonModel, name: String):List<CustomerModel>
 
-    fun existsByCpf(cpf: String): Boolean
+    @Query(value = "select u from CustomerModel u where u.beautySalon = ?1 AND u.cpf = ?2")
+    fun existsByCpf(salon: BeautySalonModel, cpf: String): CustomerModel
+
+    @Query(value = "select u from CustomerModel u where u.beautySalon = ?1 AND u.idCustomer = ?2")
+    fun findByIdAndSalon(salon: BeautySalonModel, idCustomer: Long): CustomerModel?
 
     fun findAllByBeautySalon(salon: BeautySalonModel): List<CustomerModel>
 }

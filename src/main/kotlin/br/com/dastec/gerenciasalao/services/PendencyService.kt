@@ -3,6 +3,8 @@ package br.com.dastec.gerenciasalao.services
 import br.com.dastec.gerenciasalao.exceptions.BadRequestException
 import br.com.dastec.gerenciasalao.exceptions.NotFoundException
 import br.com.dastec.gerenciasalao.exceptions.enums.Errors
+import br.com.dastec.gerenciasalao.models.BeautySalonModel
+import br.com.dastec.gerenciasalao.models.CustomerModel
 import br.com.dastec.gerenciasalao.models.CustomerServiceModel
 import br.com.dastec.gerenciasalao.models.PendencyModel
 import br.com.dastec.gerenciasalao.models.enums.CustomerServiceStatus
@@ -29,22 +31,22 @@ class PendencyService(
         pendencyRepository.save(pendency)
     }
 
-    fun findAll(): List<PendencyModel> {
-        return pendencyRepository.findAll()
+    fun findAll(salon: BeautySalonModel): List<PendencyModel> {
+        return pendencyRepository.findAllByBeautySalon(salon)
     }
 
     fun findByCustomerService(customerService: CustomerServiceModel): PendencyModel {
         return pendencyRepository.findByCustomerService(customerService)
     }
 
-    fun findById(id: Long): PendencyModel {
-        return pendencyRepository.findById(id).orElseThrow {
-            NotFoundException(Errors.GS601.message.format(id), Errors.GS601.internalCode)
-        }
+    fun findById(salon: BeautySalonModel, id: Long): PendencyModel {
+        return pendencyRepository.findByIdAndSalon(salon, id) ?:
+            throw NotFoundException(Errors.GS601.message.format(id), Errors.GS601.internalCode)
+
     }
 
     fun findByCustomerServiceWhereStatusOpen(customerServiceModel: CustomerServiceModel): PendencyModel {
-        return pendencyRepository.findByCustomerServiceWhereStatusAberto(customerServiceModel.idCustomerService!!)
+        return pendencyRepository.findByCustomerServiceWhereStatusOpen(customerServiceModel)
     }
 
     fun findAllByCustomerService(customerServices: Set<CustomerServiceModel>): MutableList<PendencyModel> {
@@ -59,5 +61,9 @@ class PendencyService(
             pendencies.add(findByCustomerServiceWhereStatusOpen(customerService))
         }
         return pendencies
+    }
+
+    fun findByCustomer(customer: CustomerModel): MutableList<PendencyModel> {
+        return pendencyRepository.findByCustomer(customer)
     }
 }

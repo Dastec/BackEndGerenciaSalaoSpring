@@ -18,7 +18,8 @@ class FormOfPaymentService(private val formOfPaymentRepository: FormOfPaymentRep
         formOfPaymentRepository.save(formOfPaymentModel)
     }
 
-    fun delete(id:Long){
+    fun delete(salon: BeautySalonModel, id:Long){
+        findById(salon, id)
         formOfPaymentRepository.deleteById(id)
     }
 
@@ -26,10 +27,9 @@ class FormOfPaymentService(private val formOfPaymentRepository: FormOfPaymentRep
         return formOfPaymentRepository.findAllByBeautySalon(salon)
     }
 
-    fun findById(id: Long):FormOfPaymentModel{
-        return formOfPaymentRepository.findById(id).orElseThrow {
-            NotFoundException(Errors.GS401.message.format(id), Errors.GS401.internalCode)
-        }
+    fun findById(salon: BeautySalonModel, id: Long):FormOfPaymentModel{
+        return formOfPaymentRepository.findByIdAndSalon(salon, id) ?:
+             throw NotFoundException(Errors.GS401.message.format(id), Errors.GS401.internalCode)
     }
 
 }

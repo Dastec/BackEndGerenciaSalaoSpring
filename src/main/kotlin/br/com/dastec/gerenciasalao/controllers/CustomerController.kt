@@ -18,26 +18,28 @@ import javax.validation.Valid
 
 @RestController
 @RequestMapping("/api/v1/customer")
-class CustomerController(val customerService: CustomerService, val customerMapper: CustomerMapper, val springUtil: SpringUtil) {
+class CustomerController(val customerService: CustomerService, val customerMapper: CustomerMapper, val springUtil: SpringUtil, val jwtUtil: JwtUtil) {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun create(@Valid @RequestBody postCustomerRequest: PostCustomerModelRequest, @RequestHeader(value = "Authorization") token: String): CreateResponse {
-
-        customerService.createCustomer(postCustomerRequest.toCustomerModel(springUtil.getSalon(token.split(" ")[1])), postCustomerRequest.phoneNumber)
+        val salon = springUtil.getSalon(token.split(" ")[1])
+        customerService.createCustomer(postCustomerRequest.toCustomerModel(salon), postCustomerRequest.phoneNumber)
         return CreateResponse("Cliente criado com sucesso")
     }
 
     @PutMapping("/{id}")
-    fun update(@PathVariable id: Long, @Valid @RequestBody putCustomerRequest: PutCustomerModelRequest): CreateResponse {
-        val customerModel: CustomerModel = customerService.findById(id)
+    fun update(@PathVariable id: Long, @Valid @RequestBody putCustomerRequest: PutCustomerModelRequest, @RequestHeader(value = "Authorization") token: String): CreateResponse {
+        val salon = springUtil.getSalon(token.split(" ")[1])
+        val customerModel: CustomerModel = customerService.findByIdAndSalon(salon, id)
         customerService.updateCustomer(putCustomerRequest.toCustomerModel(customerModel), putCustomerRequest.phoneNumber)
         return CreateResponse("Cliente Atualizada com sucesso")
     }
 
     @DeleteMapping("/{clientKey}")
-    fun delete(@PathVariable clientKey: String): CreateResponse {
-        val customerModel: CustomerModel = customerService.findByClientKey(clientKey)
+    fun delete(@PathVariable clientKey: String, @RequestHeader(value = "Authorization") token: String): CreateResponse {
+        val salon = springUtil.getSalon(token.split(" ")[1])
+        val customerModel: CustomerModel = customerService.findByClientKey(salon, clientKey)
         customerService.deleteCustomer(deleteCustomer(customerModel))
 
         return CreateResponse("Cliente deletada com sucesso")
@@ -45,29 +47,31 @@ class CustomerController(val customerService: CustomerService, val customerMappe
 
     @GetMapping()
     fun findAll(@RequestHeader(value = "Authorization") token: String): List<CustomerResponse> {
-        //val salon = salonService.findById(jwtUtil.getUserInformation(token.split(" ")[1]).salonId)
-        return customerMapper.toListCustomerResponse(customerService.findAllBySalonModel(springUtil.getSalon(token.split(" ")[1])))
+        val salon = springUtil.getSalon(token.split(" ")[1])
+        return customerMapper.toListCustomerResponse(customerService.findAllBySalonModel(salon))
     }
 
     @GetMapping("{customerId}")
-    fun findById(@PathVariable @Valid customerId: Long): CustomerResponse {
-        return customerMapper.toCustomerResponse(customerService.findById(customerId))
+    fun findById(@PathVariable @Valid customerId: Long, @RequestHeader(value = "Authorization") token: String): CustomerResponse {
+        val salon = springUtil.getSalon(token.split(" ")[1])
+        return customerMapper.toCustomerResponse(customerService.findByIdAndSalon(salon, customerId))
     }
 
     @GetMapping("/name/{name}")
     fun findByName(@PathVariable name: String, @RequestHeader(value = "Authorization") token: String): List<CustomerResponse> {
-        //val salon = salonService.findById(jwtUtil.getUserInformation(token.split(" ")[1]).salonId)
-        return customerMapper.toListCustomerResponse(customerService.findByNameContaining(springUtil.getSalon(token.split(" ")[1]), name.trim()))
+        val salon = springUtil.getSalon(token.split(" ")[1])
+        return customerMapper.toListCustomerResponse(customerService.findByNameContaining(salon, name.trim()))
     }
 
     @GetMapping("/status/{status}")
     fun findByStatus(@PathVariable status: String, @RequestHeader(value = "Authorization") token: String): List<CustomerResponse> {
-        //val salon = salonService.findById(jwtUtil.getUserInformation(token.split(" ")[1]).salonId)
-        return customerMapper.toListCustomerResponse(customerService.findByStatus(springUtil.getSalon(token.split(" ")[1]), status))
+        val salon = springUtil.getSalon(token.split(" ")[1])
+        return customerMapper.toListCustomerResponse(customerService.findByStatus(salon, status))
     }
 
     @GetMapping("/clientkey/{clientKey}")
-    fun findByClientKey(@PathVariable clientKey: String): CustomerResponse {
-        return customerMapper.toCustomerResponse(customerService.findByClientKey(clientKey))
+    fun findByClientKey(@PathVariable clientKey: String, @RequestHeader(value = "Authorization") token: String): CustomerResponse {
+        val salon = springUtil.getSalon(token.split(" ")[1])
+        return customerMapper.toCustomerResponse(customerService.findByClientKey(salon, clientKey))
     }
 }

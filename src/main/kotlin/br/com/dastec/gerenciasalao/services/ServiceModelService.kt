@@ -20,29 +20,26 @@ class ServiceModelService(private val serviceRepository: ServiceRepository) {
         serviceRepository.save(serviceModel)
     }
 
-    fun delete(id: Long){
-        if (!serviceRepository.existsById(id)){
-            NotFoundException(Errors.GS201.message.format(id), Errors.GS201.internalCode)
-        }
+    fun delete(salon: BeautySalonModel, id: Long){
+        findById(salon, id)
         serviceRepository.deleteById(id)
     }
 
-    fun findById(id: Long): ServiceModel{
-        return serviceRepository.findById(id).orElseThrow {
-            NotFoundException(Errors.GS301.message.format(id), Errors.GS301.internalCode)
-        }
+    fun findById(salon: BeautySalonModel, id: Long): ServiceModel{
+        return serviceRepository.findByIdAndSalon(salon, id) ?:
+            throw NotFoundException(Errors.GS301.message.format(id), Errors.GS301.internalCode)
     }
 
-    fun findByName(person: BeautySalonModel, name: String): List<ServiceModel>{
-        return serviceRepository.findByNameServiceContainingIgnoreCase(person, name)
+    fun findByName(salon: BeautySalonModel, name: String): List<ServiceModel>{
+        return serviceRepository.findByNameServiceContainingIgnoreCase(salon, name)
     }
 
-    fun findAll(person: BeautySalonModel): List<ServiceModel>{
-        return serviceRepository.findAllByBeautySalon(person)
+    fun findAll(salon: BeautySalonModel): List<ServiceModel>{
+        return serviceRepository.findAllByBeautySalon(salon)
     }
 
-    fun findByCategory(category: CategoryModel): List<ServiceModel>{
-        return serviceRepository.findByCategory(category)
+    fun findByCategory(salon: BeautySalonModel, category: CategoryModel): List<ServiceModel>{
+        return serviceRepository.findByCategory(salon, category)
     }
 
     fun findByIds(serviceIds: Set<Long>): MutableList<ServiceModel>{

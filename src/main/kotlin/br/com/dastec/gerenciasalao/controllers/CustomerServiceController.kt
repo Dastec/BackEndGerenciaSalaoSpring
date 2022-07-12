@@ -34,36 +34,30 @@ class CustomerServiceController(
 
     @PostMapping("/start")
     @ResponseStatus(HttpStatus.CREATED)
-    fun startCustomerService(@Valid @RequestBody postStartCustomerServiceRequest: PostStartCustomerServiceRequest): CreateResponse {
-        customerServiceModelService.startCustomerService(
-            customerServiceMapper.postStartRequestToModel(postStartCustomerServiceRequest)
-        )
+    fun startCustomerService(@Valid @RequestBody postStartCustomerServiceRequest: PostStartCustomerServiceRequest, @RequestHeader(value = "Authorization") token: String): CreateResponse {
+        val salon = springUtil.getSalon(token.split(" ")[1])
+        customerServiceModelService.startCustomerService(customerServiceMapper.postStartRequestToModel(salon, postStartCustomerServiceRequest))
         return CreateResponse("Atendimento iniciado com sucesso")
-
     }
 
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
     fun createCustomerService(@Valid @RequestBody postCreateCustomerServiceRequest: PostCreateCustomerServiceRequest, @RequestHeader(value = "Authorization") token: String): CustomerServiceModel {
         val salon = springUtil.getSalon(token.split(" ")[1])
-        return customerServiceModelService.createCustomerService(
-            customerServiceMapper.createCustomerModel(postCreateCustomerServiceRequest, salon)
-        )
+        return customerServiceModelService.createCustomerService(customerServiceMapper.createCustomerModel(postCreateCustomerServiceRequest, salon))
     }
 
     @PutMapping()
-    fun updateCustomerService(@Valid @RequestBody putUpdateCustomerServiceRequest: PutUpdateCustomerServiceRequest): CreateResponse {
-        customerServiceModelService.updateCustomerService(
-            customerServiceMapper.putUpdateRequestToModel(
-                putUpdateCustomerServiceRequest
-            )
-        )
+    fun updateCustomerService(@Valid @RequestBody putUpdateCustomerServiceRequest: PutUpdateCustomerServiceRequest, @RequestHeader(value = "Authorization") token: String): CreateResponse {
+        val salon = springUtil.getSalon(token.split(" ")[1])
+        customerServiceModelService.updateCustomerService(customerServiceMapper.putUpdateRequestToModel(salon, putUpdateCustomerServiceRequest))
         return CreateResponse("Atendimento atualizado com sucesso")
     }
 
     @DeleteMapping("/{id}")
-    fun cancelCustomerService(@PathVariable id: Long): CreateResponse {
-        val previousCustomerService = customerServiceModelService.findById(id)
+    fun cancelCustomerService(@PathVariable id: Long, @RequestHeader(value = "Authorization") token: String): CreateResponse {
+        val salon = springUtil.getSalon(token.split(" ")[1])
+        val previousCustomerService = customerServiceModelService.findById(salon, id)
         if (previousCustomerService.statusCustomerService == CustomerServiceStatus.CANCELLED) {
             throw BadRequestException(
                 Errors.GS505.message.format(previousCustomerService.idCustomerService),
@@ -82,8 +76,10 @@ class CustomerServiceController(
     fun finalizeCustomerService(
         @PathVariable id: Long,
         @RequestBody putFinalizeCustomerServiceRequest: PutFinalizeCustomerServiceRequest,
+        @RequestHeader(value = "Authorization") token: String
     ): FinalizeCustomerServiceResponse {
-        val previousCustomerService = customerServiceModelService.findById(id)
+        val salon = springUtil.getSalon(token.split(" ")[1])
+        val previousCustomerService = customerServiceModelService.findById(salon, id)
         if (previousCustomerService.statusCustomerService == CustomerServiceStatus.FINALIZEDPENDING || previousCustomerService.statusCustomerService == CustomerServiceStatus.FINISHED) {
             throw IllegalStateException(
                 Errors.GS503.message.format(previousCustomerService.idCustomerService),
@@ -101,30 +97,31 @@ class CustomerServiceController(
     }
 
     @GetMapping
-    fun findAll(): MutableList<CustomerServiceResponse> {
-        return customerServiceMapper.toListCustomerServiceResponse(customerServiceModelService.findAll())
+    fun findAll(@RequestHeader(value = "Authorization") token: String): MutableList<CustomerServiceResponse> {
+        return customerServiceMapper.toListCustomerServiceResponse(customerServiceModelService.findAll(springUtil.getSalon(token.split(" ")[1])))
     }
 
     @GetMapping("/customer/{id}")
-    fun findAllByCustomer(@PathVariable id: Long): MutableList<CustomerServiceResponse> {
-        val customer = customerService.findById(id)
-        return customerServiceMapper.toListCustomerServiceResponse(customerServiceModelService.findAllByCustomer(customer))
+    fun findAllByCustomer(@PathVariable id: Long, @RequestHeader(value = "Authorization") token: String): MutableList<CustomerServiceResponse> {
+        val salon = springUtil.getSalon(token.split(" ")[1])
+        val customer = customerService.findByIdAndSalon(springUtil.getSalon(token.split(" ")[1]), id)
+        return customerServiceMapper.toListCustomerServiceResponse(customerServiceModelService.findAllByCustomer(salon, customer))
     }
 
     @GetMapping("/statusopen/{id}")
-    fun findByCustomerServiceWithStatusOpen(@PathVariable id: Long): MutableList<CustomerServiceResponse> {
-        val customer = customerService.findById(id)
+    fun findByCustomerServiceWithStatusOpen(@PathVariable id: Long, @RequestHeader(value = "Authorization") token: String): MutableList<CustomerServiceResponse> {
+        val salon = springUtil.getSalon(token.split(" ")[1])
+        val customer = customerService.findByIdAndSalon(salon, id)
         return customerServiceMapper.toListCustomerServiceResponse(
-            customerServiceModelService.findByCustomerServiceWithStatusOpen(
-                customer.idCustomer!!
-            )
+            customerServiceModelService.findByCustomerServiceWithStatusOpen(salon, customer.idCustomer!!)
         )
     }
 
     @GetMapping("/statusfinalizedpending/{id}")
-    fun findByCustomerServiceWithStatusFinalizedPending(@PathVariable id: Long): MutableList<CustomerServiceWithPendencyResponse> {
-        val customer = customerService.findById(id)
-        return customerServiceMapper.toListCustomerServiceWithPendencyResponse(customerServiceModelService.findByCustomerServiceWithStatusFinalizedPending(customer.idCustomer!!)
+    fun findByCustomerServiceWithStatusFinalizedPending(@PathVariable id: Long, @RequestHeader(value = "Authorization") token: String): MutableList<CustomerServiceWithPendencyResponse> {
+        val salon = springUtil.getSalon(token.split(" ")[1])
+        val customer = customerService.findByIdAndSalon(salon, id)
+        return customerServiceMapper.toListCustomerServiceWithPendencyResponse(customerServiceModelService.findByCustomerServiceWithStatusFinalizedPending(salon, customer.idCustomer!!)
         )
     }
 

@@ -29,7 +29,7 @@ class CustomerServiceMapper(
 ) {
 
     fun createCustomerModel(postCreateCustomerServiceRequest: PostCreateCustomerServiceRequest, salonModel: BeautySalonModel): CustomerServiceModel {
-        val customer = customerService.findById(postCreateCustomerServiceRequest.customer)
+        val customer = customerService.findByIdAndSalon(salonModel, postCreateCustomerServiceRequest.customer)
         return CustomerServiceModel(
             endTime = null,
             totalValue = null,
@@ -39,8 +39,8 @@ class CustomerServiceMapper(
         )
     }
 
-    fun postStartRequestToModel(postStartCustomerServiceRequest: PostStartCustomerServiceRequest): CustomerServiceModel {
-        val customerService = customerServiceModelService.findById(postStartCustomerServiceRequest.customerService)
+    fun postStartRequestToModel(salon: BeautySalonModel, postStartCustomerServiceRequest: PostStartCustomerServiceRequest): CustomerServiceModel {
+        val customerService = customerServiceModelService.findById(salon, postStartCustomerServiceRequest.customerService)
         var saleServices = saleServiceModelService.findByCustomerService(customerService)
 
         return CustomerServiceModel(
@@ -55,11 +55,9 @@ class CustomerServiceMapper(
         )
     }
 
-    fun putUpdateRequestToModel(
-        putUpdateCustomerServiceRequest: PutUpdateCustomerServiceRequest,
-    ): CustomerServiceModel {
-        val customer = customerService.findById(putUpdateCustomerServiceRequest.customer)
-        val previousCustomerService = customerServiceModelService.findById(putUpdateCustomerServiceRequest.customerService)
+    fun putUpdateRequestToModel(salonModel: BeautySalonModel, putUpdateCustomerServiceRequest: PutUpdateCustomerServiceRequest): CustomerServiceModel {
+        val customer = customerService.findByIdAndSalon(salonModel, putUpdateCustomerServiceRequest.customer)
+        val previousCustomerService = customerServiceModelService.findById(salonModel, putUpdateCustomerServiceRequest.customerService)
         var saleServices = saleServiceModelService.findByCustomerService(previousCustomerService)
 
         return CustomerServiceModel(
@@ -76,8 +74,7 @@ class CustomerServiceMapper(
     }
 
     fun putFinalizeRequestToModel(previousCustomerService: CustomerServiceModel, putFinalizeCustomerServiceRequest: PutFinalizeCustomerServiceRequest): CustomerServiceModel {
-        val payments =
-            paymentService.findPaymentsByCustomerWithCustomerServiceWithStatusOpen(previousCustomerService.idCustomerService!!)
+        val payments = paymentService.findPaymentsByCustomerWithCustomerServiceWithStatusOpen(previousCustomerService.idCustomerService!!)
         val paidValue = payments.sumOf { it.valuePayment }
 
         if (paidValue < previousCustomerService.totalValue!!) {

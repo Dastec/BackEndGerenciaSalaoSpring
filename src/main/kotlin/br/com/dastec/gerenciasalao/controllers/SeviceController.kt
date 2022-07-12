@@ -22,16 +22,18 @@ class SeviceController(val serviceModelService: ServiceModelService, val categor
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun create(@Valid @RequestBody postServiceRequest: PostServiceRequest, @RequestHeader(value = "Authorization") token: String): CreateResponse {
-        val category = categoryService.findById(postServiceRequest.idCategory)
+        val salon = springUtil.getSalon(token.split(" ")[1])
+        val category = categoryService.findById(salon, postServiceRequest.idCategory)
         serviceModelService.create(postServiceRequest.toServiceModel(category, springUtil.getSalon(token.split(" ")[1])))
 
         return CreateResponse("Serviço criado com sucesso")
     }
 
     @PutMapping("/{id}")
-    fun update(@PathVariable id: Long, @Valid @RequestBody putServiceRequest: PutServiceRequest): CreateResponse {
-        val category = categoryService.findById(putServiceRequest.idCategory)
-        val service = serviceModelService.findById(id)
+    fun update(@PathVariable id: Long, @Valid @RequestBody putServiceRequest: PutServiceRequest, @RequestHeader(value = "Authorization") token: String): CreateResponse {
+        val salon = springUtil.getSalon(token.split(" ")[1])
+        val category = categoryService.findById(salon, putServiceRequest.idCategory)
+        val service = serviceModelService.findById(salon, id)
 
         serviceModelService.update(putServiceRequest.toServiceModel(service, category))
 
@@ -39,18 +41,21 @@ class SeviceController(val serviceModelService: ServiceModelService, val categor
     }
 
     @GetMapping("/{id}")
-    fun findById(@PathVariable id: Long): ServiceModel {
-        return serviceModelService.findById(id)
+    fun findById(@PathVariable id: Long, @RequestHeader(value = "Authorization") token: String): ServiceModel {
+        val salon = springUtil.getSalon(token.split(" ")[1])
+        return serviceModelService.findById(salon, id)
     }
 
     @GetMapping()
     fun findAll(@RequestHeader(value = "Authorization") token: String): List<ServiceModel> {
-        return serviceModelService.findAll(springUtil.getSalon(token.split(" ")[1]))
+        val salon = springUtil.getSalon(token.split(" ")[1])
+        return serviceModelService.findAll(salon)
     }
 
     @GetMapping("/category/{id}")
-    fun findByCategory(@PathVariable id: Long): List<ServiceModel> {
-        val category = categoryService.findById(id)
-        return serviceModelService.findByCategory(category)
+    fun findByCategory(@PathVariable id: Long, @RequestHeader(value = "Authorization") token: String): List<ServiceModel> {
+        val salon = springUtil.getSalon(token.split(" ")[1])
+        val category = categoryService.findById(salon, id)
+        return serviceModelService.findByCategory(salon, category)
     }
 }

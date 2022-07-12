@@ -39,35 +39,39 @@ class CustomerService(private val customerRepository: CustomerRepository, privat
         customerRepository.save(customerModel)
     }
 
-    fun findById(id: Long): CustomerModel {
-        return customerRepository.findById(id).orElseThrow{
-            NotFoundException(Errors.GS101.message.format(id), Errors.GS101.internalCode)
-        }
+    fun findAllBySalonModel(salon: BeautySalonModel): List<CustomerModel>{
+        return customerRepository.findAllByBeautySalon(salon)
     }
 
-    fun findAllBySalonModel(person: BeautySalonModel): List<CustomerModel>{
-        return customerRepository.findAllByBeautySalon(person)
-    }
-
-    fun findAll(): List<CustomerModel>{
-        return customerRepository.findAll()
-    }
-
-    fun findByClientKey(clientKey: String): CustomerModel {
-        return customerRepository.findByClientKey(clientKey).orElseThrow{
+    fun findByClientKey(salon: BeautySalonModel, clientKey: String): CustomerModel {
+        return customerRepository.findByClientKey(salon, clientKey).orElseThrow{
             NotFoundException(Errors.GS101.message.format(clientKey), Errors.GS101.internalCode)
         }
     }
 
-    fun findByNameContaining(person: BeautySalonModel, name: String):List<CustomerModel>{
-        return customerRepository.findByFullNameAndSalon(person, name)
+    fun findByNameContaining(salon: BeautySalonModel, name: String):List<CustomerModel>{
+        return customerRepository.findByFullNameAndSalon(salon, name)
     }
 
-    fun findByStatus(person: BeautySalonModel, status: String): List<CustomerModel>{
-        return customerRepository.findByStatusAndSalonModel(person, status)
+    fun findByStatus(salon: BeautySalonModel, status: String): List<CustomerModel>{
+        return customerRepository.findByStatusAndSalonModel(salon, status)
     }
 
-    fun cpfAvailable(cpf: String): Boolean {
-        return !customerRepository.existsByCpf(cpf)
+    fun cpfAvailable(salon: BeautySalonModel, cpf: String): Boolean {
+        if (customerRepository.existsByCpf(salon, cpf) == null){
+            return true
+        }
+        return false
+    }
+
+    fun findByIdAndSalon(salon: BeautySalonModel, idCustomer: Long): CustomerModel {
+        return customerRepository.findByIdAndSalon(salon, idCustomer)
+            ?: throw NotFoundException(Errors.GS101.message.format(idCustomer), Errors.GS101.internalCode)
+    }
+
+    fun hasAuthorization(salon: BeautySalonModel, idCustomer: Long) {
+        if (customerRepository.findByIdAndSalon(salon, idCustomer) == null){
+            throw NotFoundException(Errors.GS101.message.format(idCustomer), Errors.GS101.internalCode)
+        }
     }
 }

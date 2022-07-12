@@ -8,52 +8,60 @@ import br.com.dastec.gerenciasalao.models.SaleServiceModel
 import br.com.dastec.gerenciasalao.services.CustomerServiceModelService
 import br.com.dastec.gerenciasalao.services.SaleServiceModelService
 import br.com.dastec.gerenciasalao.services.ServiceModelService
+import br.com.dastec.gerenciasalao.utils.SpringUtil
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/v1/saleservice")
-class SaleSeviceController(val saleServiceModelService: SaleServiceModelService,
-                           val customerServiceModelService: CustomerServiceModelService,
-                           val serviceModelService: ServiceModelService
+class SaleSeviceController(private val saleServiceModelService: SaleServiceModelService,
+                           private val customerServiceModelService: CustomerServiceModelService,
+                           private val serviceModelService: ServiceModelService,
+                           private val springUtil: SpringUtil
                            ) {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun createSaleService(@RequestBody postSaleServiceRequest: PostCreateSaleServiceRequest): CreateResponse {
-        val service = serviceModelService.findById(postSaleServiceRequest.service)
-        val customerService = customerServiceModelService.findById(postSaleServiceRequest.customerService)
+    fun createSaleService(@RequestBody postSaleServiceRequest: PostCreateSaleServiceRequest, @RequestHeader(value = "Authorization") token: String): CreateResponse {
+        val salon = springUtil.getSalon(token.split(" ")[1])
+        val service = serviceModelService.findById(salon, postSaleServiceRequest.service)
+        val customerService = customerServiceModelService.findById(salon, postSaleServiceRequest.customerService)
 
         saleServiceModelService.createSaleService(postSaleServiceRequest.toSalesServiceModel(service, customerService))
         return CreateResponse("Serviço criado com sucesso")
     }
 
     @PutMapping("/{id}")
-    fun updateValue(@PathVariable id: Long, @RequestBody putSaleServiceRequest: PutUpdateSaleServiceRequest): CreateResponse {
-        val saleService = saleServiceModelService.findById(id)
+    fun updateValue(@PathVariable id: Long, @RequestBody putSaleServiceRequest: PutUpdateSaleServiceRequest, @RequestHeader(value = "Authorization") token: String): CreateResponse {
+        val salon = springUtil.getSalon(token.split(" ")[1])
+        val saleService = saleServiceModelService.findById(salon, id)
         saleServiceModelService.updateValue(putSaleServiceRequest.toSalesServiceModel(saleService))
         return CreateResponse("Serviço atualizado com sucesso")
     }
 
     @DeleteMapping("/{id}")
-    fun deleteSaleService(@PathVariable id: Long): CreateResponse {
-        saleServiceModelService.deleteSaleService(id)
+    fun deleteSaleService(@PathVariable id: Long, @RequestHeader(value = "Authorization") token: String): CreateResponse {
+        val salon = springUtil.getSalon(token.split(" ")[1])
+        saleServiceModelService.deleteSaleService(salon, id)
         return CreateResponse("Serviço excluído com sucesso")
     }
 
     @GetMapping("/{id}")
-    fun findById(@PathVariable id: Long): SaleServiceModel {
-        return saleServiceModelService.findById(id)
+    fun findById(@PathVariable id: Long, @RequestHeader(value = "Authorization") token: String): SaleServiceModel {
+        val salon = springUtil.getSalon(token.split(" ")[1])
+        return saleServiceModelService.findById(salon, id)
     }
 
     @GetMapping()
-    fun findAll(): List<SaleServiceModel> {
-        return saleServiceModelService.findAll()
+    fun findAll(@RequestHeader(value = "Authorization") token: String): List<SaleServiceModel> {
+        val salon = springUtil.getSalon(token.split(" ")[1])
+        return saleServiceModelService.findAll(salon)
     }
 
     @GetMapping("/customerservice/{id}")
-    fun findByCustomerService(@PathVariable id: Long): MutableList<SaleServiceModel> {
-        return saleServiceModelService.findByCustomerService(customerServiceModelService.findById(id))
+    fun findByCustomerService(@PathVariable id: Long, @RequestHeader(value = "Authorization") token: String): MutableList<SaleServiceModel> {
+        val salon = springUtil.getSalon(token.split(" ")[1])
+        return saleServiceModelService.findByCustomerService(customerServiceModelService.findById(salon, id))
     }
 
 }

@@ -6,6 +6,7 @@ import br.com.dastec.gerenciasalao.events.PaymentEventUpdatePendency
 import br.com.dastec.gerenciasalao.exceptions.BadRequestException
 import br.com.dastec.gerenciasalao.exceptions.NotFoundException
 import br.com.dastec.gerenciasalao.exceptions.enums.Errors
+import br.com.dastec.gerenciasalao.models.BeautySalonModel
 import br.com.dastec.gerenciasalao.models.CustomerServiceModel
 import br.com.dastec.gerenciasalao.models.PaymentModel
 import br.com.dastec.gerenciasalao.models.enums.CustomerServiceStatus
@@ -28,7 +29,7 @@ class PaymentService(
     }
 
     fun payService(payment: PaymentModel) {
-        val customerService = customerServiceModelService.findById(payment.customerService.idCustomerService!!)
+        val customerService = customerServiceModelService.findById(payment.beautySalon, payment.customerService.idCustomerService!!)
         if (customerService.statusCustomerService == CustomerServiceStatus.FINISHED || customerService.statusCustomerService == CustomerServiceStatus.FINALIZEDPENDING) {
             throw BadRequestException(
                 Errors.GS503.message.format(customerService.idCustomerService),
@@ -36,8 +37,7 @@ class PaymentService(
             )
         }
 
-        val payments =
-            findPaymentsByCustomerWithCustomerServiceWithStatusOpen(payment.customerService.idCustomerService!!)
+        val payments = findPaymentsByCustomerWithCustomerServiceWithStatusOpen(payment.customerService.idCustomerService!!)
         val paidValue = payments.sumOf { it.valuePayment }
 
         if ((paidValue + payment.valuePayment) > customerService.totalValue!!) {
@@ -53,7 +53,7 @@ class PaymentService(
     }
 
     fun payServiceWithPendency(payment: PaymentModel) {
-        val customerService = customerServiceModelService.findById(payment.customerService.idCustomerService!!)
+        val customerService = customerServiceModelService.findById(payment.beautySalon, payment.customerService.idCustomerService!!)
         if (customerService.statusCustomerService == CustomerServiceStatus.FINISHED || customerService.statusCustomerService == CustomerServiceStatus.OPEN) {
             throw BadRequestException(
                 Errors.GS504.message.format(customerService.idCustomerService),
@@ -90,14 +90,14 @@ class PaymentService(
         paymentRepository.save(payment)
     }
 
-    fun findById(id: Long): PaymentModel {
-        return paymentRepository.findById(id).orElseThrow {
-            NotFoundException(Errors.GS701.message.format(id), Errors.GS701.internalCode)
-        }
+    fun findById(salon: BeautySalonModel, id: Long): PaymentModel {
+        return paymentRepository.findByIdAndSalon(salon, id) ?:
+            throw  NotFoundException(Errors.GS701.message.format(id), Errors.GS701.internalCode)
+
     }
 
-    fun findAll(): List<PaymentModel> {
-        return paymentRepository.findAll()
+    fun findAll(salon: BeautySalonModel): List<PaymentModel> {
+        return paymentRepository.findAllByBeautySalon(salon)
     }
 
     fun findPaymentByCustomerService(customerService: CustomerServiceModel): List<PaymentModel> {
@@ -108,10 +108,10 @@ class PaymentService(
         return paymentRepository.findPaymentsWithCustomerServiceWithStatusOpen(id)
     }
 
-    fun validPaymentPendency(postPaymentServiceWithPendencyRequest: PostPaymentServiceWithPendencyRequest) {
+    fun validPaymentPendency(salon: BeautySalonModel, postPaymentServiceWithPendencyRequest: PostPaymentServiceWithPendencyRequest) {
         val totalPayments = postPaymentServiceWithPendencyRequest.paymentObject.sumOf { it.valuePayment }
         val customerServices =
-            customerServiceModelService.findAllByIds(postPaymentServiceWithPendencyRequest.customerServices)
+            customerServiceModelService.findAllByIds(salon, postPaymentServiceWithPendencyRequest.customerServices)
         val pendencies =
             pendencyService.findAllByCustomerService(customerServices).sortedBy { it.valuePendency }.toMutableList()
 
