@@ -1,0 +1,14 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+  datasource:
+    url: jdbc:mysql://localhost:3306/gerenciasalaodev?createDatabaseIfNotExist=true
+    username: root
+    password: 1234
+
+jwt:
+  secret: 0412c946-a382-4be6-9245-ebde9ef911dd
+  expiration: 900000
+
+

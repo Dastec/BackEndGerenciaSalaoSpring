@@ -1,17 +1,22 @@
 package br.com.dastec.gerenciasalao.controllers.mapper
 
+import br.com.dastec.gerenciasalao.controllers.extensions.toFormOfPaymentReponse
 import br.com.dastec.gerenciasalao.controllers.requests.payments.PostPaymentServiceRequest
 import br.com.dastec.gerenciasalao.controllers.requests.payments.PostPaymentServiceWithPendencyRequest
 import br.com.dastec.gerenciasalao.controllers.requests.payments.PutPendecyServiceRequest
 import br.com.dastec.gerenciasalao.controllers.responses.PaymentResponse
+import br.com.dastec.gerenciasalao.exceptions.BadRequestException
+import br.com.dastec.gerenciasalao.exceptions.enums.Errors
 import br.com.dastec.gerenciasalao.models.BeautySalonModel
 import br.com.dastec.gerenciasalao.models.PaymentModel
 import br.com.dastec.gerenciasalao.models.UserModel
+import br.com.dastec.gerenciasalao.models.enums.CustomerServiceStatus
 import br.com.dastec.gerenciasalao.services.CustomerServiceModelService
 import br.com.dastec.gerenciasalao.services.FormOfPaymentService
 import br.com.dastec.gerenciasalao.services.PaymentService
 import br.com.dastec.gerenciasalao.services.UserService
 import org.springframework.stereotype.Component
+import java.math.BigDecimal
 
 @Component
 class PaymentMapper(
@@ -22,6 +27,9 @@ class PaymentMapper(
 
     fun postPaymentServiceRequestToPaymentModel(postPaymentServiceRequest: PostPaymentServiceRequest, userModel: UserModel): PaymentModel {
         val customerService = customerServiceModelService.findById(userModel.beautySalon, postPaymentServiceRequest.customerService)
+        if (customerService.statusCustomerService == CustomerServiceStatus.CREATED){
+            throw BadRequestException(Errors.GS503.message.format(customerService.idCustomerService), Errors.GS503.internalCode)
+        }
         val formOfPayment = formOfPaymentService.findById(customerService.beautySalon, postPaymentServiceRequest.formOfPayment)
         return PaymentModel(
             formOfPayment = formOfPayment,
@@ -84,7 +92,7 @@ class PaymentMapper(
                             beautySalon = customerServiceCurrent.beautySalon
                         )
                     )
-                    paymentsObject.valuePayment = 0.0
+                    paymentsObject.valuePayment = BigDecimal.ZERO
                 } else if (paymentsObject.valuePayment + customerServiceCurrent.paidValue!! == customerServiceCurrent.totalValue!!) {
                     paymentService.payServiceWithPendency(
                         PaymentModel(
@@ -95,7 +103,7 @@ class PaymentMapper(
                             beautySalon = customerServiceCurrent.beautySalon
                         )
                     )
-                    paymentsObject.valuePayment = 0.0
+                    paymentsObject.valuePayment = BigDecimal.ZERO
                     break@forPaymentObject
                 } else if (paymentsObject.valuePayment + customerServiceCurrent.paidValue!! > customerServiceCurrent.totalValue!!) {
                     val difference = customerServiceCurrent.totalValue!! - customerServiceCurrent.paidValue!!
@@ -113,7 +121,7 @@ class PaymentMapper(
                     break@forPaymentObject
                 }
             }
-            paymentsObjects.removeIf { it.valuePayment == 0.0 }
+            paymentsObjects.removeIf { it.valuePayment == BigDecimal.ZERO }
         }
     }
 
@@ -121,7 +129,7 @@ class PaymentMapper(
     fun toPaymentResponse(payment: PaymentModel): PaymentResponse{
         return PaymentResponse(
             idPayment = payment.idPayment,
-            formOfPayment = payment.formOfPayment,
+            formOfPayment = payment.formOfPayment.toFormOfPaymentReponse(),
             valuePayment = payment.valuePayment,
             datePayment = payment.datePayment
         )
@@ -133,7 +141,7 @@ class PaymentMapper(
             paymentResponses.add(
                 PaymentResponse(
                     idPayment = payment.idPayment,
-                    formOfPayment = payment.formOfPayment,
+                    formOfPayment = payment.formOfPayment.toFormOfPaymentReponse(),
                     valuePayment = payment.valuePayment,
                     datePayment = payment.datePayment
                 )

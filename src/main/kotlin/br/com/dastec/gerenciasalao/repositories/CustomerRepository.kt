@@ -2,6 +2,8 @@ package br.com.dastec.gerenciasalao.repositories
 
 import br.com.dastec.gerenciasalao.models.CustomerModel
 import br.com.dastec.gerenciasalao.models.BeautySalonModel
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
@@ -26,5 +28,5 @@ interface CustomerRepository: JpaRepository<CustomerModel, Long> {
     @Query(value = "select u from CustomerModel u where u.beautySalon = ?1 AND u.idCustomer = ?2")
     fun findByIdAndSalon(salon: BeautySalonModel, idCustomer: Long): CustomerModel?
 
-    fun findAllByBeautySalon(salon: BeautySalonModel): List<CustomerModel>
+    fun findAllByBeautySalon(salon: BeautySalonModel, pageable: Pageable): Page<CustomerModel>
 }

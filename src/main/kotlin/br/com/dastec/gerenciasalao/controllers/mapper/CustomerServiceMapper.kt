@@ -7,12 +7,13 @@ import br.com.dastec.gerenciasalao.controllers.requests.customerservice.PutUpdat
 import br.com.dastec.gerenciasalao.controllers.responses.CustomerServiceResponse
 import br.com.dastec.gerenciasalao.controllers.responses.CustomerServiceWithPendencyResponse
 import br.com.dastec.gerenciasalao.controllers.responses.FinalizeCustomerServiceResponse
+import br.com.dastec.gerenciasalao.controllers.responses.PageResponse
 import br.com.dastec.gerenciasalao.models.BeautySalonModel
 import br.com.dastec.gerenciasalao.models.CustomerServiceModel
 import br.com.dastec.gerenciasalao.models.PendencyModel
-import br.com.dastec.gerenciasalao.models.UserModel
 import br.com.dastec.gerenciasalao.models.enums.CustomerServiceStatus
 import br.com.dastec.gerenciasalao.services.*
+import org.springframework.data.domain.Page
 import org.springframework.stereotype.Component
 import java.time.LocalTime
 
@@ -49,7 +50,7 @@ class CustomerServiceMapper(
             totalValue = saleServices.sumOf { it.price },
             customer = customerService.customer,
             saleServices = saleServices,
-            statusCustomerService = CustomerServiceStatus.OPEN,
+            statusCustomerService = customerService.statusCustomerService,
             observation = null,
             beautySalon = customerService.beautySalon
         )
@@ -121,7 +122,7 @@ class CustomerServiceMapper(
             totalValue = previousCustomerService.totalValue,
             paidValue = previousCustomerService.paidValue,
             customer = previousCustomerService.customer,
-            saleServices  = previousCustomerService.saleServices,
+            saleServices = previousCustomerService.saleServices,
             observation = previousCustomerService.observation,
             statusCustomerService = CustomerServiceStatus.CANCELLED,
             beautySalon = previousCustomerService.beautySalon
@@ -137,8 +138,8 @@ class CustomerServiceMapper(
             dateCustomerService = customerService.dateCustomerService,
             startTime = customerService.startTime,
             endTime = customerService.endTime,
-            totalValue = customerService.totalValue,
-            paidValue = customerService.paidValue,
+            totalValue = customerService.totalValue!!,
+            paidValue = customerService.paidValue!!,
             customer = customerService.customer!!.alias,
             payments = paymentsResponse,
             saleServices = saleServicesResponse,
@@ -159,7 +160,7 @@ class CustomerServiceMapper(
                 dateCustomerService = customerService.dateCustomerService,
                 startTime = customerService.startTime,
                 endTime = customerService.endTime,
-                totalValue = customerService.totalValue,
+                totalValue = customerService.totalValue!!,
                 paidValue = customerService.paidValue,
                 customer = customerService.customer!!.alias,
                 payments = paymentsResponse,
@@ -229,5 +230,16 @@ class CustomerServiceMapper(
             customerServicesWithPendencyResponse.add(customerServiceWithPendencyResponse)
         }
         return customerServicesWithPendencyResponse
+    }
+
+    fun toPageResponse(page: Page<CustomerServiceModel>): PageResponse<CustomerServiceResponse>{
+
+        return PageResponse(
+            items = toListCustomerServiceResponse(page.content),
+            currentPage = page.number,
+            totalItems = page.totalElements,
+            totalPages = page.totalPages
+        )
+
     }
 }

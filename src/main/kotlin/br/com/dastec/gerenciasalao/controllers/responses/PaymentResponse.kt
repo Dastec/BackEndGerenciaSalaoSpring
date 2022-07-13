@@ -2,18 +2,19 @@ package br.com.dastec.gerenciasalao.controllers.responses
 
 import br.com.dastec.gerenciasalao.models.FormOfPaymentModel
 import com.fasterxml.jackson.annotation.JsonAlias
+import java.math.BigDecimal
 import java.time.LocalDate
 
 data class PaymentResponse(
-    var idPayment: Long? = null,
+    val idPayment: Long? = null,
 
     @JsonAlias("form_payment_id")
-    var formOfPayment: FormOfPaymentModel,
+    val formOfPayment: FormOfPaymentResponse,
 
     @JsonAlias("value_payment")
-    var valuePayment: Double = 0.0,
+    val valuePayment: BigDecimal = BigDecimal.ZERO,
 
 
     @JsonAlias("date_payment")
-    var datePayment: LocalDate,
+    val datePayment: LocalDate,
 )

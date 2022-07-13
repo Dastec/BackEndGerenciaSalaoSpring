@@ -4,7 +4,7 @@ import br.com.dastec.gerenciasalao.controllers.mapper.PaymentMapper
 import br.com.dastec.gerenciasalao.controllers.requests.payments.PostPaymentServiceRequest
 import br.com.dastec.gerenciasalao.controllers.requests.payments.PostPaymentServiceWithPendencyRequest
 import br.com.dastec.gerenciasalao.controllers.requests.payments.PutPendecyServiceRequest
-import br.com.dastec.gerenciasalao.controllers.responses.CreateResponse
+import br.com.dastec.gerenciasalao.controllers.responses.MessageResponse
 import br.com.dastec.gerenciasalao.models.PaymentModel
 import br.com.dastec.gerenciasalao.security.JwtUtil
 import br.com.dastec.gerenciasalao.services.CustomerServiceModelService
@@ -28,23 +28,25 @@ class PaymentController(
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun payService(@Valid @RequestBody postPaymentServiceRequest: PostPaymentServiceRequest, @RequestHeader(value = "Authorization") token: String): CreateResponse {
-        val user = userService.findById(jwtUtil.getUserInformation(token.split(" ")[1]).idUser)
+    fun payService(@Valid @RequestBody postPaymentServiceRequest: PostPaymentServiceRequest, @RequestHeader(value = "Authorization") token: String): MessageResponse {
+        val salon = springUtil.getSalon(token.split(" ")[1])
+        val user = userService.findById(salon, jwtUtil.getUserInformation(token.split(" ")[1]).idUser)
         paymentService.payService(paymentMapper.postPaymentServiceRequestToPaymentModel(postPaymentServiceRequest, user))
-        return CreateResponse("Pagamento incluído com sucesso")
+        return MessageResponse("Pagamento incluído com sucesso")
     }
 
     @PostMapping("/paypendencies")
     @ResponseStatus(HttpStatus.CREATED)
-    fun payServicePendency(@Valid @RequestBody postPaymentServiceWithPendencyRequest: PostPaymentServiceWithPendencyRequest, @RequestHeader(value = "Authorization") token: String): CreateResponse {
-        val user = userService.findById(jwtUtil.getUserInformation(token.split(" ")[1]).idUser)
+    fun payServicePendency(@Valid @RequestBody postPaymentServiceWithPendencyRequest: PostPaymentServiceWithPendencyRequest, @RequestHeader(value = "Authorization") token: String): MessageResponse {
+        val salon = springUtil.getSalon(token.split(" ")[1])
+        val user = userService.findById(salon, jwtUtil.getUserInformation(token.split(" ")[1]).idUser)
         paymentService.validPaymentPendency(user.beautySalon, postPaymentServiceWithPendencyRequest)
         paymentMapper.postPayPendencyRequestToPaymentModel(postPaymentServiceWithPendencyRequest, user)
-        return CreateResponse("Pagamento incluído com sucesso")
+        return MessageResponse("Pagamento incluído com sucesso")
     }
 
     @PutMapping
-    fun updatePayService(@PathVariable id: Long, @Valid @RequestBody putPaymentServiceRequest: PutPendecyServiceRequest, @RequestHeader(value = "Authorization") token: String): CreateResponse {
+    fun updatePayService(@PathVariable id: Long, @Valid @RequestBody putPaymentServiceRequest: PutPendecyServiceRequest, @RequestHeader(value = "Authorization") token: String): MessageResponse {
         val salon = springUtil.getSalon(token.split(" ")[1])
         val previousPayment = paymentService.findById(salon, id)
         paymentService.updatePayService(
@@ -53,7 +55,7 @@ class PaymentController(
                 previousPayment
             )
         )
-        return CreateResponse("Pagamento atualizado com sucesso")
+        return MessageResponse("Pagamento atualizado com sucesso")
     }
 
     @GetMapping
@@ -81,7 +83,8 @@ class PaymentController(
     @PostMapping("/paypendency/test")
     @ResponseStatus(HttpStatus.CREATED)
     fun payServicePendencyTest(@Valid @RequestBody postPaymentServiceRequest: PostPaymentServiceRequest, @RequestHeader(value = "Authorization") token: String) {
-        val user = userService.findById(jwtUtil.getUserInformation(token.split(" ")[1]).idUser)
+        val salon = springUtil.getSalon(token.split(" ")[1])
+        val user = userService.findById(salon, jwtUtil.getUserInformation(token.split(" ")[1]).idUser)
         paymentService.payServiceWithPendency(
             paymentMapper.postPaymentPendencyServiceRequestToPaymentModel(
                 postPaymentServiceRequest, user

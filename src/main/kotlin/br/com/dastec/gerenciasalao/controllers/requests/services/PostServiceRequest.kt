@@ -2,6 +2,7 @@ package br.com.dastec.gerenciasalao.controllers.requests
 
 import br.com.dastec.gerenciasalao.validation.annotation.IsCurrency
 import com.fasterxml.jackson.annotation.JsonAlias
+import java.math.BigDecimal
 import javax.validation.constraints.NotNull
 
 data class PostServiceRequest(
@@ -15,5 +16,5 @@ data class PostServiceRequest(
     val idCategory: Long,
 
     @IsCurrency
-    val price: Double?
+    val price: BigDecimal?
 )

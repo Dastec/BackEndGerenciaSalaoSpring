@@ -5,6 +5,15 @@ enum class Errors(val message: String, val internalCode: String) {
     GSL001("Usuário %s não encontrado!", "GSL-001"),
     GSL002("Erro ao logar!", "GSL-002"),
     GSL003("Token inválido!", "GSL-003"),
+    GSL004("Usuário %s já está suspenso!", "GSL-004"),
+    GSL005("Usuário %s já está excluído!", "GSL-005"),
+    GSL006("Usuário %s já está ativado!", "GSL-006"),
+    GSL007("Não é possível excluir ou suspender o próprio usuário!", "GSL-007"),
+    GSL008("Esse usuário já é Admin!", "GSL-008"),
+    GSL009("Esse usuário não é Admin!", "GSL-009"),
+    GSL010("Você não pode remover o seu próprio privilégio!", "GSL-010"),
+    GSL011("Seu usuário já está ativado!", "GSL-011"),
+    GSL012("Seu usuário já é Admin!", "GSL-011"),
 
     GS001("Invalid Request", "GS-001" ),
 
@@ -30,6 +39,7 @@ enum class Errors(val message: String, val internalCode: String) {
     GS507("Não é possível adicionar duas vezes o mesmo serviço dentro de um atendimento!", "GS-507"),
     GS508("O atendimento não tem nenhum serviço adicionado!", "GS-508"),
     GS509("Nenhum atendimento encontrado!", "GS-509"),
+    GS510("Atendimento nº%s está finalizado ou cancelado!", "GS-510"),
 
     GS601("Pedência nº%s não foi encontrada!", "GS-601"),
 

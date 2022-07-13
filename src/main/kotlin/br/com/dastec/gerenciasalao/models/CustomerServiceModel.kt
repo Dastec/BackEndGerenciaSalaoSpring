@@ -1,7 +1,9 @@
 package br.com.dastec.gerenciasalao.models
 
+import br.com.dastec.gerenciasalao.controllers.responses.DailyGain
 import br.com.dastec.gerenciasalao.models.enums.CustomerServiceStatus
 import com.fasterxml.jackson.annotation.JsonIgnore
+import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalTime
 import javax.persistence.*
@@ -25,10 +27,10 @@ data class CustomerServiceModel(
     val endTime: LocalTime?,
 
     @Column(name = "total_value")
-    val totalValue: Double?,
+    val totalValue: BigDecimal?,
 
     @Column(name = "paid_value")
-    val paidValue: Double? = 0.0,
+    val paidValue: BigDecimal? = BigDecimal.ZERO,
 
     @ManyToOne
     @JoinColumn(name = "customer_id")
@@ -47,4 +49,24 @@ data class CustomerServiceModel(
     @ManyToOne
     @JoinColumn(name = "salon_id")
     var beautySalon: BeautySalonModel,
-)
+){
+    @Transient
+    var dailyGain: BigDecimal = BigDecimal.ZERO
+
+//    constructor(idCustomerService: Long? = null,
+//                dateCustomerService: LocalDate? = null,
+//                startTime: LocalTime? = null,
+//                endTime: LocalTime? = null,
+//                totalValue: BigDecimal? = null,
+//                paidValue: BigDecimal? = null,
+//                customer: CustomerModel? = null,
+//                saleServices: MutableList<SaleServiceModel>? = null,
+//                observation: String? = null,
+//                statusCustomerService: CustomerServiceStatus? = null,
+//                beautySalon: BeautySalonModel? = null,
+//                dailyGain: BigDecimal
+//    ) : this(idCustomerService, dateCustomerService, startTime, endTime, totalValue, paidValue, customer, saleServices, observation, statusCustomerService, beautySalon) {
+//        this.dailyGain = dailyGain
+//    }
+
+}

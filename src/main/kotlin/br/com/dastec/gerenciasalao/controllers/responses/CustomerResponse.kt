@@ -4,23 +4,23 @@ import com.fasterxml.jackson.annotation.JsonAlias
 import java.time.LocalDate
 
 data class CustomerResponse(
-    var idCustomer : Long,
+    val idCustomer : Long,
 
-    var alias: String,
+    val alias: String,
 
     @JsonAlias("full_name")
-    var fullName: String,
+    val fullName: String,
 
-    var cpf: String,
+    val cpf: String,
 
     @JsonAlias("birth_date")
-    var birthDate: LocalDate,
+    val birthDate: LocalDate,
 
-    var clientKey: String?,
+    val clientKey: String?,
 
     @JsonAlias("phone_numbers")
-    var phoneNumber: List<PhoneNumberResponse>,
+    val phoneNumber: List<PhoneNumberResponse>,
 
-    var photo: String?,
+    val photo: String?,
 
 )

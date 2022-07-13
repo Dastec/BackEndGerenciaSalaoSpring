@@ -3,9 +3,9 @@ package br.com.dastec.gerenciasalao.controllers.responses
 import br.com.dastec.gerenciasalao.models.enums.TypePhoneNumber
 
 data class PhoneNumberResponse(
-    var type: TypePhoneNumber,
+    val type: TypePhoneNumber,
 
-    var ddd: String,
+    val ddd: String,
 
-    var number: String,
+    val number: String,
 )

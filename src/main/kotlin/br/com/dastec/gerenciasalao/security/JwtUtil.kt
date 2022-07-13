@@ -57,7 +57,7 @@ class JwtUtil(@Value("\${jwt.expiration}")
             return Jwts.parser().setSigningKey(secret!!.toByteArray()).parseClaimsJws(token).body
 
         }catch (ex: Exception){
-            throw AuthenticationException(Errors.GSL003.message, "999")
+            throw AuthenticationException(Errors.GSL003.message, Errors.GSL003.internalCode)
         }
     }
 

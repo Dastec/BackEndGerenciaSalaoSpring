@@ -1,5 +1,5 @@
 package br.com.dastec.gerenciasalao.controllers.responses
 
-data class CreateResponse(
+data class MessageResponse(
     val message: String
 )

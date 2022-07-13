@@ -1,6 +1,7 @@
 package br.com.dastec.gerenciasalao.models
 
 import br.com.dastec.gerenciasalao.models.enums.PendencyStatus
+import java.math.BigDecimal
 import javax.persistence.*
 
 @Entity
@@ -17,7 +18,7 @@ data class PendencyModel(
     val customerService: CustomerServiceModel,
 
     @Column(name = "value_pendency", nullable = false)
-    var valuePendency: Double,
+    var valuePendency: BigDecimal,
 
     @Enumerated(EnumType.STRING)
     var status: PendencyStatus = PendencyStatus.OPEN,

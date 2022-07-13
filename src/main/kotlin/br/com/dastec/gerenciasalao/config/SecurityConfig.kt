@@ -13,10 +13,14 @@ import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
+import org.springframework.security.config.annotation.web.builders.WebSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.web.cors.CorsConfiguration
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource
+import org.springframework.web.filter.CorsFilter
 
 @Configuration
 @EnableWebSecurity
@@ -32,14 +36,15 @@ class SecurityConfig(
     )
 
     private val ADMIN_MATCHERS = arrayOf<String>(
-        "/api/v1/admin/"
+        "/api/v1/salon/admin/**",
+        "/api/v1/user/admin/**"
     )
 
     private val PUBLIC_MATCHERS = arrayOf<String>(
         "/api/v1/salon",
-        "/api/v1/user",
-
+        "/api/v1/user/create/**",
     )
+
 
     override fun configure(auth: AuthenticationManagerBuilder) {
         auth
@@ -58,6 +63,32 @@ class SecurityConfig(
         http.addFilter(AuthorizationFilter(authenticationManager(), userDetailsUserModelService, jwtUtil))
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         http.exceptionHandling().authenticationEntryPoint(customEntryPoint)
+    }
+
+    override fun configure(web: WebSecurity) {
+        web.ignoring()
+            .antMatchers(
+                "/v2/api-docs",
+                "/v3/api-docs",
+                "/configuration/ui",
+                "/swagger-resources/**",
+                "/configuration/security",
+                "/swagger-ui/**",
+                "/webjars/**",
+                "/csrf/**"
+            )
+    }
+
+    @Bean
+    fun corsConfig(): CorsFilter {
+        val source = UrlBasedCorsConfigurationSource()
+        val config = CorsConfiguration()
+        config.allowCredentials = true
+        config.addAllowedOriginPattern("*")
+        config.addAllowedHeader("*")
+        config.addAllowedMethod("*")
+        source.registerCorsConfiguration("/**", config)
+        return CorsFilter(source)
     }
 
     @Bean

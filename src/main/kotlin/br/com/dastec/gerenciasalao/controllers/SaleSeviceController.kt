@@ -3,7 +3,7 @@ package br.com.dastec.gerenciasalao.controllers
 import br.com.dastec.gerenciasalao.controllers.extensions.toSalesServiceModel
 import br.com.dastec.gerenciasalao.controllers.requests.PostCreateSaleServiceRequest
 import br.com.dastec.gerenciasalao.controllers.requests.PutUpdateSaleServiceRequest
-import br.com.dastec.gerenciasalao.controllers.responses.CreateResponse
+import br.com.dastec.gerenciasalao.controllers.responses.MessageResponse
 import br.com.dastec.gerenciasalao.models.SaleServiceModel
 import br.com.dastec.gerenciasalao.services.CustomerServiceModelService
 import br.com.dastec.gerenciasalao.services.SaleServiceModelService
@@ -22,28 +22,28 @@ class SaleSeviceController(private val saleServiceModelService: SaleServiceModel
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun createSaleService(@RequestBody postSaleServiceRequest: PostCreateSaleServiceRequest, @RequestHeader(value = "Authorization") token: String): CreateResponse {
+    fun createSaleService(@RequestBody postSaleServiceRequest: PostCreateSaleServiceRequest, @RequestHeader(value = "Authorization") token: String): MessageResponse {
         val salon = springUtil.getSalon(token.split(" ")[1])
         val service = serviceModelService.findById(salon, postSaleServiceRequest.service)
         val customerService = customerServiceModelService.findById(salon, postSaleServiceRequest.customerService)
 
         saleServiceModelService.createSaleService(postSaleServiceRequest.toSalesServiceModel(service, customerService))
-        return CreateResponse("Serviço criado com sucesso")
+        return MessageResponse("Serviço criado com sucesso")
     }
 
     @PutMapping("/{id}")
-    fun updateValue(@PathVariable id: Long, @RequestBody putSaleServiceRequest: PutUpdateSaleServiceRequest, @RequestHeader(value = "Authorization") token: String): CreateResponse {
+    fun updateValue(@PathVariable id: Long, @RequestBody putSaleServiceRequest: PutUpdateSaleServiceRequest, @RequestHeader(value = "Authorization") token: String): MessageResponse {
         val salon = springUtil.getSalon(token.split(" ")[1])
         val saleService = saleServiceModelService.findById(salon, id)
         saleServiceModelService.updateValue(putSaleServiceRequest.toSalesServiceModel(saleService))
-        return CreateResponse("Serviço atualizado com sucesso")
+        return MessageResponse("Serviço atualizado com sucesso")
     }
 
     @DeleteMapping("/{id}")
-    fun deleteSaleService(@PathVariable id: Long, @RequestHeader(value = "Authorization") token: String): CreateResponse {
+    fun deleteSaleService(@PathVariable id: Long, @RequestHeader(value = "Authorization") token: String): MessageResponse {
         val salon = springUtil.getSalon(token.split(" ")[1])
         saleServiceModelService.deleteSaleService(salon, id)
-        return CreateResponse("Serviço excluído com sucesso")
+        return MessageResponse("Serviço excluído com sucesso")
     }
 
     @GetMapping("/{id}")

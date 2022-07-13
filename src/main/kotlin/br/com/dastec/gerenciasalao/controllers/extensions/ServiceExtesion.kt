@@ -2,6 +2,7 @@ package br.com.dastec.gerenciasalao.controllers.extensions
 
 import br.com.dastec.gerenciasalao.controllers.requests.PostServiceRequest
 import br.com.dastec.gerenciasalao.controllers.requests.PutServiceRequest
+import br.com.dastec.gerenciasalao.controllers.responses.ServiceResponse
 import br.com.dastec.gerenciasalao.models.CategoryModel
 import br.com.dastec.gerenciasalao.models.BeautySalonModel
 import br.com.dastec.gerenciasalao.models.ServiceModel
@@ -23,5 +24,20 @@ fun PutServiceRequest.toServiceModel(serviceModel: ServiceModel, categoryModel: 
         price = this.price,
         beautySalon = serviceModel.beautySalon
     )
+}
+
+fun ServiceModel.toServiceResponse(): ServiceResponse{
+    return ServiceResponse(
+        idService = this.idService!!,
+        nameService = this.nameService
+    )
+}
+
+fun List<ServiceModel>.toListServiceResponse(): List<ServiceResponse>{
+    val servicesResponse = mutableListOf<ServiceResponse>()
+    for(service in this){
+        servicesResponse.add(service.toServiceResponse())
+    }
+    return servicesResponse
 }
 

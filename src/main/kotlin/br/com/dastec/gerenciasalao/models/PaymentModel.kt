@@ -1,6 +1,7 @@
 package br.com.dastec.gerenciasalao.models
 
 import br.com.dastec.gerenciasalao.models.enums.PaymentStatus
+import java.math.BigDecimal
 import java.time.LocalDate
 import javax.persistence.*
 
@@ -22,7 +23,7 @@ data class PaymentModel(
     val customerService: CustomerServiceModel,
 
     @Column(name = "value_payment")
-    val valuePayment: Double = 0.0,
+    val valuePayment: BigDecimal = BigDecimal.ZERO,
 
 
     @Column(name = "date_payment")
@@ -40,4 +41,4 @@ data class PaymentModel(
     @JoinColumn(name = "salon_id")
     var beautySalon: BeautySalonModel,
 
-)
+    )

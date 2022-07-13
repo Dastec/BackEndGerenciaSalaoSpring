@@ -33,8 +33,10 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 
 //Swegger
+	implementation("io.springfox:springfox-boot-starter:3.0.0")
 	implementation("io.springfox:springfox-swagger-ui:3.0.0")
 	implementation("io.springfox:springfox-swagger2:3.0.0")
+
 //Mygration
 	implementation("org.flywaydb:flyway-core:7.7.0")
 

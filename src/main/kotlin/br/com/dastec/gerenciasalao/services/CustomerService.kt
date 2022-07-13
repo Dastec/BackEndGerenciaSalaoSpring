@@ -8,6 +8,8 @@ import br.com.dastec.gerenciasalao.exceptions.enums.Errors
 import br.com.dastec.gerenciasalao.models.CustomerModel
 import br.com.dastec.gerenciasalao.models.BeautySalonModel
 import br.com.dastec.gerenciasalao.repositories.CustomerRepository
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 
 @Service
@@ -39,8 +41,8 @@ class CustomerService(private val customerRepository: CustomerRepository, privat
         customerRepository.save(customerModel)
     }
 
-    fun findAllBySalonModel(salon: BeautySalonModel): List<CustomerModel>{
-        return customerRepository.findAllByBeautySalon(salon)
+    fun findAllBySalonModel(salon: BeautySalonModel, pageable: Pageable): Page<CustomerModel>{
+        return customerRepository.findAllByBeautySalon(salon, pageable)
     }
 
     fun findByClientKey(salon: BeautySalonModel, clientKey: String): CustomerModel {

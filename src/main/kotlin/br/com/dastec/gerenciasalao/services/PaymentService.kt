@@ -15,6 +15,7 @@ import br.com.dastec.gerenciasalao.realCurrency
 import br.com.dastec.gerenciasalao.repositories.PaymentRepository
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
+import java.math.BigDecimal
 
 @Service
 class PaymentService(
@@ -119,7 +120,7 @@ class PaymentService(
             throw BadRequestException(Errors.GS402.message, Errors.GS402.internalCode)
         }
         pendencies.removeFirst()
-        if (totalPayments < pendencies.sumOf { it.valuePendency } + 1) {
+        if (totalPayments < pendencies.sumOf { it.valuePendency }.add(BigDecimal.ONE)) {
             throw BadRequestException(Errors.GS403.message, Errors.GS403.internalCode)
         }
     }

@@ -5,13 +5,15 @@ import br.com.dastec.gerenciasalao.controllers.extensions.toCustomerModel
 import br.com.dastec.gerenciasalao.controllers.mapper.CustomerMapper
 import br.com.dastec.gerenciasalao.controllers.requests.customers.PostCustomerModelRequest
 import br.com.dastec.gerenciasalao.controllers.requests.customers.PutCustomerModelRequest
-import br.com.dastec.gerenciasalao.controllers.responses.CreateResponse
+import br.com.dastec.gerenciasalao.controllers.responses.MessageResponse
 import br.com.dastec.gerenciasalao.controllers.responses.CustomerResponse
+import br.com.dastec.gerenciasalao.controllers.responses.PageResponse
 import br.com.dastec.gerenciasalao.models.CustomerModel
 import br.com.dastec.gerenciasalao.security.JwtUtil
 import br.com.dastec.gerenciasalao.services.CustomerService
-import br.com.dastec.gerenciasalao.services.SalonService
 import br.com.dastec.gerenciasalao.utils.SpringUtil
+import org.springframework.data.domain.Pageable
+import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
@@ -22,33 +24,33 @@ class CustomerController(val customerService: CustomerService, val customerMappe
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun create(@Valid @RequestBody postCustomerRequest: PostCustomerModelRequest, @RequestHeader(value = "Authorization") token: String): CreateResponse {
+    fun create(@Valid @RequestBody postCustomerRequest: PostCustomerModelRequest, @RequestHeader(value = "Authorization") token: String): MessageResponse {
         val salon = springUtil.getSalon(token.split(" ")[1])
         customerService.createCustomer(postCustomerRequest.toCustomerModel(salon), postCustomerRequest.phoneNumber)
-        return CreateResponse("Cliente criado com sucesso")
+        return MessageResponse("Cliente ${postCustomerRequest.alias} criado com sucesso")
     }
 
     @PutMapping("/{id}")
-    fun update(@PathVariable id: Long, @Valid @RequestBody putCustomerRequest: PutCustomerModelRequest, @RequestHeader(value = "Authorization") token: String): CreateResponse {
+    fun update(@PathVariable id: Long, @Valid @RequestBody putCustomerRequest: PutCustomerModelRequest, @RequestHeader(value = "Authorization") token: String): MessageResponse {
         val salon = springUtil.getSalon(token.split(" ")[1])
         val customerModel: CustomerModel = customerService.findByIdAndSalon(salon, id)
         customerService.updateCustomer(putCustomerRequest.toCustomerModel(customerModel), putCustomerRequest.phoneNumber)
-        return CreateResponse("Cliente Atualizada com sucesso")
+        return MessageResponse("Cliente ${customerModel.alias} atualizada com sucesso")
     }
 
     @DeleteMapping("/{clientKey}")
-    fun delete(@PathVariable clientKey: String, @RequestHeader(value = "Authorization") token: String): CreateResponse {
+    fun delete(@PathVariable clientKey: String, @RequestHeader(value = "Authorization") token: String): MessageResponse {
         val salon = springUtil.getSalon(token.split(" ")[1])
         val customerModel: CustomerModel = customerService.findByClientKey(salon, clientKey)
         customerService.deleteCustomer(deleteCustomer(customerModel))
 
-        return CreateResponse("Cliente deletada com sucesso")
+        return MessageResponse("Cliente ${customerModel.alias} deletada com sucesso")
     }
 
     @GetMapping()
-    fun findAll(@RequestHeader(value = "Authorization") token: String): List<CustomerResponse> {
+    fun findAll(@PageableDefault(page = 0 ,size = 10)pageable: Pageable, @RequestHeader(value = "Authorization") token: String): PageResponse<CustomerResponse> {
         val salon = springUtil.getSalon(token.split(" ")[1])
-        return customerMapper.toListCustomerResponse(customerService.findAllBySalonModel(salon))
+        return customerMapper.toPageResponse(customerService.findAllBySalonModel(salon, pageable))
     }
 
     @GetMapping("{customerId}")

@@ -1,9 +1,11 @@
 package br.com.dastec.gerenciasalao.controllers.mapper
 
 import br.com.dastec.gerenciasalao.controllers.responses.CustomerResponse
+import br.com.dastec.gerenciasalao.controllers.responses.PageResponse
 import br.com.dastec.gerenciasalao.controllers.responses.PhoneNumberResponse
 import br.com.dastec.gerenciasalao.models.CustomerModel
 import br.com.dastec.gerenciasalao.services.PhoneNumberService
+import org.springframework.data.domain.Page
 import org.springframework.stereotype.Component
 
 @Component
@@ -54,7 +56,15 @@ class CustomerMapper(val phoneNumberService: PhoneNumberService) {
 
             customersReponse.add(customerResponse)
         }
-
         return customersReponse
+    }
+
+    fun toPageResponse(page: Page<CustomerModel>): PageResponse<CustomerResponse>{
+        return PageResponse<CustomerResponse>(
+            items = toListCustomerResponse(page.content),
+            currentPage = page.number,
+            totalItems = page.totalElements,
+            totalPages = page.totalPages
+        )
     }
 }

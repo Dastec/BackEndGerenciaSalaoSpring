@@ -1,6 +1,7 @@
 package br.com.dastec.gerenciasalao.models
 
 import br.com.dastec.gerenciasalao.models.enums.Role
+import br.com.dastec.gerenciasalao.models.enums.UserStatus
 import java.util.*
 import javax.persistence.*
 
@@ -42,6 +43,10 @@ data class UserModel(
     @Enumerated(EnumType.STRING)
     @ElementCollection(targetClass = Role::class, fetch = FetchType.EAGER)
     @CollectionTable(name = "user_roles", joinColumns = [JoinColumn(name = "user_id")])
-    var roles: Set<Role> = setOf()
+    var roles: Set<Role> = setOf(),
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    val status: UserStatus = UserStatus.ACTIVE
 
 )

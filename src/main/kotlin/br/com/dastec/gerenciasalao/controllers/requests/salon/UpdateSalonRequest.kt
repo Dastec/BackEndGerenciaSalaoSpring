@@ -2,11 +2,11 @@ package br.com.dastec.gerenciasalao.controllers.requests.salon
 
 import com.fasterxml.jackson.annotation.JsonAlias
 
-data class updateSalonRequest(
+data class UpdateSalonRequest(
 
     var name: String,
 
-    @JsonAlias("tax_identification")
-    var taxIdentification: String,
+    @JsonAlias("fiscal_identification")
+    var fiscalIdentification: String,
 
-)
+    )

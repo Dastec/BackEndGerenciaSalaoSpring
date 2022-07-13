@@ -6,7 +6,10 @@ import br.com.dastec.gerenciasalao.exceptions.enums.Errors
 import br.com.dastec.gerenciasalao.models.BeautySalonModel
 import br.com.dastec.gerenciasalao.models.CustomerModel
 import br.com.dastec.gerenciasalao.models.CustomerServiceModel
+import br.com.dastec.gerenciasalao.models.enums.CustomerServiceStatus
 import br.com.dastec.gerenciasalao.repositories.CustomerServiceRepository
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 
 @Service
@@ -16,11 +19,13 @@ class CustomerServiceModelService(
 ) {
 
     fun startCustomerService(customerServiceModel: CustomerServiceModel) {
-        if (findByCustomerServiceWithStatusOpen(customerServiceModel.beautySalon, customerServiceModel.customer!!.idCustomer!!).isNotEmpty()
-        ) {
+        if (customerServiceModel.statusCustomerService == CustomerServiceStatus.FINISHED
+            || customerServiceModel.statusCustomerService == CustomerServiceStatus.FINALIZEDPENDING
+            || customerServiceModel.statusCustomerService == CustomerServiceStatus.CANCELLED)
+        {
             throw BadRequestException(
-                Errors.GS102.message.format(customerServiceModel.customer!!.alias),
-                Errors.GS102.internalCode
+                Errors.GS510.message.format(customerServiceModel.idCustomerService),
+                Errors.GS510.internalCode
             )
         }
 
@@ -30,7 +35,6 @@ class CustomerServiceModelService(
                 Errors.GS508.internalCode
             )
         }
-
         customerServiceRepository.save(customerServiceModel)
     }
 
@@ -48,6 +52,10 @@ class CustomerServiceModelService(
 
     fun findByCustomerServiceWithStatusOpen(salon: BeautySalonModel, idCustomerService: Long): List<CustomerServiceModel> {
         return customerServiceRepository.findByCustomerServiceWithStatusOpen(salon, idCustomerService)
+    }
+
+    fun findByCustomerServiceWithStatusCreatedOrOpen(salon: BeautySalonModel, customer: CustomerModel): List<CustomerServiceModel> {
+        return customerServiceRepository.findByCustomerServiceWithStatusCreatedOrOpen(salon, customer)
     }
 
     fun findByCustomerServiceWithStatusCreated(salon: BeautySalonModel, idCustomer: Long): List<CustomerServiceModel> {
@@ -74,8 +82,8 @@ class CustomerServiceModelService(
         customerServiceRepository.save(customerServiceModel)
     }
 
-    fun findAll(salon: BeautySalonModel): List<CustomerServiceModel>{
-        return customerServiceRepository.findAllByBeautySalon(salon)
+    fun findAll(salon: BeautySalonModel, pageable: Pageable): Page<CustomerServiceModel>{
+        return customerServiceRepository.findAllByBeautySalon(salon, pageable)
     }
 
     fun findById(salon: BeautySalonModel, id: Long): CustomerServiceModel {

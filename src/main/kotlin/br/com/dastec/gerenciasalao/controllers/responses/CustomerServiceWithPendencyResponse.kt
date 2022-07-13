@@ -2,37 +2,38 @@ package br.com.dastec.gerenciasalao.controllers.responses
 
 import br.com.dastec.gerenciasalao.models.enums.CustomerServiceStatus
 import com.fasterxml.jackson.annotation.JsonAlias
+import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalTime
 
 data class CustomerServiceWithPendencyResponse(
-    var idCustomerService: Long? = null,
+    val idCustomerService: Long? = null,
 
-    var dateCustomerService: LocalDate,
+    val dateCustomerService: LocalDate,
 
     @JsonAlias("start_time")
-    var startTime: LocalTime,
+    val startTime: LocalTime,
 
     @JsonAlias("end_time")
-    var endTime: LocalTime?,
+    val endTime: LocalTime?,
 
     @JsonAlias("total_value")
-    var totalValue: Double?,
+    val totalValue: BigDecimal?,
 
     @JsonAlias("paid_value")
-    var paidValue: Double?,
+    val paidValue: BigDecimal?,
 
-    var customer: String,
+    val customer: String,
 
-    var payments: MutableList<PaymentResponse>,
+    val payments: MutableList<PaymentResponse>,
 
     @JsonAlias("services")
-    var saleServices: MutableList<SaleServiceResponse>,
+    val saleServices: MutableList<SaleServiceResponse>,
 
-    var observation: String?,
+    val observation: String?,
 
     @JsonAlias("status")
-    var statusCustomerService: CustomerServiceStatus,
+    val statusCustomerService: CustomerServiceStatus,
 
-    var pendency: PendencyResponse,
+    val pendency: PendencyResponse,
 )

@@ -55,7 +55,7 @@ class ControllerAdvice {
     }
 
     @ExceptionHandler(PasswordInvalidException::class)
-    fun handlePasswordInvalidException(ex: CustomerServiceHasNoPendingException, request: WebRequest): ResponseEntity<ErrorResponse> {
+    fun handlePasswordInvalidException(ex: PasswordInvalidException, request: WebRequest): ResponseEntity<ErrorResponse> {
         val error = ErrorResponse(
             ex.message,
             ex.errorCode,
@@ -65,7 +65,7 @@ class ControllerAdvice {
     }
 
     @ExceptionHandler(AuthenticationException::class)
-    fun handleAuthenticationException(ex: CustomerServiceHasNoPendingException, request: WebRequest): ResponseEntity<ErrorResponse> {
+    fun handleAuthenticationException(ex: AuthenticationException, request: WebRequest): ResponseEntity<ErrorResponse> {
         val error = ErrorResponse(
             ex.message,
             ex.errorCode,
@@ -88,7 +88,7 @@ class ControllerAdvice {
     }
 
     @ExceptionHandler(InternalAuthenticationServiceException::class)
-    fun handleInternalAuthenticationServiceException(ex: CustomerServiceHasNoPendingException, request: WebRequest): ResponseEntity<ErrorResponse> {
+    fun handleInternalAuthenticationServiceException(ex: InternalAuthenticationServiceException, request: WebRequest): ResponseEntity<ErrorResponse> {
         val error = ErrorResponse(
             Errors.GSL002.message,
             Errors.GSL002.internalCode,

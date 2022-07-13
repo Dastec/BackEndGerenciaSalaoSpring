@@ -9,7 +9,7 @@ import kotlin.reflect.KClass
 @Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.FIELD)
 annotation class IsCurrency(
-    val message: String = "O valor não pode ser null ou negativo!",
+    val message: String = "O valor não pode negativo ou zero!",
     val groups: Array<KClass<*>> = [],
     val payload: Array<KClass<out Payload>> = []
 )

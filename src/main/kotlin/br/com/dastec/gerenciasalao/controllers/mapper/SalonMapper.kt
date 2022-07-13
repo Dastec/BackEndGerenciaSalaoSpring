@@ -1,7 +1,7 @@
 package br.com.dastec.gerenciasalao.controllers.mapper
 
 import br.com.dastec.gerenciasalao.controllers.requests.salon.RegisterSalonRequest
-import br.com.dastec.gerenciasalao.controllers.requests.salon.updateSalonRequest
+import br.com.dastec.gerenciasalao.controllers.requests.salon.UpdateSalonRequest
 import br.com.dastec.gerenciasalao.models.BeautySalonModel
 import br.com.dastec.gerenciasalao.models.enums.SalonStatus
 import br.com.dastec.gerenciasalao.services.SalonService
@@ -19,11 +19,11 @@ class SalonMapper(
         )
     }
 
-    fun updateSalonToSalonModel(salon: BeautySalonModel, updateSalonRequest: updateSalonRequest):BeautySalonModel{
+    fun updateSalonToSalonModel(salon: BeautySalonModel, updateSalonRequest: UpdateSalonRequest):BeautySalonModel{
         return BeautySalonModel(
             idSalon = salon.idSalon,
             name = updateSalonRequest.name,
-            fiscalIdentification = updateSalonRequest.taxIdentification,
+            fiscalIdentification = updateSalonRequest.fiscalIdentification,
             createdAt = salon.createdAt,
             status = salon.status,
         )

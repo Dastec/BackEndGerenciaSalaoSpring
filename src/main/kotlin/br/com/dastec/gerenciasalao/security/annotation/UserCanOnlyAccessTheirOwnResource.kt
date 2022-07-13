@@ -1,9 +1,8 @@
 package br.com.dastec.gerenciasalao.security.annotation
 
 import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.security.access.prepost.PreFilter
 
 @Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.RUNTIME)
-@PreFilter("filterObject.id = 3")
+@PreAuthorize("hasRole('ROLE_ADMIN') && #id == authentication.principal.id")
 annotation class UserCanOnlyAccessTheirOwnResource()

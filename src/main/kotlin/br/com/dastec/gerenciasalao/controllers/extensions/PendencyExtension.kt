@@ -5,8 +5,8 @@ import br.com.dastec.gerenciasalao.controllers.requests.pendency.PostAddPendency
 import br.com.dastec.gerenciasalao.controllers.requests.pendency.PutFinishPendencyRequest
 import br.com.dastec.gerenciasalao.models.CustomerServiceModel
 import br.com.dastec.gerenciasalao.models.PendencyModel
-import br.com.dastec.gerenciasalao.models.UserModel
 import br.com.dastec.gerenciasalao.models.enums.PendencyStatus
+import java.math.BigDecimal
 
 fun PostAddPendencyRequest.toPendencyModel(customerService: CustomerServiceModel): PendencyModel {
     return PendencyModel(
@@ -31,7 +31,7 @@ fun PutFinishPendencyRequest.toPendencyModel(previouPendecy: PendencyModel): Pen
     return PendencyModel(
         idPendencyModel = previouPendecy.idPendencyModel,
         customerService = previouPendecy.customerService,
-        valuePendency = 0.0,
+        valuePendency = BigDecimal.ZERO,
         status = PendencyStatus.PAID,
         beautySalon = previouPendecy.beautySalon
     )

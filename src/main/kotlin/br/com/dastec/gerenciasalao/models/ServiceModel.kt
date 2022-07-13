@@ -1,5 +1,6 @@
 package br.com.dastec.gerenciasalao.models
 
+import java.math.BigDecimal
 import javax.persistence.*
 
 @Entity
@@ -18,7 +19,7 @@ data class ServiceModel(
     @JoinColumn(name = "id_category", nullable = false)
     val category: CategoryModel,
 
-    val price: Double?,
+    val price: BigDecimal?,
 
     @ManyToOne
     @JoinColumn(name = "salon_id")

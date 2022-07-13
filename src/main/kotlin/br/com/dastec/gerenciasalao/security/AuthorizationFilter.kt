@@ -1,6 +1,7 @@
 package br.com.dastec.gerenciasalao.security
 
 import br.com.dastec.gerenciasalao.exceptions.AuthenticationException
+import br.com.dastec.gerenciasalao.exceptions.enums.Errors
 import br.com.dastec.gerenciasalao.services.UserDetailsUserModelService
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -28,7 +29,7 @@ class AuthorizationFilter(
 
     private fun getAuthentication(token: String): UsernamePasswordAuthenticationToken {
         if (!jwtUtil.isValidToken(token)){
-            throw AuthenticationException("Token invalido filter", "999")
+            throw AuthenticationException(Errors.GS001.message, Errors.GS001.internalCode)
         }
 
         val subject = jwtUtil.getSubject(token)

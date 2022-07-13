@@ -13,8 +13,8 @@ class SalonService(private val salonRepository: SalonRepository) {
         salonRepository.save(salon)
     }
 
-    fun updateSalon(salon: BeautySalonModel){
-        salonRepository.save(salon)
+    fun updateSalon(salon: BeautySalonModel): BeautySalonModel{
+        return salonRepository.save(salon)
     }
 
     fun cancelSalon(salon: BeautySalonModel){

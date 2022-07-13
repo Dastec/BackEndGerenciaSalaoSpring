@@ -1,5 +1,8 @@
 package br.com.dastec.gerenciasalao.controllers.extensions
 
+import br.com.dastec.gerenciasalao.controllers.responses.CustomerServiceResponse
+import br.com.dastec.gerenciasalao.models.CustomerServiceModel
+
 //fun PostStartCustomerServiceRequest.toCustomerService(
 //    services: MutableList<ServiceModel>,
 //    customer: CustomerModel

@@ -8,5 +8,6 @@ create table users(
 	phone_number varchar(15) not null,
 	verified_phone Bool not null,
 	salon_id bigint not null,
+	status varchar(50) not null,
 	foreign key(salon_id) references beauty_salons(id_salon)
 )
