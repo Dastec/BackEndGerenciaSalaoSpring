@@ -8,19 +8,22 @@ import br.com.dastec.gerenciasalao.exceptions.enums.Errors
 import br.com.dastec.gerenciasalao.models.CustomerModel
 import br.com.dastec.gerenciasalao.models.BeautySalonModel
 import br.com.dastec.gerenciasalao.repositories.CustomerRepository
+import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 
 @Service
 class CustomerService(private val customerRepository: CustomerRepository, private val phoneNumberService: PhoneNumberService) {
-
+    val LOGGER = LoggerFactory.getLogger(javaClass)
     fun createCustomer(customerModel: CustomerModel, phones: List<PostPhoneRequest>){
         val customer = customerRepository.save(customerModel)
 
         for (phone in phones){
             phoneNumberService.create(phone.toPhoneNumberModel(customer))
         }
+        LOGGER.info("Cliente cadastrado com sucesso!")
+        LOGGER.info("Final do método de cadastro de cliente!")
     }
 
     fun updateCustomer(customerModel: CustomerModel, phones: List<PutPhoneRequest>){
@@ -32,13 +35,19 @@ class CustomerService(private val customerRepository: CustomerRepository, privat
             for (phone in phones){
                 phoneNumberService.update(phone.toPhoneNumberModel(previousPhones!![phones.indexOf(phone)]))
             }
+            LOGGER.info("Cliente atualizado com sucesso!")
+            LOGGER.info("Final do método de atualização de cliente!")
         }else{
             throw Exception("Usuario não encontrado")
+            LOGGER.info("Cliente não encontrado!")
+            LOGGER.info("Final do método de cadastro de cliente!")
         }
     }
 
     fun deleteCustomer(customerModel: CustomerModel){
         customerRepository.save(customerModel)
+        LOGGER.info("Cliente deletado com sucesso!")
+        LOGGER.info("Final do método de exclusão de cliente!")
     }
 
     fun findAllBySalonModel(salon: BeautySalonModel, pageable: Pageable): Page<CustomerModel>{

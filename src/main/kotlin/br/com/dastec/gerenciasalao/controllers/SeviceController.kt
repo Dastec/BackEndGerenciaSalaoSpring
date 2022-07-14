@@ -22,6 +22,7 @@ class SeviceController(val serviceModelService: ServiceModelService, val categor
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun create(@Valid @RequestBody postServiceRequest: PostServiceRequest, @RequestHeader(value = "Authorization") token: String): MessageResponse {
+        serviceModelService.LOGGER.info("Início do método de criação de serviço!")
         val salon = springUtil.getSalon(token.split(" ")[1])
         val category = categoryService.findById(salon, postServiceRequest.idCategory)
         serviceModelService.create(postServiceRequest.toServiceModel(category, springUtil.getSalon(token.split(" ")[1])))
@@ -31,6 +32,7 @@ class SeviceController(val serviceModelService: ServiceModelService, val categor
 
     @PutMapping("/{id}")
     fun update(@PathVariable id: Long, @Valid @RequestBody putServiceRequest: PutServiceRequest, @RequestHeader(value = "Authorization") token: String): MessageResponse {
+        serviceModelService.LOGGER.info("Início do método de atualização de serviço!")
         val salon = springUtil.getSalon(token.split(" ")[1])
         val category = categoryService.findById(salon, putServiceRequest.idCategory)
         val service = serviceModelService.findById(salon, id)

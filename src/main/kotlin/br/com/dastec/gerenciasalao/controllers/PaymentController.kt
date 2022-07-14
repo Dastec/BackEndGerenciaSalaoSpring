@@ -29,6 +29,7 @@ class PaymentController(
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun payService(@Valid @RequestBody postPaymentServiceRequest: PostPaymentServiceRequest, @RequestHeader(value = "Authorization") token: String): MessageResponse {
+        paymentService.LOGGER.info("Início do método de criação de pagamento!")
         val salon = springUtil.getSalon(token.split(" ")[1])
         val user = userService.findById(salon, jwtUtil.getUserInformation(token.split(" ")[1]).idUser)
         paymentService.payService(paymentMapper.postPaymentServiceRequestToPaymentModel(postPaymentServiceRequest, user))
@@ -38,6 +39,7 @@ class PaymentController(
     @PostMapping("/paypendencies")
     @ResponseStatus(HttpStatus.CREATED)
     fun payServicePendency(@Valid @RequestBody postPaymentServiceWithPendencyRequest: PostPaymentServiceWithPendencyRequest, @RequestHeader(value = "Authorization") token: String): MessageResponse {
+        paymentService.LOGGER.info("Início do método de criação de pagamento!")
         val salon = springUtil.getSalon(token.split(" ")[1])
         val user = userService.findById(salon, jwtUtil.getUserInformation(token.split(" ")[1]).idUser)
         paymentService.validPaymentPendency(user.beautySalon, postPaymentServiceWithPendencyRequest)
@@ -47,6 +49,7 @@ class PaymentController(
 
     @PutMapping
     fun updatePayService(@PathVariable id: Long, @Valid @RequestBody putPaymentServiceRequest: PutPendecyServiceRequest, @RequestHeader(value = "Authorization") token: String): MessageResponse {
+        paymentService.LOGGER.info("Início do método de atualização de pagamento!")
         val salon = springUtil.getSalon(token.split(" ")[1])
         val previousPayment = paymentService.findById(salon, id)
         paymentService.updatePayService(

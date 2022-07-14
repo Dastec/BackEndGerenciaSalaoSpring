@@ -11,7 +11,7 @@ import br.com.dastec.gerenciasalao.exceptions.enums.Errors
 import br.com.dastec.gerenciasalao.models.enums.Role
 import br.com.dastec.gerenciasalao.models.enums.UserStatus
 import br.com.dastec.gerenciasalao.security.JwtUtil
-import br.com.dastec.gerenciasalao.services.SalonService
+import br.com.dastec.gerenciasalao.services.BeautySalonService
 import br.com.dastec.gerenciasalao.services.UserService
 import br.com.dastec.gerenciasalao.utils.SpringUtil
 import org.springframework.http.HttpStatus
@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*
 class UserController(
     private val userService: UserService,
     private val userMapper: UserMapper,
-    private val salonService: SalonService,
+    private val beautySalonService: BeautySalonService,
     private val springUtil: SpringUtil,
     private val jwtUtil: JwtUtil
 ) {
@@ -30,10 +30,11 @@ class UserController(
     @PostMapping("/create/useradmin")
     @ResponseStatus(HttpStatus.CREATED)
     fun createUserAdmin(@RequestBody createUserRequest: CreateUserRequest):MessageResponse{
+        userService.LOGGER.info("Início do método de criação de usuário administrador!")
         if (createUserRequest.password != createUserRequest.passwordConfirmation){
             throw PasswordInvalidException(Errors.GS1001.message, Errors.GS1001.internalCode)
         }
-        val person = salonService.findById(createUserRequest.idSalon)
+        val person = beautySalonService.findById(createUserRequest.idSalon)
         userService.createUserAdmin(userMapper.toUserModel(createUserRequest, person))
 
         return MessageResponse(message = "Usuário administrador ${createUserRequest.userName} criado com sucesso!")
@@ -42,10 +43,11 @@ class UserController(
     @PostMapping("/create/user")
     @ResponseStatus(HttpStatus.CREATED)
     fun createUser(@RequestBody createUserRequest: CreateUserRequest): MessageResponse {
+        userService.LOGGER.info("Início do método de criação de usuário!")
         if (createUserRequest.password != createUserRequest.passwordConfirmation){
             throw PasswordInvalidException(Errors.GS1001.message, Errors.GS1001.internalCode)
         }
-        val person = salonService.findById(createUserRequest.idSalon)
+        val person = beautySalonService.findById(createUserRequest.idSalon)
 
         userService.createUser(userMapper.toUserModel(createUserRequest, person))
 
@@ -54,6 +56,7 @@ class UserController(
 
     @PutMapping("/update/information/{id}")
     fun updateInformation(@PathVariable id: Long, updateInformationUserRequest: UpdateInformationUserRequest, @RequestHeader(value = "Authorization") token: String): MessageResponse {
+        userService.LOGGER.info("Início do método de atualização de usuário!")
         val salon = springUtil.getSalon(token.split(" ")[1])
         val user = userService.findById(salon, id)
         userService.updateInformation(userMapper.UpdateInformationToUserModel(updateInformationUserRequest, user))
@@ -63,6 +66,7 @@ class UserController(
 
     @PutMapping("/update/password/{id}")
     fun updatePassword(@PathVariable id: Long, updatePasswordRequest: UpdatePasswordRequest, @RequestHeader(value = "Authorization") token: String): MessageResponse {
+        userService.LOGGER.info("Início do método de alteração de senha!")
         if (updatePasswordRequest.password != updatePasswordRequest.passwordConfirmation){
             throw PasswordInvalidException(Errors.GS1001.message, Errors.GS1001.internalCode)
         }
@@ -74,6 +78,7 @@ class UserController(
 
     @PutMapping("/admin/suspend/{id}")
     fun suspendUser(@PathVariable id: Long, @RequestHeader(value = "Authorization") token: String): MessageResponse {
+        userService.LOGGER.info("Início do método de suspender usuário!")
         val salon = springUtil.getSalon(token.split(" ")[1])
         val userToken = jwtUtil.getUserInformation(token.split(" ")[1])
         val user = userService.findById(salon, id)
@@ -93,6 +98,7 @@ class UserController(
 
     @DeleteMapping("/admin/{id}")
     fun deleteUser(@PathVariable id: Long, @RequestHeader(value = "Authorization") token: String): MessageResponse {
+        userService.LOGGER.info("Início do método de exclusão de usuário!")
         val salon = springUtil.getSalon(token.split(" ")[1])
         val userToken = jwtUtil.getUserInformation(token.split(" ")[1])
         val user = userService.findById(salon, id)
@@ -110,6 +116,7 @@ class UserController(
 
     @PutMapping("/admin/activate/{id}")
     fun activateUser(@PathVariable id: Long, @RequestHeader(value = "Authorization") token: String): MessageResponse {
+        userService.LOGGER.info("Início do método de ativação de usuário!")
         val salon = springUtil.getSalon(token.split(" ")[1])
         val userToken = jwtUtil.getUserInformation(token.split(" ")[1])
         val user = userService.findById(salon, id)
@@ -127,6 +134,7 @@ class UserController(
 
     @PutMapping("/admin/addadmin/{id}")
     fun addAdmin(@PathVariable id: Long, @RequestHeader(value = "Authorization") token: String): MessageResponse {
+        userService.LOGGER.info("Início do método de adicionar privilégio administrador!")
         val salon = springUtil.getSalon(token.split(" ")[1])
         val userToken = jwtUtil.getUserInformation(token.split(" ")[1])
         val user = userService.findById(salon, id)
@@ -145,6 +153,7 @@ class UserController(
 
     @PutMapping("/admin/removeadmin/{id}")
     fun removeAdmin(@PathVariable id: Long, @RequestHeader(value = "Authorization") token: String): MessageResponse {
+        userService.LOGGER.info("Início do método de remover privilégio administrador!")
         val salon = springUtil.getSalon(token.split(" ")[1])
         val userToken = jwtUtil.getUserInformation(token.split(" ")[1])
         val user = userService.findById(salon, id)

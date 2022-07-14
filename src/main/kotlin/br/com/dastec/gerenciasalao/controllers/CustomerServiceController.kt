@@ -18,6 +18,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
+import java.math.BigDecimal
 import javax.validation.Valid
 
 @RestController
@@ -32,6 +33,7 @@ class CustomerServiceController(
     @PostMapping("/start")
     @ResponseStatus(HttpStatus.CREATED)
     fun startCustomerService(@Valid @RequestBody postStartCustomerServiceRequest: PostStartCustomerServiceRequest, @RequestHeader(value = "Authorization") token: String): MessageResponse {
+        customerService.LOGGER.info("Início do método de iniciar atendimento!")
         val salon = springUtil.getSalon(token.split(" ")[1])
         customerServiceModelService.startCustomerService(customerServiceMapper.postStartRequestToModel(salon, postStartCustomerServiceRequest))
         return MessageResponse("Atendimento iniciado com sucesso")
@@ -40,12 +42,14 @@ class CustomerServiceController(
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
     fun createCustomerService(@Valid @RequestBody postCreateCustomerServiceRequest: PostCreateCustomerServiceRequest, @RequestHeader(value = "Authorization") token: String): CustomerServiceResponse {
+        customerService.LOGGER.info("Início do método de criação de atendimento!")
         val salon = springUtil.getSalon(token.split(" ")[1])
         return customerServiceMapper.toCustomerServiceResponse(customerServiceModelService.createCustomerService(customerServiceMapper.createCustomerModel(postCreateCustomerServiceRequest, salon)))
     }
 
     @PutMapping()
     fun updateCustomerService(@Valid @RequestBody putUpdateCustomerServiceRequest: PutUpdateCustomerServiceRequest, @RequestHeader(value = "Authorization") token: String): MessageResponse {
+        customerService.LOGGER.info("Início do método de atualização de atendimento!")
         val salon = springUtil.getSalon(token.split(" ")[1])
         customerServiceModelService.updateCustomerService(customerServiceMapper.putUpdateRequestToModel(salon, putUpdateCustomerServiceRequest))
         return MessageResponse("Atendimento atualizado com sucesso")
@@ -53,6 +57,7 @@ class CustomerServiceController(
 
     @DeleteMapping("/{id}")
     fun cancelCustomerService(@PathVariable id: Long, @RequestHeader(value = "Authorization") token: String): MessageResponse {
+        customerService.LOGGER.info("Início do método de cancelamento de atendimento!")
         val salon = springUtil.getSalon(token.split(" ")[1])
         val previousCustomerService = customerServiceModelService.findById(salon, id)
         if (previousCustomerService.statusCustomerService == CustomerServiceStatus.CANCELLED) {
@@ -75,6 +80,7 @@ class CustomerServiceController(
         @RequestBody putFinalizeCustomerServiceRequest: PutFinalizeCustomerServiceRequest,
         @RequestHeader(value = "Authorization") token: String
     ): FinalizeCustomerServiceResponse {
+        customerService.LOGGER.info("Início do método de finalização de atendimento!")
         val salon = springUtil.getSalon(token.split(" ")[1])
         val previousCustomerService = customerServiceModelService.findById(salon, id)
         if (previousCustomerService.statusCustomerService == CustomerServiceStatus.FINALIZEDPENDING || previousCustomerService.statusCustomerService == CustomerServiceStatus.FINISHED) {
@@ -121,5 +127,16 @@ class CustomerServiceController(
         return customerServiceMapper.toListCustomerServiceWithPendencyResponse(customerServiceModelService.findByCustomerServiceWithStatusFinalizedPending(salon, customer.idCustomer!!)
         )
     }
+
+    @GetMapping("/dailygain")
+    fun findDailyGain(@RequestHeader(value = "Authorization") token: String): BigDecimal {
+        return customerServiceModelService.findDailyGain(springUtil.getSalon(token.split(" ")[1]))
+    }
+
+    @GetMapping("/monthlygain")
+    fun findMonthlyGain(@RequestHeader(value = "Authorization") token: String): BigDecimal {
+        return customerServiceModelService.findMonthlyGain(springUtil.getSalon(token.split(" ")[1]))
+    }
+
 
 }

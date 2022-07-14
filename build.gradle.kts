@@ -53,7 +53,6 @@ dependencies {
 	// https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api
 	compileOnly("javax.servlet:javax.servlet-api:4.0.1")
 
-
 }
 
 tasks.withType<Test> {

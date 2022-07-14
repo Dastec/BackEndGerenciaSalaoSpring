@@ -50,8 +50,8 @@ data class CustomerServiceModel(
     @JoinColumn(name = "salon_id")
     var beautySalon: BeautySalonModel,
 ){
-    @Transient
-    var dailyGain: BigDecimal = BigDecimal.ZERO
+//    @Transient
+//    var dailyGain: BigDecimal = BigDecimal.ZERO
 
 //    constructor(idCustomerService: Long? = null,
 //                dateCustomerService: LocalDate? = null,

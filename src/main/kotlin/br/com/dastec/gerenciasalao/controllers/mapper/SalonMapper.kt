@@ -4,12 +4,12 @@ import br.com.dastec.gerenciasalao.controllers.requests.salon.RegisterSalonReque
 import br.com.dastec.gerenciasalao.controllers.requests.salon.UpdateSalonRequest
 import br.com.dastec.gerenciasalao.models.BeautySalonModel
 import br.com.dastec.gerenciasalao.models.enums.SalonStatus
-import br.com.dastec.gerenciasalao.services.SalonService
+import br.com.dastec.gerenciasalao.services.BeautySalonService
 import org.springframework.stereotype.Component
 
 @Component
 class SalonMapper(
-    private val salonService: SalonService
+    private val beautySalonService: BeautySalonService
 ) {
 
     fun registerSalonToSalonModel(registerSalonRequest: RegisterSalonRequest):BeautySalonModel{

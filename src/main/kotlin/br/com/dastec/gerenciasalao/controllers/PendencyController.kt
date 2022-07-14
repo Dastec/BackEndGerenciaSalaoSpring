@@ -64,6 +64,4 @@ class PendencyController(
         val customer = customerService.findByIdAndSalon(salon, id)
         return pendencyService.findByCustomer(customer)
     }
-
-
 }

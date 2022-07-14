@@ -25,6 +25,7 @@ class CustomerController(val customerService: CustomerService, val customerMappe
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun create(@Valid @RequestBody postCustomerRequest: PostCustomerModelRequest, @RequestHeader(value = "Authorization") token: String): MessageResponse {
+        customerService.LOGGER.info("Início do método de cadastro de cliente!")
         val salon = springUtil.getSalon(token.split(" ")[1])
         customerService.createCustomer(postCustomerRequest.toCustomerModel(salon), postCustomerRequest.phoneNumber)
         return MessageResponse("Cliente ${postCustomerRequest.alias} criado com sucesso")
@@ -32,6 +33,7 @@ class CustomerController(val customerService: CustomerService, val customerMappe
 
     @PutMapping("/{id}")
     fun update(@PathVariable id: Long, @Valid @RequestBody putCustomerRequest: PutCustomerModelRequest, @RequestHeader(value = "Authorization") token: String): MessageResponse {
+        customerService.LOGGER.info("Início do método de atualização de cliente!")
         val salon = springUtil.getSalon(token.split(" ")[1])
         val customerModel: CustomerModel = customerService.findByIdAndSalon(salon, id)
         customerService.updateCustomer(putCustomerRequest.toCustomerModel(customerModel), putCustomerRequest.phoneNumber)
@@ -40,6 +42,7 @@ class CustomerController(val customerService: CustomerService, val customerMappe
 
     @DeleteMapping("/{clientKey}")
     fun delete(@PathVariable clientKey: String, @RequestHeader(value = "Authorization") token: String): MessageResponse {
+        customerService.LOGGER.info("Início do método de exclusão de cliente!")
         val salon = springUtil.getSalon(token.split(" ")[1])
         val customerModel: CustomerModel = customerService.findByClientKey(salon, clientKey)
         customerService.deleteCustomer(deleteCustomer(customerModel))

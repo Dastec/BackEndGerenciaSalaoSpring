@@ -10,6 +10,7 @@ import br.com.dastec.gerenciasalao.controllers.responses.MessageResponse
 import br.com.dastec.gerenciasalao.models.CategoryModel
 import br.com.dastec.gerenciasalao.services.CategoryService
 import br.com.dastec.gerenciasalao.utils.SpringUtil
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
@@ -21,6 +22,7 @@ class CategoryController(val categoryService: CategoryService, val springUtil: S
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun createCategory(@Valid @RequestBody postCategoryRequest: PostCategoryRequest, @RequestHeader(value = "Authorization") token: String): MessageResponse {
+        categoryService.LOGGER.info("Início do método de criação de categoria")
         val salon = springUtil.getSalon(token.split(" ")[1])
         categoryService.createCategory(postCategoryRequest.toCategoryModel(salon))
         return MessageResponse("Categoria ${postCategoryRequest.nameCategory} criada com sucesso")
@@ -28,6 +30,7 @@ class CategoryController(val categoryService: CategoryService, val springUtil: S
 
     @PutMapping("/{id}")
     fun update(@PathVariable id: Long, @Valid @RequestBody putCategoryRequest: PutCategoryRequest, @RequestHeader(value = "Authorization") token: String): MessageResponse {
+        categoryService.LOGGER.info("Início do método de atualização de categoria")
         val salon = springUtil.getSalon(token.split(" ")[1])
         val previousCategory = categoryService.findById(salon, id)
         categoryService.updateCategory(putCategoryRequest.toCategoryModel(previousCategory))
@@ -36,6 +39,7 @@ class CategoryController(val categoryService: CategoryService, val springUtil: S
 
     @DeleteMapping("/{id}")
     fun delete(@PathVariable id: Long, @RequestHeader(value = "Authorization") token: String): MessageResponse {
+        categoryService.LOGGER.info("Início do método de exclusão de categoria")
         categoryService.delete(id)
         return MessageResponse("Categoria deletada com sucesso")
     }
@@ -57,6 +61,4 @@ class CategoryController(val categoryService: CategoryService, val springUtil: S
         val salon = springUtil.getSalon(token.split(" ")[1])
         return categoryService.findAll(salon).toListCategoryResponse()
     }
-
-
 }

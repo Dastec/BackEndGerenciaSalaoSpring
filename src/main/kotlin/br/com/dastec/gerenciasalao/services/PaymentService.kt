@@ -13,6 +13,7 @@ import br.com.dastec.gerenciasalao.models.enums.CustomerServiceStatus
 import br.com.dastec.gerenciasalao.models.enums.PaymentStatus
 import br.com.dastec.gerenciasalao.realCurrency
 import br.com.dastec.gerenciasalao.repositories.PaymentRepository
+import org.slf4j.LoggerFactory
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
@@ -24,9 +25,12 @@ class PaymentService(
     private val customerServiceModelService: CustomerServiceModelService,
     private val applicationEventPublisher: ApplicationEventPublisher
 ) {
+    val LOGGER = LoggerFactory.getLogger(javaClass)
 
     fun updatePayService(payment: PaymentModel) {
         paymentRepository.save(payment)
+        LOGGER.info("Pagamento atualizado com sucesso!")
+        LOGGER.info("Final do método de atualização de pagamento!")
     }
 
     fun payService(payment: PaymentModel) {
@@ -36,6 +40,8 @@ class PaymentService(
                 Errors.GS503.message.format(customerService.idCustomerService),
                 Errors.GS503.internalCode
             )
+            LOGGER.info("Atendimento não está com status aberto!")
+            LOGGER.info("Final do método de criação de pagamento!")
         }
 
         val payments = findPaymentsByCustomerWithCustomerServiceWithStatusOpen(payment.customerService.idCustomerService!!)
@@ -49,8 +55,12 @@ class PaymentService(
                     )
                 ), Errors.GS702.internalCode
             )
+            LOGGER.info("Pagamento ultrapassa o valor do atendimento!")
+            LOGGER.info("Final do método de criação de pagamento!")
         }
         paymentRepository.save(payment)
+        LOGGER.info("Pagamento criado com sucesso!")
+        LOGGER.info("Final do método de criação de pagamento!")
     }
 
     fun payServiceWithPendency(payment: PaymentModel) {
@@ -60,6 +70,8 @@ class PaymentService(
                 Errors.GS504.message.format(customerService.idCustomerService),
                 Errors.GS504.internalCode
             )
+            LOGGER.info("Atendimento nº%s não está com pendência!")
+            LOGGER.info("Final do método de criação de pagamento de pendência!")
         }
 
         if ((payment.valuePayment + customerService.paidValue!!) > customerService.totalValue!!) {
@@ -70,6 +82,8 @@ class PaymentService(
                     )
                 ), Errors.GS702.internalCode
             )
+            LOGGER.info("Pagamento ultrapassa o valor do atendimento!")
+            LOGGER.info("Final do método de criação de pagamento de pendência!")
         }
 
         if (customerService.statusCustomerService == CustomerServiceStatus.FINALIZEDPENDING &&
@@ -84,11 +98,15 @@ class PaymentService(
             payment.status = PaymentStatus.LAUNCHED
         }
         paymentRepository.save(payment)
+        LOGGER.info("Pagamento criado com sucesso!")
+        LOGGER.info("Final do método de criação de pagamento de pendência!")
     }
 
     fun updateStatusLaunched(payment: PaymentModel) {
         payment.status = PaymentStatus.LAUNCHED
         paymentRepository.save(payment)
+        LOGGER.info("Pagamento atualizado com sucesso!")
+        LOGGER.info("Final do método de atualização de pagamento!")
     }
 
     fun findById(salon: BeautySalonModel, id: Long): PaymentModel {

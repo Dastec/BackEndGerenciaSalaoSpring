@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
+import java.time.LocalDate
 
 @Repository
 interface CustomerServiceRepository : JpaRepository<CustomerServiceModel, Long> {
@@ -31,4 +32,11 @@ interface CustomerServiceRepository : JpaRepository<CustomerServiceModel, Long> 
 
     @Query(value = "select u from CustomerServiceModel u where u.beautySalon = ?1 AND u.customer = ?2 and (u.statusCustomerService = 'CREATED' or u.statusCustomerService = 'OPEN')")
     fun findByCustomerServiceWithStatusCreatedOrOpen(salon: BeautySalonModel, customer: CustomerModel): List<CustomerServiceModel>
+
+
+    @Query(value = "SELECT u FROM CustomerServiceModel u WHERE u.beautySalon = ?1 AND u.dateCustomerService = ?2 AND (u.statusCustomerService = 'FINISHED' or u.statusCustomerService = 'FINALIZEDPENDING')")
+    fun getDailyGain(salon: BeautySalonModel, data: LocalDate): List<CustomerServiceModel>
+
+    @Query(value = "SELECT u FROM CustomerServiceModel u WHERE u.beautySalon = ?1 AND (u.dateCustomerService BETWEEN ?2 AND ?3) AND (u.statusCustomerService = 'FINISHED' or u.statusCustomerService = 'FINALIZEDPENDING')")
+    fun getMonthlyGain(salon: BeautySalonModel, initialDate: LocalDate, finalDate: LocalDate): List<CustomerServiceModel>
 }

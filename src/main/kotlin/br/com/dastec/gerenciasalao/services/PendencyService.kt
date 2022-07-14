@@ -9,6 +9,7 @@ import br.com.dastec.gerenciasalao.models.CustomerServiceModel
 import br.com.dastec.gerenciasalao.models.PendencyModel
 import br.com.dastec.gerenciasalao.models.enums.CustomerServiceStatus
 import br.com.dastec.gerenciasalao.repositories.PendencyRepository
+import org.slf4j.LoggerFactory
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 
@@ -18,17 +19,24 @@ class PendencyService(
     private val customerServiceModelService: CustomerServiceModelService,
     private val applicationEventPublisher: ApplicationEventPublisher
 ) {
+    val LOGGER = LoggerFactory.getLogger(javaClass)
 
     fun createPendency(pendency: PendencyModel) {
         pendencyRepository.save(pendency)
+        LOGGER.info("Pendência criada com sucesso!")
+        LOGGER.info("Final do método de criação de pendência!")
     }
 
     fun updatePendency(pendency: PendencyModel) {
         pendencyRepository.save(pendency)
+        LOGGER.info("Pendência atualizada com sucesso!")
+        LOGGER.info("Final do método de atualização de pendência!")
     }
 
     fun finalizePendency(pendency: PendencyModel) {
         pendencyRepository.save(pendency)
+        LOGGER.info("Pendência finalizada com sucesso!")
+        LOGGER.info("Final do método de finalização de pendência!")
     }
 
     fun findAll(salon: BeautySalonModel): List<PendencyModel> {

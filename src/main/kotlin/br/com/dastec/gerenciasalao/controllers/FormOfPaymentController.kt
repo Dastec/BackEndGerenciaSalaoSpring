@@ -20,6 +20,7 @@ class FormOfPaymentController(private val formOfPaymentService: FormOfPaymentSer
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun create(@Valid @RequestBody postFormPaymentRequest: PostFormPaymentRequest, @RequestHeader(value = "Authorization") token: String): MessageResponse {
+        formOfPaymentService.LOGGER.info("Início do método de criação de Forma de pagamento!")
         formOfPaymentService.create(postFormPaymentRequest.toFormOfPayment(springUtil.getSalon(token.split(" ")[1])))
         return MessageResponse("Forma de pagamento ${postFormPaymentRequest.nameFormPayment} criada com sucesso")
     }
@@ -27,6 +28,7 @@ class FormOfPaymentController(private val formOfPaymentService: FormOfPaymentSer
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.CREATED)
     fun update(@PathVariable id: Long, @Valid @RequestBody putFormPaymentRequest: PutFormPaymentRequest, @RequestHeader(value = "Authorization") token: String): MessageResponse {
+        formOfPaymentService.LOGGER.info("Início do método de atualização de Forma de pagamento!")
         val salon = springUtil.getSalon(token.split(" ")[1])
         val previousFormPayment = formOfPaymentService.findById(salon, id)
         formOfPaymentService.create(putFormPaymentRequest.toFormOfPayment(previousFormPayment))
@@ -41,6 +43,7 @@ class FormOfPaymentController(private val formOfPaymentService: FormOfPaymentSer
 
     @DeleteMapping("/{id}")
     fun delete(@PathVariable id: Long, @RequestHeader(value = "Authorization") token: String): MessageResponse {
+        formOfPaymentService.LOGGER.info("Início do método de exclusão de Forma de pagamento!")
         val salon = springUtil.getSalon(token.split(" ")[1])
         formOfPaymentService.delete(salon, id)
         return MessageResponse("Forma de pagamento deletada com sucesso")

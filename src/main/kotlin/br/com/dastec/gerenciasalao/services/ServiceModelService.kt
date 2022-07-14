@@ -7,22 +7,30 @@ import br.com.dastec.gerenciasalao.models.CategoryModel
 import br.com.dastec.gerenciasalao.models.BeautySalonModel
 import br.com.dastec.gerenciasalao.models.ServiceModel
 import br.com.dastec.gerenciasalao.repositories.ServiceRepository
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
 @Service
 class ServiceModelService(private val serviceRepository: ServiceRepository) {
 
+    val LOGGER = LoggerFactory.getLogger(javaClass)
     fun create(serviceModel: ServiceModel){
         serviceRepository.save(serviceModel)
+        LOGGER.info("Serviço criado com sucesso!")
+        LOGGER.info("Final do método de criação de serviço!")
     }
 
     fun update(serviceModel: ServiceModel){
         serviceRepository.save(serviceModel)
+        LOGGER.info("Serviço atualizado com sucesso!")
+        LOGGER.info("Final do método de atualização de serviço!")
     }
 
     fun delete(salon: BeautySalonModel, id: Long){
         findById(salon, id)
         serviceRepository.deleteById(id)
+        LOGGER.info("Serviço deletado com sucesso!")
+        LOGGER.info("Final do método de exclusão de serviço!")
     }
 
     fun findById(salon: BeautySalonModel, id: Long): ServiceModel{
