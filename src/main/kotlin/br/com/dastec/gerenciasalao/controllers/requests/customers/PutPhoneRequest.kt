@@ -6,6 +6,7 @@ import javax.persistence.Enumerated
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.Pattern
 
+
 data class PutPhoneRequest(
 
     @field:NotBlank(message ="O tipo de telefone não pode ser vazio!")

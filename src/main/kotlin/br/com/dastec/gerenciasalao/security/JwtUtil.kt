@@ -1,14 +1,19 @@
 package br.com.dastec.gerenciasalao.security
 
 import br.com.dastec.gerenciasalao.exceptions.AuthenticationException
+import br.com.dastec.gerenciasalao.exceptions.TokenException
 import br.com.dastec.gerenciasalao.exceptions.enums.Errors
 import br.com.dastec.gerenciasalao.models.UserInformationModel
 import br.com.dastec.gerenciasalao.models.UserModel
 import io.jsonwebtoken.Claims
+import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
+import org.springframework.web.bind.annotation.InitBinder
+import org.springframework.web.bind.annotation.ResponseStatus
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -55,9 +60,9 @@ class JwtUtil(@Value("\${jwt.expiration}")
     private fun getClaims(token: String): Claims {
         try {
             return Jwts.parser().setSigningKey(secret!!.toByteArray()).parseClaimsJws(token).body
-
         }catch (ex: Exception){
-            throw AuthenticationException(Errors.GSL003.message, Errors.GSL003.internalCode)
+            print(ex.toString())
+            throw TokenException(Errors.GSL013.message, ex)
         }
     }
 

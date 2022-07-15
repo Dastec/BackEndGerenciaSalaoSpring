@@ -7,13 +7,12 @@ import br.com.dastec.gerenciasalao.controllers.requests.categories.PostCategoryR
 import br.com.dastec.gerenciasalao.controllers.requests.categories.PutCategoryRequest
 import br.com.dastec.gerenciasalao.controllers.responses.CategoryResponse
 import br.com.dastec.gerenciasalao.controllers.responses.MessageResponse
-import br.com.dastec.gerenciasalao.models.CategoryModel
 import br.com.dastec.gerenciasalao.services.CategoryService
 import br.com.dastec.gerenciasalao.utils.SpringUtil
-import org.slf4j.LoggerFactory
+import javax.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
-import javax.validation.Valid
+
 
 @RestController
 @RequestMapping("/api/v1/category")

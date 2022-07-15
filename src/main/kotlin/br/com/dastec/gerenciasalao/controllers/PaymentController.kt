@@ -11,9 +11,10 @@ import br.com.dastec.gerenciasalao.services.CustomerServiceModelService
 import br.com.dastec.gerenciasalao.services.PaymentService
 import br.com.dastec.gerenciasalao.services.UserService
 import br.com.dastec.gerenciasalao.utils.SpringUtil
+import javax.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
-import javax.validation.Valid
+
 
 @RestController
 @RequestMapping("api/v1/payment")

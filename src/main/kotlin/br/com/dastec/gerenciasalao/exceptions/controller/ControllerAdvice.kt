@@ -4,6 +4,7 @@ import br.com.dastec.gerenciasalao.exceptions.*
 import br.com.dastec.gerenciasalao.exceptions.enums.Errors
 import br.com.dastec.gerenciasalao.exceptions.response.ErrorResponse
 import br.com.dastec.gerenciasalao.exceptions.response.FieldErrorResponse
+import io.jsonwebtoken.ExpiredJwtException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.InternalAuthenticationServiceException
@@ -95,6 +96,26 @@ class ControllerAdvice {
             null
         )
         return ResponseEntity(error, HttpStatus.BAD_REQUEST)
+    }
+
+    @ExceptionHandler(ExpiredJwtException::class)
+    fun handleInternalExpiredJwtException(ex: ExpiredJwtException, request: WebRequest): ResponseEntity<ErrorResponse> {
+        val error = ErrorResponse(
+            Errors.GSL013.message,
+            Errors.GSL013.internalCode,
+            null
+        )
+        return ResponseEntity(error, HttpStatus.FORBIDDEN)
+    }
+
+    @ExceptionHandler(java.lang.RuntimeException::class)
+    fun handleRuntimeException(ex: RuntimeException, request: WebRequest): ResponseEntity<ErrorResponse> {
+        val error = ErrorResponse(
+            Errors.GSL013.message,
+            Errors.GSL013.internalCode,
+            null
+        )
+        return ResponseEntity(error, HttpStatus.FORBIDDEN)
     }
 }
 

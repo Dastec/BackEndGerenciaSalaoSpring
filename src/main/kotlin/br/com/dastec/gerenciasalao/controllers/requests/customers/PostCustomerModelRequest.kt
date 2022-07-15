@@ -4,10 +4,11 @@ import br.com.dastec.gerenciasalao.validation.annotation.CpfAvailable
 import br.com.dastec.gerenciasalao.validation.annotation.FullName
 import br.com.dastec.gerenciasalao.validation.annotation.IsCpf
 import com.fasterxml.jackson.annotation.JsonAlias
-import java.time.LocalDate
 import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.Past
 import javax.validation.constraints.Pattern
+import java.time.LocalDate
+
 
 data class PostCustomerModelRequest(
     //var idCustomer: Long? = null,

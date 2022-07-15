@@ -1,8 +1,9 @@
 package br.com.dastec.gerenciasalao.models
 
 import br.com.dastec.gerenciasalao.models.enums.SalonStatus
-import java.time.LocalDate
 import javax.persistence.*
+import java.time.LocalDate
+
 
 @Entity
 @Table(name = "beauty_salons")

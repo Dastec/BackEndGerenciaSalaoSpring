@@ -90,10 +90,13 @@ class UserController(
         when(user.status){
             UserStatus.SUSPENDED -> throw BadRequestException(Errors.GSL004.message.format(user.idUser), Errors.GSL004.internalCode)
             UserStatus.EXCLUDED -> throw BadRequestException(Errors.GSL005.message.format(user.idUser), Errors.GSL005.internalCode)
+            else -> {
+                userService.suspendUser(userMapper.suspendUserToUserModel(user))
+                return MessageResponse(message = "Usuário ${user.userName} suspenso com sucesso!")
+            }
         }
 
-        userService.suspendUser(userMapper.suspendUserToUserModel(user))
-        return MessageResponse(message = "Usuário ${user.userName} suspenso com sucesso!")
+
     }
 
     @DeleteMapping("/admin/{id}")

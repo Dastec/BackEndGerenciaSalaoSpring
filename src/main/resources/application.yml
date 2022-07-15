@@ -7,7 +7,11 @@ spring:
     pathmatch:
       matching-strategy: ant_path_matcher
 server:
+  error:
+    include-stacktrace: NEVER
+    include-binding-errors: NEVER
   port: 8081
+
 jwt:
   secret: 0412c946-a382-4be6-9245-ebde9ef911dd
   expiration: 900000

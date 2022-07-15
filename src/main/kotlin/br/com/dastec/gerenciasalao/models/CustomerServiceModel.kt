@@ -1,6 +1,5 @@
 package br.com.dastec.gerenciasalao.models
 
-import br.com.dastec.gerenciasalao.controllers.responses.DailyGain
 import br.com.dastec.gerenciasalao.models.enums.CustomerServiceStatus
 import com.fasterxml.jackson.annotation.JsonIgnore
 import java.math.BigDecimal

@@ -14,6 +14,7 @@ enum class Errors(val message: String, val internalCode: String) {
     GSL010("Você não pode remover o seu próprio privilégio!", "GSL-010"),
     GSL011("Seu usuário já está ativado!", "GSL-011"),
     GSL012("Seu usuário já é Admin!", "GSL-011"),
+    GSL013("Token expirado!", "GSL-013"),
 
     GS001("Invalid Request", "GS-001" ),
 

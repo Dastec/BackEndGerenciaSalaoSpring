@@ -11,9 +11,10 @@ import br.com.dastec.gerenciasalao.models.ServiceModel
 import br.com.dastec.gerenciasalao.services.CategoryService
 import br.com.dastec.gerenciasalao.services.ServiceModelService
 import br.com.dastec.gerenciasalao.utils.SpringUtil
+import javax.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
-import javax.validation.Valid
+
 
 @RestController
 @RequestMapping("/api/v1/service")

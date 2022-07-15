@@ -12,11 +12,12 @@ import br.com.dastec.gerenciasalao.models.CustomerModel
 import br.com.dastec.gerenciasalao.security.JwtUtil
 import br.com.dastec.gerenciasalao.services.CustomerService
 import br.com.dastec.gerenciasalao.utils.SpringUtil
+import javax.validation.Valid
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
-import javax.validation.Valid
+
 
 @RestController
 @RequestMapping("/api/v1/customer")
